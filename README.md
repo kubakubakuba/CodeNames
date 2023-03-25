@@ -1,2 +1,2 @@
-# Semestrální práce na PJV - Osadníci z Catanu
+# Semestrální práce na PJV - Hra Krycí jména
 ## Prokop Jansa, Jakub Pelc
