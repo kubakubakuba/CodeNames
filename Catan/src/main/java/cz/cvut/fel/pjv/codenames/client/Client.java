@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.catan.client;
+package cz.cvut.fel.pjv.codenames.client;
 
 import java.io.*;
 import java.net.Socket;

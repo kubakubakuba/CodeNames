@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.catan.server;
+package cz.cvut.fel.pjv.codenames.server;
 
 public class Start {
     public static void main(String[] args) {
