@@ -16,6 +16,10 @@ public class Client {
 
              String text;
 
+             //testing launch of application after starting client
+             GUI_Wireframe frame = new GUI_Wireframe();
+             frame.main();
+
              do{
                  text = sc.nextLine().toString();
                  writer.println(text);
