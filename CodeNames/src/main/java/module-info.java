@@ -4,5 +4,5 @@ module cz.cvut.fel.pjv.codenames {
 
 
     opens cz.cvut.fel.pjv.codenames to javafx.fxml;
-    exports cz.cvut.fel.pjv.codenames;
+    exports cz.cvut.fel.pjv.codenames.GUI;
 }
