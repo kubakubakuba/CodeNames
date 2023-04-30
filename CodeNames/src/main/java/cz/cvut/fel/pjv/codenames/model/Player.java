@@ -2,7 +2,7 @@ package cz.cvut.fel.pjv.codenames.model;
 
 public class Player {
 
-
+    private String ID;
 
     enum PlayerTeam{
         RED,
@@ -19,8 +19,6 @@ public class Player {
 
     private PlayerTeam team = PlayerTeam.NONE;
     private PlayerRole role = PlayerRole.NONE;
-
-    private String ID;
 
     public PlayerTeam getTeam() {
         return team;

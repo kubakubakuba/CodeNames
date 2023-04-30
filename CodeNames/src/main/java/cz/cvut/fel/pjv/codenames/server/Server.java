@@ -1,10 +1,14 @@
 package cz.cvut.fel.pjv.codenames.server;
 
+import cz.cvut.fel.pjv.codenames.model.Player;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server implements Runnable{
     private final int PORT = 1313;
+
+    private final Player[] ListOfPlayers = {};
 
     public void Server()    {
 

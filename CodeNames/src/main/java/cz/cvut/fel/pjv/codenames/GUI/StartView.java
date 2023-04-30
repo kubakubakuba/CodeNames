@@ -7,9 +7,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.scene.layout.BackgroundPosition;
+
 
 public class StartView extends Application {
 
@@ -20,29 +23,51 @@ public class StartView extends Application {
     @Override
     public void start(Stage stage) {
 
-
-
         // Create a label with custom text
         Label headingLabel = new Label("CodeNames");
         headingLabel.setPadding(new Insets(25));
         headingLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 62px;");
         Pane titlepane = new BorderPane(headingLabel);
 
+        Label nameLabel = new Label("Enter your name:   ");
+        nameLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
+        // Create the text box
+        TextField textField = new TextField();
+
+
+        // Create the container for the label and text box
+        HBox nameContainer = new HBox();
+        nameContainer.getChildren().addAll(nameLabel, textField);
+        nameContainer.setAlignment(Pos.CENTER);
+
         Button hostbutton = new Button("Host game");
         hostbutton.setOnAction(e -> {
 
-            //TODO -redirect to new lobby
+            String inputId = textField.getText();
 
+            //call create server with id
+
+            //call create client
+
+            //call client connect
+
+            //TODO -redirect to new lobby
+            //
         });
 
         Button joinbutton = new Button("Join game");
         joinbutton.setOnAction(e -> {
 
-            //TODO - implement join screen
-            Scene scene1 = new Scene(new Label("This is Scene 2"), 700, 600);
 
+            String inputId = textField.getText();
+
+            //call create client
+
+            //TODO - implement join screen
+            //Scene scene1 = new Scene(new Label("This is Scene 2"), 700, 600);
+            ServerPicker picker = new ServerPicker();
             // set the new scene on the stage
-            stage.setScene(scene1);
+            stage.setScene(picker.createScene());
 
         });
 
@@ -52,21 +77,24 @@ public class StartView extends Application {
         buttonbox.setAlignment(Pos.CENTER);
 
         VBox vbox = new VBox();
-        vbox.getChildren().addAll(titlepane, buttonbox);
+        vbox.getChildren().addAll(titlepane,nameContainer, buttonbox);
         vbox.setSpacing(10); // Set spacing between elements
         vbox.setAlignment(Pos.CENTER);
 
         StackPane stackPane = new StackPane();
         Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
-        BackgroundSize backgroundSize = new BackgroundSize(700, 600, true, true, true, true);
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+
+        // Create the background image
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                                        BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         stackPane.setBackground(new Background(backgroundImg));
 
         // Add the BorderPane and VBox to the StackPane
         stackPane.getChildren().addAll(vbox);
         stackPane.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(stackPane, 700, 600);
+        Scene scene = new Scene(stackPane, 650, 600);
 
         stage.setTitle("Codenames");
         stage.setScene(scene);

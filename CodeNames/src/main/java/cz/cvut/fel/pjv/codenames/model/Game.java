@@ -6,8 +6,8 @@ public class Game {
     private Deck deck;
     private Key key;
     private Player[] players;
-    private String CurrentPrompt;
-    private int PromptNumOfCards;
+    private String current_prompt;
+    private int prompt_num_cards;
 
 
 
