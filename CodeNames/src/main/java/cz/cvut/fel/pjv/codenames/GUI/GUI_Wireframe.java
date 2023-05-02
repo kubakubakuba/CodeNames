@@ -22,7 +22,7 @@ public class GUI_Wireframe extends Application {
         // Create buttons
         Button hostbutton = new Button("Host game");
         hostbutton.setOnAction(e -> {
-            //TODO -redirect to new lobby
+            //TODO - redirect to new lobby
         });
 
         Button joinbutton = new Button("Join game");

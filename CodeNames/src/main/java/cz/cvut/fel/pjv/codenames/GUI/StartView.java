@@ -16,8 +16,8 @@ import javafx.scene.layout.BackgroundPosition;
 
 public class StartView extends Application {
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main() {
+        launch();
     }
 
     @Override
@@ -41,35 +41,9 @@ public class StartView extends Application {
         nameContainer.setAlignment(Pos.CENTER);
 
         Button hostbutton = new Button("Host game");
-        hostbutton.setOnAction(e -> {
-
-            String inputId = textField.getText();
-
-            //call create server with id
-
-            //call create client
-
-            //call client connect
-
-            //TODO -redirect to new lobby
-            //
-        });
 
         Button joinbutton = new Button("Join game");
-        joinbutton.setOnAction(e -> {
 
-
-            String inputId = textField.getText();
-
-            //call create client
-
-            //TODO - implement join screen
-            //Scene scene1 = new Scene(new Label("This is Scene 2"), 700, 600);
-            ServerPicker picker = new ServerPicker();
-            // set the new scene on the stage
-            stage.setScene(picker.createScene());
-
-        });
 
         VBox buttonbox = new VBox();
         buttonbox.getChildren().addAll(hostbutton, joinbutton);
@@ -81,23 +55,54 @@ public class StartView extends Application {
         vbox.setSpacing(10); // Set spacing between elements
         vbox.setAlignment(Pos.CENTER);
 
-        StackPane stackPane = new StackPane();
+        StackPane bckgrndPane = new StackPane();
         Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
         BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
-
         // Create the background image
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
                                         BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        stackPane.setBackground(new Background(backgroundImg));
+        bckgrndPane.setBackground(new Background(backgroundImg));
+        bckgrndPane.getChildren().addAll(vbox);
+        bckgrndPane.setAlignment(Pos.CENTER);
 
-        // Add the BorderPane and VBox to the StackPane
-        stackPane.getChildren().addAll(vbox);
-        stackPane.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(bckgrndPane, 650, 600);
 
-        Scene scene = new Scene(stackPane, 650, 600);
+        // add functions to the buttons
+        joinbutton.setOnAction(e -> {
+
+            String inputId = textField.getText();
+
+            //call create client
+
+            //join screen
+            ServerPicker picker = new ServerPicker();
+            picker.setPreviousScene(scene);
+            picker.setStage(stage);
+            picker.setID(inputId);
+            // set the new scene on the stage
+            stage.setScene(picker.createScene());
+        });
+
+        hostbutton.setOnAction(e -> {
+
+            String inputId = textField.getText();
+
+            //call create server with id
+            //set id to hostid of the server
+
+            //call create client
+
+            //call client connect
+
+            //TODO -redirect to new lobby
+            LobbyView lobby = new LobbyView(new Stage(), inputId, true);
+            stage.close();
+        });
 
         stage.setTitle("Codenames");
         stage.setScene(scene);
         stage.show();
     }
+
+
 }

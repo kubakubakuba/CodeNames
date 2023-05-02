@@ -2,23 +2,28 @@ package cz.cvut.fel.pjv.codenames.GUI;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
 
 public class ServerPicker extends Application {
 
+    private Scene previousScene;
+    private Stage previousStage;
+
+    private String ID;
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-
     }
     public Scene createScene() {
         // Create a VBox to hold the buttons
@@ -27,44 +32,83 @@ public class ServerPicker extends Application {
         buttonContainer.setPadding(new Insets(10)); // Set padding around the container
 
         // Add buttons to the VBox
+        //placeholder
+        //find number of active sessions and
+        //create a connect button for each one
         for (int i = 1; i <= 20; i++) {
             Button button = new Button("Button " + i);
+            button.setOnAction(actionEvent -> {
+
+                //attempt to connect to session
+                //if success
+                //open lobby as id
+                LobbyView lobby = new LobbyView(new Stage(), ID, false);
+                previousStage.close();
+            });
             buttonContainer.getChildren().add(button);
         }
 
         // Create a ScrollPane and set the buttonContainer as its content
         ScrollPane scrollPane = new ScrollPane(buttonContainer);
-        scrollPane.setFitToWidth(true); // Enable horizontal scroll bar if needed
+        scrollPane.setMaxWidth(150);
+        scrollPane.setMaxHeight(200);
 
-        // Create a label
+
+
+        // Create and format label
         Label label = new Label("Pick Session");
-
+        label.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         // Create an HBox to hold the label
         HBox labelBox = new HBox();
-        labelBox.setPadding(new Insets(10));
+        labelBox.setPadding(new Insets(50));
         labelBox.getChildren().add(label);
+        labelBox.setAlignment(Pos.CENTER);
 
         // Create a VBox to hold the labelBox and scrollPane
         VBox vbox = new VBox();
         vbox.setSpacing(10);
         vbox.getChildren().addAll(labelBox, scrollPane);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.setPadding(new Insets(50));
 
         // Create a button with "Return" label
         Button returnButton = new Button("Return");
-        //returnButton.setOnAction(event -> ));
+        returnButton.setOnAction(event ->
+        {
+            previousStage.setScene(previousScene);
+        });
 
         // Create an HBox to hold the returnButton
         HBox buttonBox = new HBox();
         buttonBox.setPadding(new Insets(10));
         buttonBox.getChildren().add(returnButton);
+        buttonBox.setAlignment(Pos.CENTER);
 
         // Create the root VBox to hold vbox and buttonBox
         VBox root = new VBox();
         root.setSpacing(10);
         root.getChildren().addAll(vbox, buttonBox);
 
+        StackPane bckrndPane = new StackPane();
+        Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
+        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        bckrndPane.setBackground(new Background(backgroundImg));
+        bckrndPane.getChildren().addAll(root);
+        bckrndPane.setAlignment(Pos.CENTER);
         // Create the scene
-        return new Scene(root, 300, 400);
+        return new Scene(bckrndPane, 650, 600);
     }
 
+    public void setPreviousScene(Scene scene) {
+        this.previousScene = scene;
+    }
+    public void setStage(Stage stage)   {
+        this.previousStage = stage;
+    }
+
+    public void setID(String ID)    {
+        this.ID = ID;
+    }
 }
