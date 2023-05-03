@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
+import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import cz.cvut.fel.pjv.codenames.model.Board;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -95,7 +96,7 @@ public class StartView extends Application {
             //call client connect
 
             //TODO -redirect to new lobby
-            LobbyView lobby = new LobbyView(new Stage(), inputId, true);
+            LobbyView lobby = new LobbyView(new Stage(), inputId, new LobbyController());
             stage.close();
         });
 

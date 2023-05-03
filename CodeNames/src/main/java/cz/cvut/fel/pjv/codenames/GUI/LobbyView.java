@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
+import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,11 +13,18 @@ import javafx.stage.Stage;
 public class LobbyView extends Application {
 
     private String ID;
-    private boolean isHost;
+    //private boolean isHost = false;
 
-    public LobbyView(Stage lobbyStage, String ID, boolean isHost) {
+    private LobbyController localControl = null;
+
+    public LobbyView(Stage lobbyStage, String ID) {
         this.ID = ID;
-        this.isHost = isHost;
+        start(lobbyStage);
+    }
+    public LobbyView(Stage lobbyStage, String ID, LobbyController control) {
+        this.ID = ID;
+        this.localControl = control;
+        localControl.setHostId(ID);
         start(lobbyStage);
 
     }
@@ -24,13 +32,13 @@ public class LobbyView extends Application {
     @Override
     public void start(Stage lobbyStage) {
         lobbyStage.setScene(createLobbyScene());
-        lobbyStage.setTitle("Lobby hosted by ");
+        lobbyStage.setTitle("Lobby hosted by " + localControl.getHostId());
         lobbyStage.show();
     }
 
     private Scene createLobbyScene() {
 
-        if (isHost) {
+        if (ID.equals(localControl.getHostId())) {
             return createHostScene();
         } else {
             return createGuestLobby();
@@ -60,20 +68,8 @@ public class LobbyView extends Application {
                 gameStarter,
                 createCommonView()
         );
-        StackPane bckgrndPane = new StackPane();
-        Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
-        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
-        // Create the background image
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        bckgrndPane.setBackground(new Background(backgroundImg));
-        bckgrndPane.getChildren().addAll(layout);
-        bckgrndPane.setAlignment(Pos.CENTER);
 
-        //TODO
-        //implement the functionalities of the buttons
-
-        return new Scene(bckgrndPane, 650, 600);
+        return setBackground(layout);
 
     }
 
@@ -90,16 +86,7 @@ public class LobbyView extends Application {
                 createCommonView()
         );
 
-        StackPane bckgrndPane = new StackPane();
-        Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
-        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
-        // Create the background image
-        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
-                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-        bckgrndPane.setBackground(new Background(backgroundImg));
-        bckgrndPane.getChildren().addAll(layout);
-        bckgrndPane.setAlignment(Pos.CENTER);
-        return new Scene(bckgrndPane, 650, 600);
+        return setBackground(layout);
     }
 
     public VBox createCommonView()  {
@@ -146,6 +133,12 @@ public class LobbyView extends Application {
 
         //TODO
         //implement the functionalities of the buttons
+        buttonRed.setOnAction(event->   {
+            localControl.updateNumPlayers("chooseRED", ID);
+                });
+        buttonBlue.setOnAction(event->   {
+            localControl.updateNumPlayers("chooseBLUE", ID);
+        });
 
         VBox commonLayout = new VBox();
         commonLayout.setAlignment(Pos.CENTER);
@@ -162,4 +155,18 @@ public class LobbyView extends Application {
 
         return commonLayout;
     }
+
+    public Scene setBackground(VBox layout) {
+        StackPane bckgrndPane = new StackPane();
+        Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
+        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+        // Create the background image
+        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+        bckgrndPane.setBackground(new Background(backgroundImg));
+        bckgrndPane.getChildren().addAll(layout);
+        bckgrndPane.setAlignment(Pos.CENTER);
+        return new Scene(bckgrndPane, 650, 600);
+    }
+
 }

@@ -4,13 +4,16 @@ public class Player {
 
     private String ID;
 
-    enum PlayerTeam{
+    public Player(String ID)    {
+        this.ID = ID;
+    }
+    public enum PlayerTeam{
         RED,
         BLUE,
         NONE
     }
 
-    enum PlayerRole{
+    public enum PlayerRole{
         SPY_MASTER,
         FIELD_OPERATIVE,
         FIELD_OPERATIVE_LEADER,

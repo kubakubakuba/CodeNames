@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
+import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -42,7 +43,7 @@ public class ServerPicker extends Application {
                 //attempt to connect to session
                 //if success
                 //open lobby as id
-                LobbyView lobby = new LobbyView(new Stage(), ID, false);
+                LobbyView lobby = new LobbyView(new Stage(), ID);
                 previousStage.close();
             });
             buttonContainer.getChildren().add(button);

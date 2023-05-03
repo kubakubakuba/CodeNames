@@ -6,12 +6,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server implements Runnable{
+
     private final int PORT = 1313;
 
-    private final Player[] ListOfPlayers = {};
+    //private final Player[] ListOfPlayers = {};
+    private Client[] connectedClients = {};
 
     public void Server()    {
-
         //host, socket,
     }
 
