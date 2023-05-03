@@ -24,13 +24,13 @@ public class CommandHandler {
     }
 
     public CommandHandler(String command){
-        command = command.toLowerCase();
+        command = command;
         String[] parts = command.split(";");
 
         System.out.println(command);
         System.out.println(parts);
 
-        switch(parts[0]){
+        switch(parts[0].toLowerCase()){
             case "ss":
                 this.command = CommandType.START_SERVER;
                 break;
