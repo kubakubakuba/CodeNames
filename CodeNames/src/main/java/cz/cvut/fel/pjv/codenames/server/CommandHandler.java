@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 public class CommandHandler {
     public enum CommandType{
+        EMPTY,
         START_SERVER,
         TERMINATE_SERVER,
         CONNECT_PLAYER,
@@ -17,15 +18,23 @@ public class CommandHandler {
     CommandType command;
     String[] arguments;
 
+    public CommandHandler(){
+        command = CommandType.EMPTY;
+        arguments = null;
+    }
+
     public CommandHandler(String command){
         command = command.toLowerCase();
         String[] parts = command.split(";");
 
+        System.out.println(command);
+        System.out.println(parts);
+
         switch(parts[0]){
-            case "start":
+            case "ss":
                 this.command = CommandType.START_SERVER;
                 break;
-            case "terminate":
+            case "ts":
                 this.command = CommandType.TERMINATE_SERVER;
                 break;
             case "con":

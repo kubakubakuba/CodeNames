@@ -7,6 +7,8 @@ public class ServerThread extends Thread    {
 
     private Socket socket;
 
+    CommandHandler handle = new CommandHandler();
+
     public ServerThread(Socket socket)  {
         this.socket = socket;
     }
@@ -22,11 +24,20 @@ public class ServerThread extends Thread    {
             String text;
             do{
                 text = reader.readLine();
-                String text2 = new StringBuilder(text).reverse().toString();
-                writer.println("server: " + text2);
                 System.out.println("client: " + text);
-            } while(!text.equals("exit"));
-        socket.close();
+                handle = new CommandHandler(text);
+
+                if(handle.getCommand() == CommandHandler.CommandType.UNKNOWN_COMMAND){
+                    writer.println("Unknown command!");
+                }
+
+                if(handle.getCommand() == CommandHandler.CommandType.SEND_MESSAGE){
+                    writer.println("Player has sent a message: " + handle.getArguments()[0]);
+                }
+
+            } while(handle.getCommand() != CommandHandler.CommandType.TERMINATE_SERVER);
+            writer.println("Stopping the server");
+            socket.close();
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
