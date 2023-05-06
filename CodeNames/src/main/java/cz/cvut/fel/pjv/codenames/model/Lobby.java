@@ -1,14 +1,23 @@
 package cz.cvut.fel.pjv.codenames.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Lobby {
 
     private int NumOfPlayers = 0;
     private int NumOfRED = 0;
     private int NumOfBLUE = 0;
-    private String[] ListOfIDs = {};
+
+
+
+    private List<String> listOfIds = new ArrayList<String>();
     private String hostId;
 
     public String getHostId() {return hostId;}
+    public List<String> getListOfIds() {
+        return listOfIds;
+    }
     public void setHostId(String hostId) {this.hostId = hostId;}
 
     public int getNumOfPlayers() {
