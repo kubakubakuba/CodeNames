@@ -1,5 +1,7 @@
 package cz.cvut.fel.pjv.codenames.server;
 
+import javafx.scene.text.FontWeight;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -33,6 +35,10 @@ public class ServerThread extends Thread    {
 
                 if(handle.getCommand() == CommandHandler.CommandType.SEND_MESSAGE){
                     writer.println("Player has sent a message: " + handle.getArguments()[0]);
+                }
+
+                if(handle.getCommand() == CommandHandler.CommandType.MAKE_MOVE){
+                    writer.println("Player has made a move with following arguments: " + handle.getArguments()[0] + " " + handle.getArguments()[1] + " " + handle.getArguments()[2]);
                 }
 
             } while(handle.getCommand() != CommandHandler.CommandType.TERMINATE_SERVER);
