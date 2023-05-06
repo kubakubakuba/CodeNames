@@ -2,6 +2,8 @@ package cz.cvut.fel.pjv.codenames.GUI;
 
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import cz.cvut.fel.pjv.codenames.model.Board;
+import cz.cvut.fel.pjv.codenames.server.Client;
+import cz.cvut.fel.pjv.codenames.server.Session;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,6 +19,8 @@ import javafx.scene.layout.BackgroundPosition;
 
 public class StartView extends Application {
 
+
+    private String id;
     public static void main() {
         launch();
     }
@@ -71,38 +75,44 @@ public class StartView extends Application {
         // add functions to the buttons
         joinbutton.setOnAction(e -> {
 
-            String inputId = textField.getText();
-
-            //call create client
+            id = textField.getText();
+            //set Client id
 
             //join screen
             ServerPicker picker = new ServerPicker();
             picker.setPreviousScene(scene);
             picker.setStage(stage);
-            picker.setID(inputId);
+            picker.setID(id);
             // set the new scene on the stage
             stage.setScene(picker.createScene());
         });
 
         hostbutton.setOnAction(e -> {
 
-            String inputId = textField.getText();
+            id = textField.getText();
+            LobbyController controller = new LobbyController(id);
+            //call create session with id
+            if (!controller.createServerSession(id))    {
+                //log session creation failed
+                return;
+            }
+            //call client connect to session
+            if (!controller.connectToSession(id))
+            {
+                //log connection failed
+                return;
+            }
 
-            //call create server with id
-            //set id to hostid of the server
-
-            //call create client
-
-            //call client connect
-
-            //TODO -redirect to new lobby
-            LobbyView lobby = new LobbyView(new Stage(), inputId, new LobbyController());
+            LobbyView lobby = new LobbyView(new Stage(), id, controller, 0);
             stage.close();
         });
 
         stage.setTitle("Codenames");
         stage.setScene(scene);
         stage.show();
+    }
+    public String getId() {
+        return id;
     }
 
 

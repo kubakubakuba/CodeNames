@@ -10,18 +10,18 @@ public class Session {
     private String hostId;
     private List<Client> connectedClients = new ArrayList<Client>();
 
-    public Session(Client host){
+    public Session(String host){
         lobby = new Lobby();
-        connectedClients.add(host);
-        hostId = host.getId();
+        //connectedIds.add(host);
+        hostId = host;
         lobby.setHostId(hostId);
-        lobby.getListOfIds().add(host.getId());
+        sessionId = UUID.randomUUID();
+        // lobby.getListOfIds().add(host);
     }
 
-    public boolean connectToSession(Client guest)   {
-        connectedClients.add(guest);
-        lobby.getListOfIds().add(guest.getId());
-
+    public boolean connectToSession(String guest)   {
+        connectedIds.add(guest);
+        lobby.getListOfIds().add(guest);
         return true;
     }
 

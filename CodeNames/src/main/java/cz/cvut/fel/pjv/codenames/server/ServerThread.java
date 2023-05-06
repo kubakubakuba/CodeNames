@@ -41,6 +41,40 @@ public class ServerThread extends Thread    {
                     writer.println("Player has made a move with following arguments: " + handle.getArguments()[0] + " " + handle.getArguments()[1] + " " + handle.getArguments()[2]);
                 }
 
+                if(handler.getCommand() == CommandHandler.CommandType.CREATE_SESSION){
+                    Session session = new Session(handler.getArguments()[0]);
+                    server.addSession(session);
+                    writer.println("generic1arg;" + session.getSessionId());
+                }
+
+                if(handler.getCommand() == CommandHandler.CommandType.CONNECT){
+                    String idSelf = handler.getArguments()[0];
+                    String idSession = handler.getArguments()[1];
+
+                    String response = "generic1arg;null";
+                    for (Session s : server.getActiveSessions()){
+                        if(idSession == s.getSessionId().toString()){
+                            List<String> ids = s.getLobby().getListOfIds();
+                            ids.add(idSelf);
+                            response = "generic1arg;" + idSession;
+                        }
+                    }
+                    writer.println(response);
+                }
+
+                if(handler.getCommand() == CommandHandler.CommandType.GET_HOST_ID){
+                    String idSelf = handler.getArguments()[0];
+                    String idSession = handler.getArguments()[1];
+
+                    String response = "generic1arg;null";
+                    for(Session s : server.getActiveSessions()){
+                        if(idSession == s.getSessionId().toString() && s.getLobby().getListOfIds().contains(idSelf)){
+                            response = "generic1arg;" + s.getHostId();
+                        }
+                    }
+                    writer.println(response);
+                }
+
             } while(handle.getCommand() != CommandHandler.CommandType.TERMINATE_SERVER);
             writer.println("Stopping the server");
             socket.close();
