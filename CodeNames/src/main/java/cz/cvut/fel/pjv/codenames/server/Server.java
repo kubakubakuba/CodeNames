@@ -4,13 +4,18 @@ import cz.cvut.fel.pjv.codenames.model.Player;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server implements Runnable{
 
     private final int PORT = 1313;
 
-    //private final Player[] ListOfPlayers = {};
-    private Client[] connectedClients = {};
+
+
+    private ArrayList<Session> activeSessions = new ArrayList<Session>();
+
+    public ArrayList<Session> getActiveSessions() {return activeSessions;}
 
     public void Server()    {
         //host, socket,
@@ -29,6 +34,10 @@ public class Server implements Runnable{
         catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public void addSession(Session session){
+        activeSessions.add(session);
     }
 
     public void shutDown()    {

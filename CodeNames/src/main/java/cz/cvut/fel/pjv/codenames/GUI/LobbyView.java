@@ -13,18 +13,20 @@ import javafx.stage.Stage;
 public class LobbyView extends Application {
 
     private String ID;
-    //private boolean isHost = false;
+    private boolean isHost = false;
 
     private LobbyController localControl = null;
 
-    public LobbyView(Stage lobbyStage, String ID) {
-        this.ID = ID;
-        start(lobbyStage);
-    }
     public LobbyView(Stage lobbyStage, String ID, LobbyController control) {
         this.ID = ID;
         this.localControl = control;
-        localControl.setHostId(ID);
+        start(lobbyStage);
+    }
+    public LobbyView(Stage lobbyStage, String ID, LobbyController control, int x) {
+        this.ID = ID;
+        this.localControl = control;
+        isHost = true;
+        localControl.setHostId();
         start(lobbyStage);
 
     }
@@ -134,10 +136,10 @@ public class LobbyView extends Application {
         //TODO
         //implement the functionalities of the buttons
         buttonRed.setOnAction(event->   {
-            localControl.updateNumPlayers("chooseRED", ID);
+            //localControl.updateNumPlayers("chooseRED", ID);
                 });
         buttonBlue.setOnAction(event->   {
-            localControl.updateNumPlayers("chooseBLUE", ID);
+            //localControl.updateNumPlayers("chooseBLUE", ID);
         });
 
         VBox commonLayout = new VBox();

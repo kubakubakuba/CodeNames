@@ -17,8 +17,8 @@ public class ServerPicker extends Application {
 
     private Scene previousScene;
     private Stage previousStage;
-
     private String ID;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -41,9 +41,10 @@ public class ServerPicker extends Application {
             button.setOnAction(actionEvent -> {
 
                 //attempt to connect to session
+                LobbyController controller = new LobbyController(ID);
                 //if success
                 //open lobby as id
-                LobbyView lobby = new LobbyView(new Stage(), ID);
+                LobbyView lobby = new LobbyView(new Stage(), ID, controller);
                 previousStage.close();
             });
             buttonContainer.getChildren().add(button);
