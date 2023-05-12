@@ -11,8 +11,6 @@ public class Server implements Runnable{
 
     private final int PORT = 1313;
 
-
-
     private ArrayList<Session> activeSessions = new ArrayList<Session>();
 
     public ArrayList<Session> getActiveSessions() {return activeSessions;}

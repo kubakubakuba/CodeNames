@@ -2,7 +2,7 @@ package cz.cvut.fel.pjv.codenames.server;
 
 import java.util.Arrays;
 
-public class AnswerHandler {
+public class AnswerParser {
     public enum AnswerType{
         EMPTY,
         SESSION_CREATION,
@@ -14,27 +14,19 @@ public class AnswerHandler {
     private AnswerType answer;
     private String[] arguments;
 
-    public AnswerHandler(){
+    public AnswerParser(){
         answer = AnswerType.EMPTY;
         arguments = null;
     }
 
-    public AnswerHandler(String answer){
+    public AnswerParser(String answer){
         String[] parts = answer.split(";");
 
-        switch(parts[0].toLowerCase()){
-            case "servercreation":
-                this.answer = AnswerType.SESSION_CREATION;
-                break;
-            case "connection":
-                this.answer = AnswerType.CONNECT;
-                break;
-            case "generic1arg":
-                this.answer = AnswerType.GENERIC_ONE_ARG;
-                break;
-            default:
-                this.answer = AnswerType.UNKNOWN_COMMAND;
-                break;
+        switch (parts[0].toLowerCase()) {
+            case "servercreation" -> this.answer = AnswerType.SESSION_CREATION;
+            case "connection" -> this.answer = AnswerType.CONNECT;
+            case "1arg" -> this.answer = AnswerType.GENERIC_ONE_ARG;
+            default -> this.answer = AnswerType.UNKNOWN_COMMAND;
         }
 
         this.arguments = Arrays.copyOfRange(parts, 1, parts.length);

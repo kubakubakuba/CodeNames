@@ -10,8 +10,6 @@ import java.util.UUID;
 public class Session {
     private Lobby lobby;
 
-
-
     private String hostId;
     private UUID sessionId;
 
