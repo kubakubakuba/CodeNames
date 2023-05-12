@@ -3,9 +3,13 @@ package cz.cvut.fel.pjv.codenames.model;
 public class Player {
 
     private String ID;
+    private PlayerTeam team;
+    private PlayerRole role;
 
     public Player(String ID)    {
         this.ID = ID;
+        this.team = PlayerTeam.NONE;
+        this.role = PlayerRole.NONE;
     }
     public enum PlayerTeam{
         RED,
@@ -19,9 +23,6 @@ public class Player {
         FIELD_OPERATIVE_LEADER,
         NONE
     }
-
-    private PlayerTeam team = PlayerTeam.NONE;
-    private PlayerRole role = PlayerRole.NONE;
 
     public PlayerTeam getTeam() {
         return team;

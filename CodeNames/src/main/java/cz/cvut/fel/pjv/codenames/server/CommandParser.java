@@ -14,6 +14,10 @@ public class CommandParser {
         COMMIT_PROMPT,
         CREATE_SESSION,
         GET_HOST_ID,
+        GET_LOBBY_IDS,
+        CHOOSE_ROLE,
+        CHOOSE_TEAM,
+        GET_SESSIONS,
         UNKNOWN_COMMAND
     }
 

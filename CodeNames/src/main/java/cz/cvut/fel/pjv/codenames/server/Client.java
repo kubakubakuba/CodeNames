@@ -14,8 +14,6 @@ public class Client {
 
     private String id;
 
-
-
     private UUID sessionId = null;
 
     private Player player;

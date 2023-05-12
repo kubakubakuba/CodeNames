@@ -97,12 +97,12 @@ public class StartView extends Application {
                 return;
             }
             //call client connect to session
-            if (!controller.connectToSession(id))
+            if (!controller.connectToSession(id, controller.getLocalClient().getSessionId().toString()))
             {
                 //log connection failed
                 return;
             }
-
+            controller.getHostId();
             LobbyView lobby = new LobbyView(new Stage(), id, controller, 0);
             stage.close();
         });

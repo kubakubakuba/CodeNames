@@ -13,7 +13,6 @@ public class Session {
     private String hostId;
     private UUID sessionId;
 
-    private List<String> connectedIds = new ArrayList<String>();
     private Game game;
 
     public Lobby getLobby() {
@@ -29,21 +28,17 @@ public class Session {
 
     public Session(String host){
         lobby = new Lobby();
-        //connectedIds.add(host);
         hostId = host;
         lobby.setHostId(hostId);
         sessionId = UUID.randomUUID();
-        // lobby.getListOfIds().add(host);
     }
 
     public boolean connectToSession(String guest)   {
-        connectedIds.add(guest);
         lobby.getListOfIds().add(guest);
         return true;
     }
 
     public boolean disconnectFromSession(String guest)   {
-        connectedIds.remove(guest);
         lobby.getListOfIds().remove(guest);
         return true;
     }

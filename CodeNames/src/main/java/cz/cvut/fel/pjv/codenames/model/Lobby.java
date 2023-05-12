@@ -10,6 +10,7 @@ public class Lobby {
     private int NumOfBLUE = 0;
 
     private List<String> listOfIds = new ArrayList<String>();
+    private List<Player> listOfPlayers = new ArrayList<Player>();
     private String hostId;
 
     public String getHostId() {return hostId;}
@@ -39,4 +40,6 @@ public class Lobby {
     }
 
     public void setNumOfBLUE(int numOfBLUE) {NumOfBLUE = numOfBLUE;}
+
+    public List<Player> getListOfPlayers() {return listOfPlayers;}
 }
