@@ -4,14 +4,18 @@ import javafx.scene.text.FontWeight;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 
-public class ServerThread extends Thread    {
+public class ServerThread extends Thread {
 
     private Socket socket;
 
-    CommandHandler handle = new CommandHandler();
+    private Server server;
 
-    public ServerThread(Socket socket)  {
+    CommandHandler handler = new CommandHandler();
+
+    public ServerThread(Socket socket, Server server)  {
+        this.server = server;
         this.socket = socket;
     }
 
@@ -27,18 +31,18 @@ public class ServerThread extends Thread    {
             do{
                 text = reader.readLine();
                 System.out.println("client: " + text);
-                handle = new CommandHandler(text);
+                handler = new CommandHandler(text);
 
-                if(handle.getCommand() == CommandHandler.CommandType.UNKNOWN_COMMAND){
+                if(handler.getCommand() == CommandHandler.CommandType.UNKNOWN_COMMAND){
                     writer.println("Unknown command!");
                 }
 
-                if(handle.getCommand() == CommandHandler.CommandType.SEND_MESSAGE){
-                    writer.println("Player has sent a message: " + handle.getArguments()[0]);
+                if(handler.getCommand() == CommandHandler.CommandType.SEND_MESSAGE){
+                    writer.println("Player has sent a message: " + handler.getArguments()[0]);
                 }
 
-                if(handle.getCommand() == CommandHandler.CommandType.MAKE_MOVE){
-                    writer.println("Player has made a move with following arguments: " + handle.getArguments()[0] + " " + handle.getArguments()[1] + " " + handle.getArguments()[2]);
+                if(handler.getCommand() == CommandHandler.CommandType.MAKE_MOVE){
+                    writer.println("Player has made a move with following arguments: " + handler.getArguments()[0] + " " + handler.getArguments()[1] + " " + handler.getArguments()[2]);
                 }
 
                 if(handler.getCommand() == CommandHandler.CommandType.CREATE_SESSION){
@@ -75,7 +79,7 @@ public class ServerThread extends Thread    {
                     writer.println(response);
                 }
 
-            } while(handle.getCommand() != CommandHandler.CommandType.TERMINATE_SERVER);
+            } while(handler.getCommand() != CommandHandler.CommandType.TERMINATE_SERVER);
             writer.println("Stopping the server");
             socket.close();
         }

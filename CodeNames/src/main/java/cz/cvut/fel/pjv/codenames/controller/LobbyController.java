@@ -21,7 +21,6 @@ public class LobbyController {
         localClient = new Client(id);
     }
 
-
     //implement start client and start server
     public boolean createServerSession(String hostId)   {
         //System.out.println("Write a command:");

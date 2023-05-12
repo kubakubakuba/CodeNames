@@ -68,5 +68,11 @@ public class Client {
         catch (Exception e) {
             System.out.println(e);
         }
+
+        return null;
+    }
+
+    public void setSessionId(String argument) {
+        sessionId = UUID.fromString(argument);
     }
 }

@@ -22,16 +22,15 @@ public class Server implements Runnable{
     }
 
     @Override
-    public void run(){
-        try(ServerSocket ss = new ServerSocket(PORT)){
-            while(true){
+    public void run() {
+        try (ServerSocket ss = new ServerSocket(PORT)) {
+            while (true) {
                 Socket socket = ss.accept();
                 System.out.println("new client");
 
-                new ServerThread(socket).start();
+                new ServerThread(socket, this).start();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
@@ -45,3 +44,5 @@ public class Server implements Runnable{
     }
 
 }
+
+

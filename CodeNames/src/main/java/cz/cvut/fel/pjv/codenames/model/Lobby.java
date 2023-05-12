@@ -9,8 +9,6 @@ public class Lobby {
     private int NumOfRED = 0;
     private int NumOfBLUE = 0;
 
-
-
     private List<String> listOfIds = new ArrayList<String>();
     private String hostId;
 

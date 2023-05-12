@@ -7,16 +7,18 @@ public class CommandHandler {
         EMPTY,
         START_SERVER,
         TERMINATE_SERVER,
-        CONNECT_PLAYER,
+        CONNECT,
         DISCONNECT_PLAYER,
         MAKE_MOVE,
         SEND_MESSAGE,
         COMMIT_PROMPT,
+        CREATE_SESSION,
+        GET_HOST_ID,
         UNKNOWN_COMMAND
     }
 
-    CommandType command;
-    String[] arguments;
+    private CommandType command;
+    private String[] arguments;
 
     public CommandHandler(){
         command = CommandType.EMPTY;
@@ -31,26 +33,32 @@ public class CommandHandler {
         System.out.println(parts);
 
         switch(parts[0].toLowerCase()){
-            case "ss":
+            case "startserver":
                 this.command = CommandType.START_SERVER;
                 break;
-            case "ts":
+            case "terminateserver":
                 this.command = CommandType.TERMINATE_SERVER;
                 break;
-            case "con":
-                this.command = CommandType.CONNECT_PLAYER;
+            case "connect":
+                this.command = CommandType.CONNECT;
                 break;
-            case "dc":
+            case "disconnect":
                 this.command = CommandType.DISCONNECT_PLAYER;
                 break;
-            case "mm":
+            case "makemove":
                 this.command = CommandType.MAKE_MOVE;
                 break;
-            case "sm":
+            case "sendmessage":
                 this.command = CommandType.SEND_MESSAGE;
                 break;
-            case "cp":
+            case "commitprompt":
                 this.command = CommandType.COMMIT_PROMPT;
+                break;
+            case "createsession":
+                this.command = CommandType.CREATE_SESSION;
+                break;
+            case "gethostid":
+                this.command = CommandType.GET_HOST_ID;
                 break;
             default:
                 this.command = CommandType.UNKNOWN_COMMAND;
