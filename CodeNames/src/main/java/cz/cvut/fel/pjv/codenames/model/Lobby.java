@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.codenames.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Lobby {
@@ -10,7 +11,7 @@ public class Lobby {
     private int NumOfBLUE = 0;
 
     private List<String> listOfIds = new ArrayList<String>();
-    private List<Player> listOfPlayers = new ArrayList<Player>();
+    private HashMap<String, Player> listOfPlayers = new HashMap<String, Player>();
     private String hostId;
 
     public String getHostId() {return hostId;}
@@ -41,5 +42,5 @@ public class Lobby {
 
     public void setNumOfBLUE(int numOfBLUE) {NumOfBLUE = numOfBLUE;}
 
-    public List<Player> getListOfPlayers() {return listOfPlayers;}
+    public HashMap<String, Player> getListOfPlayers() {return listOfPlayers;}
 }
