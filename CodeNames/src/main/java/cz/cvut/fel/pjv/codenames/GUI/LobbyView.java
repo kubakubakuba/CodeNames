@@ -20,6 +20,8 @@ public class LobbyView extends Application {
     private String ID;
     private boolean isHost = false;
 
+    private Label playerCounter;
+    private ScrollPane scrollPane;
     private LobbyController localControl = null;
 
     public LobbyView(Stage lobbyStage, String ID, LobbyController control) {
@@ -27,9 +29,7 @@ public class LobbyView extends Application {
         this.localControl = control;
         start(lobbyStage);
 
-        Socket socket = localControl.getLocalClient().getSocket();
-
-        Thread serverListenerThread = new Thread(new LobbyViewListener(socket, this));
+        Thread serverListenerThread = new Thread(new LobbyViewListener(this, localControl.getLocalClient()));
 
         serverListenerThread.start();
     }
@@ -40,9 +40,7 @@ public class LobbyView extends Application {
         localControl.setHostId();
         start(lobbyStage);
 
-        Socket socket = localControl.getLocalClient().getSocket();
-
-        Thread serverListenerThread = new Thread(new LobbyViewListener(socket, this));
+        Thread serverListenerThread = new Thread(new LobbyViewListener(this, localControl.getLocalClient()));
 
         serverListenerThread.start();
 
@@ -66,7 +64,7 @@ public class LobbyView extends Application {
 
     private Scene createHostScene() {
 
-        Label playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
+        playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
         playerCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
         FileChooser fileChooser = new FileChooser();
@@ -104,7 +102,7 @@ public class LobbyView extends Application {
     }
 
     private Scene createGuestLobby() {
-        Label playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
+        playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
         playerCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
         VBox layout = new VBox();
@@ -121,7 +119,7 @@ public class LobbyView extends Application {
 
     public VBox createCommonView()  {
 
-        ScrollPane scrollPane = new ScrollPane();
+        scrollPane = new ScrollPane();
         VBox scrollBox = new VBox();
 
 
@@ -137,7 +135,6 @@ public class LobbyView extends Application {
         Label blueCounter = new Label("Number of BLUE players:" + localControl.getRBPlayers()[1]);
         redCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         blueCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
-
 
         // Buttons
         Button buttonRed = new Button("RED");
@@ -240,9 +237,20 @@ public class LobbyView extends Application {
         return new Scene(bckgrndPane, 650, 600);
     }
 
-    public void update(){
-        System.out.println("updating player count");
+    public void update() {
         localControl.setPlayerCount();
+        javafx.application.Platform.runLater(() -> {
+            playerCounter.setText("Number of players: " + localControl.getPlayerCount());
+
+            VBox scrollBox = new VBox();
+
+            ArrayList<String> idList = localControl.getIdList();
+            for (String id : idList)  {
+                scrollBox.getChildren().add(new Label(id));
+            }
+            scrollPane.setContent(scrollBox);
+
+        });
     }
 
     public void teamError() {

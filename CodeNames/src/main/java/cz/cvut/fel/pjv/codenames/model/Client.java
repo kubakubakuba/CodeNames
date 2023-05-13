@@ -1,6 +1,4 @@
-package cz.cvut.fel.pjv.codenames.server;
-
-import cz.cvut.fel.pjv.codenames.model.Player;
+package cz.cvut.fel.pjv.codenames.model;
 
 import java.io.*;
 import java.net.Socket;

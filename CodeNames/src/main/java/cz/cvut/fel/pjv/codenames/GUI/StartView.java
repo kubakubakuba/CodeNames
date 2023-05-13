@@ -1,9 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
-import cz.cvut.fel.pjv.codenames.model.Board;
-import cz.cvut.fel.pjv.codenames.server.Client;
-import cz.cvut.fel.pjv.codenames.server.Session;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -86,6 +83,7 @@ public class StartView extends Application {
             // set the new scene on the stage
             stage.setScene(picker.createScene());
         });
+
 
         hostbutton.setOnAction(e -> {
             id = textField.getText().replace(";", ",");

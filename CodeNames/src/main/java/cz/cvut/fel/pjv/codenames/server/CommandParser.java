@@ -19,6 +19,7 @@ public class CommandParser {
         CHOOSE_ROLE,
         CHOOSE_TEAM,
         GET_SESSIONS,
+        LISTEN,
         UNKNOWN_COMMAND
     }
 
@@ -52,6 +53,7 @@ public class CommandParser {
             case "chooseteam" -> this.command = CommandType.CHOOSE_TEAM;
             case "getsessions" -> this.command = CommandType.GET_SESSIONS;
             case "getplayercount" -> this.command = CommandType.GET_PLAYER_COUNT;
+            case "listen" -> this.command = CommandType.LISTEN;
             default -> this.command = CommandType.UNKNOWN_COMMAND;
         }
 

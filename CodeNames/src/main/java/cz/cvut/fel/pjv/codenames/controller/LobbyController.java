@@ -2,7 +2,7 @@ package cz.cvut.fel.pjv.codenames.controller;
 
 import cz.cvut.fel.pjv.codenames.model.Player;
 import cz.cvut.fel.pjv.codenames.server.AnswerParser;
-import cz.cvut.fel.pjv.codenames.server.Client;
+import cz.cvut.fel.pjv.codenames.model.Client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -97,6 +97,7 @@ public class LobbyController {
             RBNPlayers[2] = Integer.parseInt(parser.getArguments()[2]);
             playerCount = RBNPlayers[0] + RBNPlayers[1] + RBNPlayers[2];
         }
+
     }
 
     public boolean chooseTeam(Player.PlayerTeam team)    {

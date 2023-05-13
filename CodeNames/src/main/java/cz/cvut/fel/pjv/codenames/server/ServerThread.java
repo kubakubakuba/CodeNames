@@ -66,6 +66,21 @@ public class ServerThread extends Thread {
                     //System.err.println("Unknown command!");
                 }
 
+                if(parser.getCommand() == CommandParser.CommandType.LISTEN){
+                    String session = parser.getArguments()[0];
+                    String id = parser.getArguments()[1];
+                    Session s = server.getActiveSessions().get(session);
+                    LOGGER.log(Level.INFO, "Player " + parser.getArguments()[1] + " is listening to session " + session);
+
+                    if(s.getLobby().getListOfPlayers().containsKey(id)){
+                        s.addListener(socket);
+                        writer.println("accept;"); //accept the listener
+                    }
+                    else{
+                        writer.println("decline;"); //accept the listener
+                    }
+                }
+
                 if(parser.getCommand() == CommandParser.CommandType.SEND_MESSAGE){
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
@@ -134,7 +149,7 @@ public class ServerThread extends Thread {
                     System.out.printf("response: %s\n", response);
                     writer.println(response);
 
-                    for(Player p : server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().values()){
+                    /*for(Player p : server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().values()){
                         if(p.getID().equals(idSelf)){
                             continue;
                         }
@@ -142,6 +157,14 @@ public class ServerThread extends Thread {
                         PrintWriter playerWriter = new PrintWriter(playerSocket.getOutputStream(), true);
                         playerWriter.println("update;");
                         System.out.println("update sent to " + p.getID());
+                    }*/
+
+                    System.out.println("update sent to all players in session " + idSession);
+                    System.out.println(server.getActiveSessions().get(idSession).getListeners());
+                    for(Socket s : server.getActiveSessions().get(idSession).getListeners()){
+                        PrintWriter playerWriter = new PrintWriter(s.getOutputStream(), true);
+                        playerWriter.println("update;");
+                        System.out.println("update sent to " + s);
                     }
                 }
 
@@ -299,6 +322,8 @@ public class ServerThread extends Thread {
                     writer.println("1arg;true");
                     System.out.println("Player disconnected: " + idSelf);
                 }
+
+
 
             } while(parser.getCommand() != CommandParser.CommandType.TERMINATE_SERVER);
             LOGGER.log(Level.INFO, "Server thread terminated");
