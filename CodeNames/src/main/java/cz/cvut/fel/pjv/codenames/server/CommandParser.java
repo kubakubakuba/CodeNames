@@ -15,6 +15,7 @@ public class CommandParser {
         CREATE_SESSION,
         GET_HOST_ID,
         GET_LOBBY_IDS,
+        GET_PLAYER_COUNT,
         CHOOSE_ROLE,
         CHOOSE_TEAM,
         GET_SESSIONS,
@@ -50,6 +51,7 @@ public class CommandParser {
             case "chooserole" -> this.command = CommandType.CHOOSE_ROLE;
             case "chooseteam" -> this.command = CommandType.CHOOSE_TEAM;
             case "getsessions" -> this.command = CommandType.GET_SESSIONS;
+            case "getplayercount" -> this.command = CommandType.GET_PLAYER_COUNT;
             default -> this.command = CommandType.UNKNOWN_COMMAND;
         }
 

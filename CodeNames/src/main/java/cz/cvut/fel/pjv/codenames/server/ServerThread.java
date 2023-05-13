@@ -164,6 +164,7 @@ public class ServerThread extends Thread {
                     writer.println(response);
                 }
 
+
                 if(parser.getCommand() == CommandParser.CommandType.CHOOSE_ROLE){
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
@@ -192,6 +193,7 @@ public class ServerThread extends Thread {
                     String response = "1arg;false";
                     if(role_available){
                         server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().get(idSelf).setRole(role);
+                        response = "1arg;true";
                     }
 
                     LOGGER.log(Level.INFO, "Player " + idSelf + " requested to choose role " + role + " at session " + idSession + ",granted: " + role_available);
@@ -249,6 +251,35 @@ public class ServerThread extends Thread {
 
                     writer.println(result);
                     System.out.printf("response: %s\n", result);
+                }
+
+                if(parser.getCommand() == CommandParser.CommandType.GET_PLAYER_COUNT){
+                    String idSelf = parser.getArguments()[0];
+                    String idSession = parser.getArguments()[1];
+
+                    LOGGER.log(Level.INFO, "Player "+ idSelf + " requested player count");
+                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
+                        System.err.println("Player not in session!");
+                        writer.println("1arg;null");
+                        return;
+                    }
+                    Session s = server.getActiveSessions().get(idSession);
+                    HashMap<String,Player> players = s.getLobby().getListOfPlayers();
+
+                    int[] RBNplayers = {0,0,0};
+
+                    for (Map.Entry<String, Player> entry : players.entrySet())    {
+                        Player p = entry.getValue();
+                        if (p.getTeam() == Player.PlayerTeam.NONE)
+                            RBNplayers[2]++;
+                        if(p.getTeam() == Player.PlayerTeam.BLUE)
+                            RBNplayers[1]++;
+                        if(p.getTeam() == Player.PlayerTeam.RED)
+                            RBNplayers[0]++;
+                    }
+                    String response = "playercount;"+ RBNplayers[0]+ ";"+RBNplayers[1] +";"+ RBNplayers[2];
+                    writer.println(response);
+                    System.out.printf("response: %s\n", response);
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.DISCONNECT_PLAYER){

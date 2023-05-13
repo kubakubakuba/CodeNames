@@ -50,7 +50,6 @@ public class StartView extends Application {
 
         Button joinbutton = new Button("Join game");
 
-
         VBox buttonbox = new VBox();
         buttonbox.getChildren().addAll(hostbutton, joinbutton);
         buttonbox.setSpacing(10); // Set spacing between elements
@@ -112,7 +111,9 @@ public class StartView extends Application {
                 //log connection failed
                 return;
             }
+            //controller.initSocket();
             controller.getHostId();
+            controller.setPlayerCount();
             LobbyView lobby = new LobbyView(new Stage(), id, controller, 0);
             stage.close();
         });

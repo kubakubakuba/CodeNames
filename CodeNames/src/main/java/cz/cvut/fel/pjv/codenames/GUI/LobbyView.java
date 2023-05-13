@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
+import cz.cvut.fel.pjv.codenames.model.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -65,7 +66,7 @@ public class LobbyView extends Application {
 
     private Scene createHostScene() {
 
-        Label playerCounter = new Label("Number of players:");
+        Label playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
         playerCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
         FileChooser fileChooser = new FileChooser();
@@ -103,7 +104,7 @@ public class LobbyView extends Application {
     }
 
     private Scene createGuestLobby() {
-        Label playerCounter = new Label("Number of players:");
+        Label playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
         playerCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
         VBox layout = new VBox();
@@ -132,8 +133,8 @@ public class LobbyView extends Application {
         scrollPane.setMaxSize(200,150);
 
         // Labels
-        Label redCounter = new Label("Number of RED players:");
-        Label blueCounter = new Label("Number of BLUE players:");
+        Label redCounter = new Label("Number of RED players:" + localControl.getRBPlayers()[0]);
+        Label blueCounter = new Label("Number of BLUE players:" + localControl.getRBPlayers()[1]);
         redCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         blueCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
@@ -154,8 +155,8 @@ public class LobbyView extends Application {
         roleSelect.setPromptText("Select a role");
         roleSelect.getItems().addAll("Spymaster", "Field Operative", "FOPS Leader");
 
-        Label localTeam = new Label("Your Team: ");
-        Label localRole = new Label("Your Role: ");
+        Label localTeam = new Label("Your Team: " + localControl.getLocalClient().getPlayer().getTeam());
+        Label localRole = new Label("Your Role: " + localControl.getLocalClient().getPlayer().getRole());
 
         localTeam.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         localRole.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
@@ -163,10 +164,51 @@ public class LobbyView extends Application {
         //TODO
         //implement the functionalities of the buttons
         buttonRed.setOnAction(event->   {
-            //localControl.updateNumPlayers("chooseRED", ID);
-                });
+            if (!localControl.chooseTeam(Player.PlayerTeam.RED)){
+                teamError();
+                return;
+            }
+            localControl.getLocalClient().getPlayer().setTeam(Player.PlayerTeam.RED);
+        });
+
         buttonBlue.setOnAction(event->   {
-            //localControl.updateNumPlayers("chooseBLUE", ID);
+            if (!localControl.chooseTeam(Player.PlayerTeam.BLUE)){
+                teamError();
+                return;
+            }
+            localControl.getLocalClient().getPlayer().setTeam(Player.PlayerTeam.BLUE);
+        });
+
+        roleSelect.setOnAction(event -> {
+            String selectedRole = roleSelect.getSelectionModel().getSelectedItem();
+            // Perform actions based on the selected role
+            if (selectedRole.equals("Spymaster")) {
+
+                if(!localControl.chooseRole(Player.PlayerRole.SPY_MASTER)){
+                    roleError(localControl.getLocalClient().getPlayer().getTeam() == Player.PlayerTeam.NONE);
+                    roleSelect.setValue(null);
+                    return;
+                }
+                localControl.getLocalClient().getPlayer().setRole(Player.PlayerRole.SPY_MASTER);
+
+            } else if (selectedRole.equals("Field Operative")) {
+
+                if(!localControl.chooseRole(Player.PlayerRole.FIELD_OPERATIVE)){
+                    roleError(localControl.getLocalClient().getPlayer().getTeam() == Player.PlayerTeam.NONE);
+                    roleSelect.setValue(null);
+                    return;
+                }
+                localControl.getLocalClient().getPlayer().setRole(Player.PlayerRole.FIELD_OPERATIVE);
+
+            } else if (selectedRole.equals("FOPS Leader")) {
+
+                if(!localControl.chooseRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER)){
+                    roleError(localControl.getLocalClient().getPlayer().getTeam() == Player.PlayerTeam.NONE);
+                    roleSelect.setValue(null);
+                    return;
+                }
+                localControl.getLocalClient().getPlayer().setRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER);
+            }
         });
 
         VBox commonLayout = new VBox();

@@ -14,11 +14,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.layout.*;
 
+import java.util.ArrayList;
+
 public class ServerPicker extends Application {
 
     private Scene previousScene;
     private Stage previousStage;
     private String ID;
+
+    private ArrayList<String> sessions;
 
     public static void main(String[] args) {
         launch(args);
@@ -46,10 +50,14 @@ public class ServerPicker extends Application {
             button.setOnAction(actionEvent -> {
 
                 //attempt to connect to session
-                LobbyController controller = new LobbyController(ID);
-                //if success
-                //open lobby as id
-                LobbyView lobby = new LobbyView(new Stage(), ID, controller);
+                if (!controller.connectToSession(ID, label)) {
+                    //log connection failed
+                    return;
+                }
+                controller.getLocalClient().setSessionId(label);
+                controller.setHostId();
+                controller.setPlayerCount();
+                LobbyView lobby = new LobbyView(new Stage(), ID, controller, 0);
                 previousStage.close();
             });
             buttonContainer.getChildren().add(button);

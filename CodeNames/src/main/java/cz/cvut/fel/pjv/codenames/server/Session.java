@@ -29,7 +29,6 @@ public class Session {
     public Session(String host){
         lobby = new Lobby();
         hostId = host;
-        lobby.setHostId(hostId);
         sessionId = UUID.randomUUID();
     }
 

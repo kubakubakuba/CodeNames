@@ -1,7 +1,5 @@
 package cz.cvut.fel.pjv.codenames.server;
 
-import cz.cvut.fel.pjv.codenames.GUI.GUI_Wireframe;
-import cz.cvut.fel.pjv.codenames.GUI.StartView;
 import cz.cvut.fel.pjv.codenames.model.Player;
 
 import java.io.*;
@@ -49,7 +47,6 @@ public class Client {
                 command += this.getSessionId().toString();
             }
             writer.println(command);
-
 
             InputStream input = sock.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
