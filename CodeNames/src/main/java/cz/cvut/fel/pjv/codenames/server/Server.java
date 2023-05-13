@@ -5,15 +5,16 @@ import cz.cvut.fel.pjv.codenames.model.Player;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Server implements Runnable{
 
     private final int PORT = 1313;
 
-    private ArrayList<Session> activeSessions = new ArrayList<Session>();
+    private HashMap<String, Session> activeSessions = new HashMap<String, Session>();
 
-    public ArrayList<Session> getActiveSessions() {return activeSessions;}
+    public HashMap<String, Session> getActiveSessions() {return activeSessions;}
 
     public void Server()    {
         //host, socket,
@@ -34,7 +35,7 @@ public class Server implements Runnable{
     }
 
     public void addSession(Session session){
-        activeSessions.add(session);
+        activeSessions.put(session.getSessionId().toString(), session);
     }
 
     public void shutDown()    {
