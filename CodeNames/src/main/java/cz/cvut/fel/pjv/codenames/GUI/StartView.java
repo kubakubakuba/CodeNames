@@ -89,7 +89,7 @@ public class StartView extends Application {
         });
 
         hostbutton.setOnAction(e -> {
-            id = textField.getText();
+            id = textField.getText().replace(";", ",");
             if(id.length() == 0){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error in name");

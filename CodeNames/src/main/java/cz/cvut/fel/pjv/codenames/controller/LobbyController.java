@@ -3,6 +3,9 @@ package cz.cvut.fel.pjv.codenames.controller;
 import cz.cvut.fel.pjv.codenames.server.AnswerParser;
 import cz.cvut.fel.pjv.codenames.server.Client;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class LobbyController {
 
     private Client localClient;
@@ -21,33 +24,45 @@ public class LobbyController {
     public boolean createServerSession(String hostId)   {
         //System.out.println("Write a command:");
         String serverAnswer = localClient.sendCommand("createSession;" + hostId + ';', "localhost", 1313);
-        AnswerParser handler = new AnswerParser(serverAnswer);
+        AnswerParser parser = new AnswerParser(serverAnswer);
 
-        if(handler.getAnswer() != AnswerParser.AnswerType.GENERIC_ONE_ARG || (handler.getAnswer() == AnswerParser.AnswerType.GENERIC_ONE_ARG && handler.getArguments()[0] == "null")){
+        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
             System.err.println("Received unexpected server answer!");
             return false;
         }
 
-        if(handler.getAnswer() == AnswerParser.AnswerType.GENERIC_ONE_ARG){
-            localClient.setSessionId(handler.getArguments()[0]);
+        if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
+            localClient.setSessionId(parser.getArguments()[0]);
         }
         return true;
     }
 
     public boolean connectToSession(String guestId, String sessionId) {
         String serverAnswer = localClient.sendCommand("connect;" + guestId + ';' + sessionId + ';', "localhost", 1313);
-        AnswerParser handler = new AnswerParser(serverAnswer);
+        AnswerParser parser = new AnswerParser(serverAnswer);
 
-        if(handler.getAnswer() != AnswerParser.AnswerType.GENERIC_ONE_ARG || (handler.getAnswer() == AnswerParser.AnswerType.GENERIC_ONE_ARG && handler.getArguments()[0] == "null")){
+        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
             System.err.println("Received unexpected server answer!");
             return false;
         }
 
-        if(handler.getAnswer() == AnswerParser.AnswerType.GENERIC_ONE_ARG){
-            localClient.setSessionId(handler.getArguments()[0]);
+        if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
+            localClient.setSessionId(parser.getArguments()[0]);
         }
 
         return true;
+    }
+
+    public ArrayList<String> getServerSessions(){
+        String serverAnswer = localClient.sendCommand("getSessions;" + localClient.getId() + ';', "localhost", 1313);
+        AnswerParser parser = new AnswerParser(serverAnswer);
+
+        if(parser.getAnswer() != AnswerParser.AnswerType.SESSION_LIST){
+            System.err.println("Received unexpected server answer!");
+            return null;
+        }
+
+        return new ArrayList<>(Arrays.asList(parser.getArguments()));
     }
 
     public String getHostId(){
@@ -56,10 +71,10 @@ public class LobbyController {
     public void setHostId(){
         String answer = localClient.sendCommand("gethostid;" + localClient.getId()+ ";"+
                                                 localClient.getSessionId()+ ';', "localhost", 1313);
-        AnswerParser handler = new AnswerParser(answer);
+        AnswerParser parser = new AnswerParser(answer);
 
-        if(handler.getAnswer() == AnswerParser.AnswerType.GENERIC_ONE_ARG){
-            hostId = handler.getArguments()[0];
+        if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
+            hostId = parser.getArguments()[0];
         }
     }
 

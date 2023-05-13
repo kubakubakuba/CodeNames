@@ -10,15 +10,15 @@ import java.util.Scanner;
 import java.util.UUID;
 
 public class Client {
-
-
     private String id;
 
     private UUID sessionId = null;
 
     private Player player;
 
-    public Client(String id) {
+    private Socket socket;
+
+    public Client(String id){
         this.id = id;
         this.player = new Player(id);
     }
@@ -35,15 +35,11 @@ public class Client {
         return player;
     }
 
-    public void writeCommand(String hostname, int port){
-        Scanner sc = new Scanner(System.in);
-        String command = sc.nextLine();
-        sendCommand(command, hostname, port);
-    }
-
     public String sendCommand(String command, String hostname, int port){
-        try (Socket socket = new Socket(hostname, port)){
-            OutputStream output = socket.getOutputStream();
+        try{
+            Socket sock = new Socket("localhost", 1313);
+            this.socket = sock;
+            OutputStream output = sock.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
 
             String serverAnswer;
@@ -55,7 +51,7 @@ public class Client {
             writer.println(command);
 
 
-            InputStream input = socket.getInputStream();
+            InputStream input = sock.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
             serverAnswer = reader.readLine();
@@ -72,5 +68,9 @@ public class Client {
 
     public void setSessionId(String argument) {
         sessionId = UUID.fromString(argument);
+    }
+
+    public Socket getSocket() {
+        return socket;
     }
 }

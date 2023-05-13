@@ -7,7 +7,10 @@ public class AnswerParser {
         EMPTY,
         SESSION_CREATION,
         CONNECT,
-        GENERIC_ONE_ARG,
+        ONE_ARG,
+        SESSION_LIST,
+        PLAYER_COUNT,
+        UPDATE,
         UNKNOWN_COMMAND
     }
 
@@ -25,7 +28,10 @@ public class AnswerParser {
         switch (parts[0].toLowerCase()) {
             case "servercreation" -> this.answer = AnswerType.SESSION_CREATION;
             case "connection" -> this.answer = AnswerType.CONNECT;
-            case "1arg" -> this.answer = AnswerType.GENERIC_ONE_ARG;
+            case "1arg" -> this.answer = AnswerType.ONE_ARG;
+            case "sessionlist" -> this.answer = AnswerType.SESSION_LIST;
+            case "playercount" -> this.answer = AnswerType.PLAYER_COUNT;
+            case "update" -> this.answer = AnswerType.UPDATE;
             default -> this.answer = AnswerType.UNKNOWN_COMMAND;
         }
 

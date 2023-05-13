@@ -8,7 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.net.Socket;
 
 public class LobbyView extends Application {
 
@@ -21,6 +25,12 @@ public class LobbyView extends Application {
         this.ID = ID;
         this.localControl = control;
         start(lobbyStage);
+
+        Socket socket = localControl.getLocalClient().getSocket();
+
+        Thread serverListenerThread = new Thread(new LobbyViewListener(socket, this));
+
+        serverListenerThread.start();
     }
     public LobbyView(Stage lobbyStage, String ID, LobbyController control, int x) {
         this.ID = ID;
@@ -28,6 +38,12 @@ public class LobbyView extends Application {
         isHost = true;
         localControl.setHostId();
         start(lobbyStage);
+
+        Socket socket = localControl.getLocalClient().getSocket();
+
+        Thread serverListenerThread = new Thread(new LobbyViewListener(socket, this));
+
+        serverListenerThread.start();
 
     }
 
@@ -52,12 +68,23 @@ public class LobbyView extends Application {
         Label playerCounter = new Label("Number of players:");
         playerCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
+        FileChooser fileChooser = new FileChooser();
+
         Button buttonStart = new Button("Start game");
         Button buttonLoad = new Button("Load game");
+        Button buttonLoadDeck = new Button("Load deck");
+
+        buttonLoadDeck.setOnAction(e -> {
+            fileChooser.setTitle("Open Deck File");
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("CodeNames Deck files", "*.dck"));
+            File deckFile = fileChooser.showOpenDialog(buttonLoadDeck.getScene().getWindow());
+
+        });
 
         // Set spacing between label1, label2, and buttons
         HBox gameStarter = new HBox(50);
-        gameStarter.getChildren().addAll(buttonStart, buttonLoad);
+        gameStarter.getChildren().addAll(buttonStart, buttonLoad, buttonLoadDeck);
         gameStarter.setAlignment(Pos.CENTER);
 
         // Layout
@@ -169,6 +196,37 @@ public class LobbyView extends Application {
         bckgrndPane.getChildren().addAll(layout);
         bckgrndPane.setAlignment(Pos.CENTER);
         return new Scene(bckgrndPane, 650, 600);
+    }
+
+    public void update(){
+        System.out.println("updating player count");
+        localControl.setPlayerCount();
+    }
+
+    public void teamError() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error in Team");
+        alert.setHeaderText(null);
+        alert.setContentText("Unable to join team");
+        alert.showAndWait();
+        System.err.println("Unable to join team");
+    }
+
+    public void roleError(boolean roleChosen) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error in choosing role");
+        alert.setHeaderText(null);
+        if (!roleChosen)
+        {
+            alert.setContentText("You need to be in a team to choose a role");
+            alert.showAndWait();
+            System.err.println("You need to be in a team to choose a role");
+        }
+        else {
+            alert.setContentText("Role is already occupied");
+            alert.showAndWait();
+            System.err.println("Role is already occupied");
+        }
     }
 
 }

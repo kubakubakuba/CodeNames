@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
+import cz.cvut.fel.pjv.codenames.controller.GameController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -36,8 +37,12 @@ public class ServerPicker extends Application {
         //placeholder
         //find number of active sessions and
         //create a connect button for each one
-        for (int i = 1; i <= 20; i++) {
-            Button button = new Button("Button " + i);
+        LobbyController controller = new LobbyController(ID);
+        sessions = controller.getServerSessions();
+
+        for(String label : sessions) {
+            Button button = new Button(label);
+
             button.setOnAction(actionEvent -> {
 
                 //attempt to connect to session
@@ -54,8 +59,6 @@ public class ServerPicker extends Application {
         ScrollPane scrollPane = new ScrollPane(buttonContainer);
         scrollPane.setMaxWidth(150);
         scrollPane.setMaxHeight(200);
-
-
 
         // Create and format label
         Label label = new Label("Pick Session");
