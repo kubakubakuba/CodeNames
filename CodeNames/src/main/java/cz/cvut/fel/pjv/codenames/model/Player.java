@@ -32,6 +32,10 @@ public class Player {
         return role;
     }
 
+
+    public String getID() {
+        return ID;
+    }
     public void setTeam(PlayerTeam team) {
         this.team = team;
     }
