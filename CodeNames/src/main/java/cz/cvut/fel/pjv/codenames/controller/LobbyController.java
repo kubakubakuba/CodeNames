@@ -16,8 +16,8 @@ public class LobbyController {
     private int[] RBNPlayers = {0,0,0};
     private int playerCount = 0;
 
-    public int getPlayerCount() {return playerCount;};
-    public int[] getRBPlayers() {return RBNPlayers;};
+    public int getPlayerCount() {return playerCount;}
+    public int[] getRBPlayers() {return RBNPlayers;}
 
     public Client getLocalClient() {
         return localClient;
@@ -33,7 +33,7 @@ public class LobbyController {
         String serverAnswer = localClient.sendCommand("createSession;" + hostId + ';', "localhost", 1313);
         AnswerParser parser = new AnswerParser(serverAnswer);
 
-        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
+        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("null") )){
             System.err.println("Received unexpected server answer!");
             return false;
         }
@@ -69,6 +69,17 @@ public class LobbyController {
             return null;
         }
 
+        return new ArrayList<>(Arrays.asList(parser.getArguments()));
+    }
+
+    public ArrayList<String> getIdList(){
+        String serverAnswer = localClient.sendCommand("getlobbyids;" + localClient.getId() + ';' + localClient.getSessionId() + ";", "localhost", 1313);
+        AnswerParser parser = new AnswerParser(serverAnswer);
+
+        if(parser.getAnswer() != AnswerParser.AnswerType.ID_LIST){
+            System.err.println("Received unexpected server answer!");
+            return null;
+        }
         return new ArrayList<>(Arrays.asList(parser.getArguments()));
     }
 

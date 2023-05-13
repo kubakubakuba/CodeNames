@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class LobbyView extends Application {
 
@@ -122,10 +123,9 @@ public class LobbyView extends Application {
         scrollPane = new ScrollPane();
         VBox scrollBox = new VBox();
 
-
-        //playerlist TODO
-        for (int i = 1; i <= 10; i++) {
-            scrollBox.getChildren().add(new Label("String " + i));
+        ArrayList<String> idList = localControl.getIdList();
+        for (String id : idList)  {
+            scrollBox.getChildren().add(new Label(id));
         }
         scrollPane.setContent(scrollBox);
         scrollPane.setMaxSize(200,150);
@@ -278,5 +278,6 @@ public class LobbyView extends Application {
             System.err.println("Role is already occupied");
         }
     }
+
 
 }

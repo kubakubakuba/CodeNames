@@ -10,6 +10,7 @@ public class AnswerParser {
         ONE_ARG,
         SESSION_LIST,
         PLAYER_COUNT,
+        ID_LIST,
         UPDATE,
         UNKNOWN_COMMAND
     }
@@ -32,6 +33,7 @@ public class AnswerParser {
             case "sessionlist" -> this.answer = AnswerType.SESSION_LIST;
             case "playercount" -> this.answer = AnswerType.PLAYER_COUNT;
             case "update" -> this.answer = AnswerType.UPDATE;
+            case "idlist" -> this.answer = AnswerType.ID_LIST;
             default -> this.answer = AnswerType.UNKNOWN_COMMAND;
         }
 

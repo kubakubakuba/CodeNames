@@ -242,27 +242,6 @@ public class ServerThread extends Thread {
                     writer.println(response);
                 }
 
-                if(parser.getCommand() == CommandParser.CommandType.GET_LOBBY_IDS){
-                    String idSelf = parser.getArguments()[0];
-                    String idSession = parser.getArguments()[1];
-
-                    LOGGER.log(Level.INFO, "Player " + idSelf + " requested lobby ids of session " + idSession);
-                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        System.err.println("Player not in session!");
-                        writer.println("1arg;null");
-                        return;
-                    }
-
-                    Session s = server.getActiveSessions().get(idSession);
-                    List<String> ids = s.getLobby().getListOfIds();
-                    StringBuilder response = new StringBuilder("idlist;");
-                    for(String id : ids){
-                        response.append(id).append(";");
-                    }
-
-                    writer.println(response);
-                    System.out.printf("response: %s\n", response);
-                }
 
                 if(parser.getCommand() == CommandParser.CommandType.GET_SESSIONS){
                     String idSelf = parser.getArguments()[0];
@@ -305,17 +284,39 @@ public class ServerThread extends Thread {
                     System.out.printf("response: %s\n", response);
                 }
 
-                if(parser.getCommand() == CommandParser.CommandType.DISCONNECT_PLAYER){
+                if (parser.getCommand() == CommandParser.CommandType.GET_LOBBY_IDS)
+                {
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
-
-                    LOGGER.log(Level.INFO, "Player " + idSelf + " requested to disconnect from session " + idSession);
+                    LOGGER.log(Level.INFO, "Player " + idSelf + " requested list of connected ids from session " + idSession);
+                    System.out.println(server.getActiveSessions().toString() + server.getActiveSessions().get(idSession).getLobby().getListOfPlayers());
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
                         writer.println("1arg;null");
                         return;
                     }
+                    Session s = server.getActiveSessions().get(idSession);
+                    HashMap<String,Player> players = s.getLobby().getListOfPlayers();
 
+                    StringBuilder response = new StringBuilder("idlist;");
+                    for (Map.Entry<String, Player> entry : players.entrySet())    {
+                        String id = entry.getKey();
+                        response.append(id).append(";");
+                    }
+                    writer.println(response);
+                    System.out.printf("response: %s\n", response);
+                }
+
+                if(parser.getCommand() == CommandParser.CommandType.DISCONNECT_PLAYER){
+                    String idSelf = parser.getArguments()[0];
+                    String idSession = parser.getArguments()[1];
+
+                    LOGGER.log(Level.INFO, "Player " + idSelf + " requested to disconnect from session " + idSession);
+                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
+                        System.err.println("Player not in session!");
+                        writer.println("1arg;null");
+                        return;
+                    }
                     Session s = server.getActiveSessions().get(idSession);
                     s.getLobby().getListOfIds().remove(idSelf);
 
