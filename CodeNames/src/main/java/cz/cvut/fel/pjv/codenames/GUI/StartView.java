@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -88,8 +89,17 @@ public class StartView extends Application {
         });
 
         hostbutton.setOnAction(e -> {
-
             id = textField.getText();
+            if(id.length() == 0){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error in name");
+                alert.setHeaderText(null);
+                alert.setContentText("The name cannot be empty!");
+
+                alert.showAndWait();
+                System.err.println("entered empty name");
+                return;
+            }
             LobbyController controller = new LobbyController(id);
             //call create session with id
             if (!controller.createServerSession(id))    {
