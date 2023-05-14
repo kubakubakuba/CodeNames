@@ -8,6 +8,7 @@ public class FieldOperativeView extends GameView {
 
     public FieldOperativeView(GameController controller) {
         super(controller);
+
         launch();
     }
 

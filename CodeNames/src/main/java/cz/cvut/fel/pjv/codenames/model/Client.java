@@ -31,6 +31,7 @@ public class Client {
         this.id = id;
     }
 
+
     public Player getPlayer() {
         return player;
     }

@@ -229,6 +229,8 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player " + idSelf + " requested to choose role " + role + " at session " + idSession + ",granted: " + role_available);
                     System.out.printf("response: %s\n", response);
                     writer.println(response);
+
+                    sendUpdates(idSession);
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.CHOOSE_TEAM){
@@ -247,6 +249,8 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player " + idSelf + " requested to choose team " + team + " at session " + idSession + ",granted: " + response.split(";")[1]);
                     System.out.println("Player selected team: " + team);
                     writer.println(response);
+
+                    sendUpdates(idSession);
                 }
 
 

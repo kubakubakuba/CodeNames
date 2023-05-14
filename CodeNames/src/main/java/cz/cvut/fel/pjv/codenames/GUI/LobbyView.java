@@ -23,6 +23,11 @@ public class LobbyView extends Application {
 
     private Label playerCounter;
     private ScrollPane scrollPane;
+    private Label redCounter;
+    private Label blueCounter;
+    private Label localTeam;
+    private Label localRole;
+
     private LobbyController localControl = null;
 
     public LobbyView(Stage lobbyStage, String ID, LobbyController control) {
@@ -51,6 +56,11 @@ public class LobbyView extends Application {
     public void start(Stage lobbyStage) {
         lobbyStage.setScene(createLobbyScene());
         lobbyStage.setTitle("Lobby hosted by " + localControl.getHostId());
+
+        lobbyStage.setOnCloseRequest(event -> {
+            localControl.disconnect();
+        });
+
         lobbyStage.show();
     }
 
@@ -131,8 +141,8 @@ public class LobbyView extends Application {
         scrollPane.setMaxSize(200,150);
 
         // Labels
-        Label redCounter = new Label("Number of RED players:" + localControl.getRBPlayers()[0]);
-        Label blueCounter = new Label("Number of BLUE players:" + localControl.getRBPlayers()[1]);
+        redCounter = new Label("Number of RED players:" + localControl.getRBPlayers()[0]);
+        blueCounter = new Label("Number of BLUE players:" + localControl.getRBPlayers()[1]);
         redCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         blueCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
@@ -152,8 +162,8 @@ public class LobbyView extends Application {
         roleSelect.setPromptText("Select a role");
         roleSelect.getItems().addAll("Spymaster", "Field Operative", "FOPS Leader");
 
-        Label localTeam = new Label("Your Team: " + localControl.getLocalClient().getPlayer().getTeam());
-        Label localRole = new Label("Your Role: " + localControl.getLocalClient().getPlayer().getRole());
+        localTeam = new Label("Your Team: " + localControl.getLocalClient().getPlayer().getTeam());
+        localRole = new Label("Your Role: " + localControl.getLocalClient().getPlayer().getRole());
 
         localTeam.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         localRole.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
@@ -161,18 +171,20 @@ public class LobbyView extends Application {
         //TODO
         //implement the functionalities of the buttons
         buttonRed.setOnAction(event->   {
-            if (!localControl.chooseTeam(Player.PlayerTeam.RED)){
+            if (!localControl.chooseTeam(Player.PlayerTeam.RED) || !localControl.chooseRole(Player.PlayerRole.NONE)){
                 teamError();
                 return;
             }
+            roleSelect.setValue(null);
             localControl.getLocalClient().getPlayer().setTeam(Player.PlayerTeam.RED);
         });
 
         buttonBlue.setOnAction(event->   {
-            if (!localControl.chooseTeam(Player.PlayerTeam.BLUE)){
+            if (!localControl.chooseTeam(Player.PlayerTeam.BLUE) || !localControl.chooseRole(Player.PlayerRole.NONE)){
                 teamError();
                 return;
             }
+            roleSelect.setValue(null);
             localControl.getLocalClient().getPlayer().setTeam(Player.PlayerTeam.BLUE);
         });
 
@@ -267,11 +279,11 @@ public class LobbyView extends Application {
         System.err.println("Unable to join team");
     }
 
-    public void roleError(boolean roleChosen) {
+    public void roleError(boolean roleNotChosen) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error in choosing role");
         alert.setHeaderText(null);
-        if (!roleChosen)
+        if (roleNotChosen)
         {
             alert.setContentText("You need to be in a team to choose a role");
             alert.showAndWait();
