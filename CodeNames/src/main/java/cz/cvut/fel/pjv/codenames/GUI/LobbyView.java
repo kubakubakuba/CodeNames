@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
+import cz.cvut.fel.pjv.codenames.controller.LobbyListener;
 import cz.cvut.fel.pjv.codenames.model.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -13,7 +14,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.net.Socket;
 import java.util.ArrayList;
 
 public class LobbyView extends Application {
@@ -30,7 +30,7 @@ public class LobbyView extends Application {
         this.localControl = control;
         start(lobbyStage);
 
-        Thread serverListenerThread = new Thread(new LobbyViewListener(this, localControl.getLocalClient()));
+        Thread serverListenerThread = new Thread(new LobbyListener(this, localControl.getLocalClient()));
 
         serverListenerThread.start();
     }
@@ -41,7 +41,7 @@ public class LobbyView extends Application {
         localControl.setHostId();
         start(lobbyStage);
 
-        Thread serverListenerThread = new Thread(new LobbyViewListener(this, localControl.getLocalClient()));
+        Thread serverListenerThread = new Thread(new LobbyListener(this, localControl.getLocalClient()));
 
         serverListenerThread.start();
 
@@ -250,6 +250,11 @@ public class LobbyView extends Application {
             }
             scrollPane.setContent(scrollBox);
 
+            redCounter.setText("Number of RED players:" + localControl.getRBPlayers()[0]);
+            blueCounter.setText("Number of BLUE players:" + localControl.getRBPlayers()[1]);
+
+            localTeam.setText("Your Team: " + localControl.getLocalClient().getPlayer().getTeam());
+            localRole.setText("Your Role: " + localControl.getLocalClient().getPlayer().getRole());
         });
     }
 

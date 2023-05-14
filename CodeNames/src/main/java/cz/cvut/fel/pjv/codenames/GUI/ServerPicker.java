@@ -28,6 +28,11 @@ public class ServerPicker extends Application {
         launch(args);
     }
 
+    public ServerPicker(String serverIP, int serverPort){
+        this.serverIP = serverIP;
+        this.serverPort = serverPort;
+        System.out.println("Server IP: " + serverIP + " Server Port: " + serverPort);
+    }
     @Override
     public void start(Stage primaryStage) {
     }
@@ -41,7 +46,9 @@ public class ServerPicker extends Application {
         //placeholder
         //find number of active sessions and
         //create a connect button for each one
-        LobbyController controller = new LobbyController(ID);
+
+
+        LobbyController controller = new LobbyController(ID, serverIP, serverPort);
         sessions = controller.getServerSessions();
 
         for(String label : sessions) {

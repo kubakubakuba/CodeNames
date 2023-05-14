@@ -1,5 +1,6 @@
-package cz.cvut.fel.pjv.codenames.GUI;
+package cz.cvut.fel.pjv.codenames.controller;
 
+import cz.cvut.fel.pjv.codenames.GUI.LobbyView;
 import cz.cvut.fel.pjv.codenames.server.AnswerParser;
 import cz.cvut.fel.pjv.codenames.model.Client;
 
@@ -9,7 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class LobbyViewListener implements Runnable {
+public class LobbyListener implements Runnable {
 
     private Socket socket;
 
@@ -17,7 +18,7 @@ public class LobbyViewListener implements Runnable {
     LobbyView lobbyView;
 
     private Client client;
-    public LobbyViewListener(LobbyView lobbyView, Client client){
+    public LobbyListener(LobbyView lobbyView, Client client){
         this.client = client;
         this.lobbyView = lobbyView;
         this.running = true;
@@ -27,7 +28,7 @@ public class LobbyViewListener implements Runnable {
     public void run() {
         System.out.println("Listener started");
         try {
-            Socket socket = new Socket("localhost", 1313);
+            Socket socket = new Socket(client.getServerIP(), client.getServerPort());
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 
@@ -41,6 +42,9 @@ public class LobbyViewListener implements Runnable {
                     AnswerParser answerParser = new AnswerParser(message);
                     if (answerParser.getAnswer() == AnswerParser.AnswerType.UPDATE) {
                         lobbyView.update();
+                    }
+                    if(answerParser.getAnswer() == AnswerParser.AnswerType.END_LISTEN){
+                        running = false;
                     }
                 }
             }

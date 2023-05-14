@@ -8,4 +8,5 @@ module cz.cvut.fel.pjv.codenames {
     exports cz.cvut.fel.pjv.codenames.GUI;
     exports cz.cvut.fel.pjv.codenames.server to javafx.graphics;
     exports cz.cvut.fel.pjv.codenames.model to javafx.graphics;
+    exports cz.cvut.fel.pjv.codenames.controller;
 }

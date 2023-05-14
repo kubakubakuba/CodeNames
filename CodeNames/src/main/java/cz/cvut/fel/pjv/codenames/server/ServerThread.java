@@ -24,6 +24,18 @@ public class ServerThread extends Thread {
         this.socket = socket;
     }
 
+    private void sendUpdates(String session){
+        for(Socket s : server.getActiveSessions().get(session).getListeners().values()){
+            PrintWriter playerWriter = null;
+            try {
+                playerWriter = new PrintWriter(s.getOutputStream(), true);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            playerWriter.println("update;");
+        }
+    }
+
     private boolean checkRoleAvailable(String playerId, String sessionId, Player.PlayerRole role){
         Session session = server.getActiveSessions().get(sessionId);
         HashMap<String, Player> players = session.getLobby().getListOfPlayers();
@@ -33,7 +45,14 @@ public class ServerThread extends Thread {
             return false;
         }
 
+        if(role == Player.PlayerRole.FIELD_OPERATIVE || role == Player.PlayerRole.NONE){
+            return true;
+        }
+
         for(Map.Entry<String, Player> set : players.entrySet()){
+            if(set.getValue().getID().equals(playerId)){
+                continue; //skip self
+            }
             if(set.getValue().getRole() == role){
                 System.err.println("Role in team already taken!");
                 return false;
@@ -73,7 +92,7 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player " + parser.getArguments()[1] + " is listening to session " + session);
 
                     if(s.getLobby().getListOfPlayers().containsKey(id)){
-                        s.addListener(socket);
+                        s.addListener(socket, id);
                         writer.println("accept;"); //accept the listener
                     }
                     else{
@@ -103,6 +122,8 @@ public class ServerThread extends Thread {
                             playerWriter.println("message;" + message.replace(";", ","));
                         }
                     }
+
+                    sendUpdates(idSession);
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.MAKE_MOVE){
@@ -120,6 +141,8 @@ public class ServerThread extends Thread {
 
                     Session s = server.getActiveSessions().get(idSession);
                     //TODO: make move through game controller
+
+                    sendUpdates(idSession);
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.CREATE_SESSION){
@@ -149,23 +172,7 @@ public class ServerThread extends Thread {
                     System.out.printf("response: %s\n", response);
                     writer.println(response);
 
-                    /*for(Player p : server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().values()){
-                        if(p.getID().equals(idSelf)){
-                            continue;
-                        }
-                        Socket playerSocket = p.getSocket();
-                        PrintWriter playerWriter = new PrintWriter(playerSocket.getOutputStream(), true);
-                        playerWriter.println("update;");
-                        System.out.println("update sent to " + p.getID());
-                    }*/
-
-                    System.out.println("update sent to all players in session " + idSession);
-                    System.out.println(server.getActiveSessions().get(idSession).getListeners());
-                    for(Socket s : server.getActiveSessions().get(idSession).getListeners()){
-                        PrintWriter playerWriter = new PrintWriter(s.getOutputStream(), true);
-                        playerWriter.println("update;");
-                        System.out.println("update sent to " + s);
-                    }
+                    sendUpdates(idSession);
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.GET_HOST_ID){
@@ -199,13 +206,13 @@ public class ServerThread extends Thread {
                     }
 
                     Player.PlayerRole role;
-                    if(parser.getArguments()[2].equals("spymaster")){
+                    if(parser.getArguments()[2].equals("SPY_MASTER")){
                         role = Player.PlayerRole.SPY_MASTER;
                     }
-                    else if(parser.getArguments()[2].equals("operative")){
+                    else if(parser.getArguments()[2].equals("FIELD_OPERATIVE")){
                         role = Player.PlayerRole.FIELD_OPERATIVE;
                     }
-                    else if(parser.getArguments()[2].equals("leader")){
+                    else if(parser.getArguments()[2].equals("FIELD_OPERATIVE_LEADER")){
                         role = Player.PlayerRole.FIELD_OPERATIVE_LEADER;
                     }
                     else{
@@ -322,6 +329,14 @@ public class ServerThread extends Thread {
 
                     writer.println("1arg;true");
                     System.out.println("Player disconnected: " + idSelf);
+
+                    OutputStream endOutputStream = s.getListeners().get(idSelf).getOutputStream();
+                    PrintWriter endPrintWriter = new PrintWriter(endOutputStream, true);
+                    endPrintWriter.println("endlisten;");
+
+                    s.getListeners().remove(idSelf);
+
+                    sendUpdates(idSession);
                 }
 
 

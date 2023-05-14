@@ -16,6 +16,10 @@ public class LobbyController {
     private int[] RBNPlayers = {0,0,0};
     private int playerCount = 0;
 
+    private String serverIP = "localhost";
+    private int serverPort = 1313;
+
+
     public int getPlayerCount() {return playerCount;}
     public int[] getRBPlayers() {return RBNPlayers;}
 
@@ -23,14 +27,23 @@ public class LobbyController {
         return localClient;
     }
 
-    public LobbyController(String id)    {
-        localClient = new Client(id);
+    public LobbyController(String id, String serverIP, int serverPort){
+        localClient = new Client(id, serverIP, serverPort);
+    }
+
+    public void parseServeIPString(String serverIP){
+        String[] parts = serverIP.split(":");
+        this.serverIP = parts[0];
+        this.serverPort = Integer.parseInt(parts[1]);
+
+        System.out.println(this.serverIP + this.serverPort);
     }
 
     //implement start client and start server
     public boolean createServerSession(String hostId)   {
         //System.out.println("Write a command:");
-        String serverAnswer = localClient.sendCommand("createSession;" + hostId + ';', "localhost", 1313);
+        System.out.println("server: " + serverIP + serverPort);
+        String serverAnswer = localClient.sendCommand("createSession;" + hostId + ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(serverAnswer);
 
         if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("null") )){
@@ -45,7 +58,7 @@ public class LobbyController {
     }
 
     public boolean connectToSession(String guestId, String sessionId) {
-        String serverAnswer = localClient.sendCommand("connect;" + guestId + ';' + sessionId + ';', "localhost", 1313);
+        String serverAnswer = localClient.sendCommand("connect;" + guestId + ';' + sessionId + ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(serverAnswer);
 
         if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
@@ -61,7 +74,7 @@ public class LobbyController {
     }
 
     public ArrayList<String> getServerSessions(){
-        String serverAnswer = localClient.sendCommand("getSessions;" + localClient.getId() + ';', "localhost", 1313);
+        String serverAnswer = localClient.sendCommand("getSessions;" + localClient.getId() + ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(serverAnswer);
 
         if(parser.getAnswer() != AnswerParser.AnswerType.SESSION_LIST){
@@ -73,7 +86,7 @@ public class LobbyController {
     }
 
     public ArrayList<String> getIdList(){
-        String serverAnswer = localClient.sendCommand("getlobbyids;" + localClient.getId() + ';' + localClient.getSessionId() + ";", "localhost", 1313);
+        String serverAnswer = localClient.sendCommand("getlobbyids;" + localClient.getId() + ';' + localClient.getSessionId() + ";", serverIP, serverPort);
         AnswerParser parser = new AnswerParser(serverAnswer);
 
         if(parser.getAnswer() != AnswerParser.AnswerType.ID_LIST){
@@ -89,7 +102,7 @@ public class LobbyController {
 
     public void setHostId(){
         String answer = localClient.sendCommand("gethostid;" + localClient.getId()+ ";"+
-                                                localClient.getSessionId()+ ';', "localhost", 1313);
+                                                localClient.getSessionId()+ ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(answer);
 
         if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
@@ -99,7 +112,7 @@ public class LobbyController {
 
     public void setPlayerCount()    {
         String answer = localClient.sendCommand("getplayercount;" + localClient.getId()+ ";"+
-                                                localClient.getSessionId()+ ';', "localhost", 1313);
+                                                localClient.getSessionId()+ ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(answer);
 
         if(parser.getAnswer() == AnswerParser.AnswerType.PLAYER_COUNT) {
@@ -113,15 +126,15 @@ public class LobbyController {
 
     public boolean chooseTeam(Player.PlayerTeam team)    {
         String answer = localClient.sendCommand("chooseteam;" + localClient.getId()+ ";"+
-                        localClient.getSessionId()+ ';'+ team + ';', "localhost", 1313);
+                        localClient.getSessionId()+ ';'+ team + ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(answer);
 
-        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
+        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("null"))){
             System.err.println("Received unexpected server answer!");
             return false;
         }
 
-        if ((parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "false"))
+        if ((parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("false")))
             return false;
 
         if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
@@ -132,7 +145,7 @@ public class LobbyController {
 
     public boolean chooseRole(Player.PlayerRole role)    {
         String answer = localClient.sendCommand("chooserole;" + localClient.getId()+ ";"+
-                localClient.getSessionId()+ ';'+ role + ';', "localhost", 1313);
+                localClient.getSessionId()+ ';'+ role + ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(answer);
 
         if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
@@ -140,13 +153,18 @@ public class LobbyController {
             return false;
         }
 
-        if ((parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "false"))
+        if ((parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("false")))
             return false;
 
         if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
             localClient.getPlayer().setRole(role);
         }
         return true;
+    }
+
+    public void disconnect(){
+        String answer = localClient.sendCommand("disconnect;" + localClient.getId() + ";" +
+                localClient.getSessionId() + ';', serverIP, serverPort);
     }
 
 

@@ -10,13 +10,17 @@ public class Client {
 
     private UUID sessionId = null;
 
+    private String serverIP = "localhost";
+    private int serverPort = 1313;
     private Player player;
 
     private Socket socket;
 
-    public Client(String id){
+    public Client(String id, String serverIP, int serverPort){
         this.id = id;
         this.player = new Player(id);
+        this.serverIP = serverIP;
+        this.serverPort = serverPort;
     }
 
     public UUID getSessionId() {return sessionId;}
@@ -33,7 +37,7 @@ public class Client {
 
     public String sendCommand(String command, String hostname, int port){
         try{
-            Socket sock = new Socket("localhost", 1313);
+            Socket sock = new Socket(serverIP, serverPort);
             this.socket = sock;
             OutputStream output = sock.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
@@ -59,6 +63,14 @@ public class Client {
         }
 
         return null;
+    }
+
+    public String getServerIP() {
+        return serverIP;
+    }
+
+    public int getServerPort() {
+        return serverPort;
     }
 
     public void setSessionId(String argument) {

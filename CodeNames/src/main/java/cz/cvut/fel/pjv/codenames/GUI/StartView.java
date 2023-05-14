@@ -19,6 +19,7 @@ public class StartView extends Application {
 
 
     private String id;
+    private String serverIP;
     public static void main() {
         launch();
     }
@@ -37,11 +38,21 @@ public class StartView extends Application {
         // Create the text box
         TextField textField = new TextField();
 
+        Label serverLabel = new Label("Enter server:   ");
+        serverLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
+        // Create the text box
+
+        TextField serverField = new TextField();
+        serverField.setText("127.0.0.1:1515");
 
         // Create the container for the label and text box
         HBox nameContainer = new HBox();
         nameContainer.getChildren().addAll(nameLabel, textField);
         nameContainer.setAlignment(Pos.CENTER);
+
+        HBox serverContainer = new HBox();
+        serverContainer.getChildren().addAll(serverLabel, serverField);
+        serverContainer.setAlignment(Pos.CENTER);
 
         Button hostbutton = new Button("Host game");
 
@@ -53,7 +64,7 @@ public class StartView extends Application {
         buttonbox.setAlignment(Pos.CENTER);
 
         VBox vbox = new VBox();
-        vbox.getChildren().addAll(titlepane,nameContainer, buttonbox);
+        vbox.getChildren().addAll(titlepane,nameContainer, serverContainer, buttonbox);
         vbox.setSpacing(10); // Set spacing between elements
         vbox.setAlignment(Pos.CENTER);
 
@@ -75,8 +86,13 @@ public class StartView extends Application {
             id = textField.getText();
             //set Client id
 
+            serverIP = serverField.getText();
+
+            String ipaddr = serverIP.split(":")[0];
+            int ipport = Integer.parseInt(serverIP.split(":")[1]);
+
             //join screen
-            ServerPicker picker = new ServerPicker();
+            ServerPicker picker = new ServerPicker(ipaddr, ipport);
             picker.setPreviousScene(scene);
             picker.setStage(stage);
             picker.setID(id);
@@ -97,9 +113,14 @@ public class StartView extends Application {
                 System.err.println("entered empty name");
                 return;
             }
-            LobbyController controller = new LobbyController(id);
+            serverIP = serverField.getText();
+            String ipaddr = serverIP.split(":")[0];
+            int ipport = Integer.parseInt(serverIP.split(":")[1]);
+
+            LobbyController controller = new LobbyController(id, ipaddr, ipport);
             //call create session with id
-            if (!controller.createServerSession(id))    {
+
+            if (!controller.createServerSession(id)){
                 //log session creation failed
                 return;
             }
