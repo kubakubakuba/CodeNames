@@ -22,13 +22,13 @@ public class GameView extends Application {
 
     public void determineView(Player.PlayerRole role)   {
         if (role == Player.PlayerRole.SPY_MASTER){
-            SpymasterView view = new SpymasterView(localControl);
+            SpymasterView view = new SpymasterView(localControl, new Stage());
         }
         if (role == Player.PlayerRole.FIELD_OPERATIVE){
-            FieldOperativeView view = new FieldOperativeView(localControl);
+            FieldOperativeView view = new FieldOperativeView(localControl, new Stage());
         }
         if (role == Player.PlayerRole.FIELD_OPERATIVE_LEADER){
-            FieldOperativeLeaderView view = new FieldOperativeLeaderView(localControl);
+            FieldOperativeLeaderView view = new FieldOperativeLeaderView(localControl, new Stage());
         }
     };
 

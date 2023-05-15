@@ -59,6 +59,7 @@ public class LobbyView extends Application {
 
         lobbyStage.setOnCloseRequest(event -> {
             localControl.disconnect();
+            //System.out.println("Disonnected");
         });
 
         lobbyStage.show();

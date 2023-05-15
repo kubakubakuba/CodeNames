@@ -6,9 +6,11 @@ import javafx.stage.Stage;
 
 public class FieldOperativeLeaderView extends GameView {
 
-    public FieldOperativeLeaderView(GameController controller) {
+    private GameController localControl;
+    public FieldOperativeLeaderView(GameController controller, Stage stage) {
         super(controller);
-        launch();
+        this.localControl = controller;
+        start(stage);
     }
 
     public static void main(String[] args) {
@@ -16,7 +18,8 @@ public class FieldOperativeLeaderView extends GameView {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage gameStage) {
+
 
     }
 }

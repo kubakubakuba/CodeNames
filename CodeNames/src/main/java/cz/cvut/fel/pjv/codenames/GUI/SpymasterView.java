@@ -6,9 +6,11 @@ import javafx.stage.Stage;
 
 public class SpymasterView extends GameView {
 
-    public SpymasterView(GameController controller) {
+    private GameController localControl;
+    public SpymasterView(GameController controller, Stage stage) {
         super(controller);
-        launch();
+        this.localControl = controller;
+        start(stage);
     }
 
     public static void main(String[] args) {
@@ -16,7 +18,7 @@ public class SpymasterView extends GameView {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage gameStage) {
 
     }
 }

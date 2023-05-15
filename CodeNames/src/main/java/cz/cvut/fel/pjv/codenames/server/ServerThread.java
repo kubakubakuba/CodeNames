@@ -330,6 +330,7 @@ public class ServerThread extends Thread {
                     }
                     Session s = server.getActiveSessions().get(idSession);
                     s.getLobby().getListOfIds().remove(idSelf);
+                    s.getLobby().getListOfPlayers().remove(idSelf);
 
                     writer.println("1arg;true");
                     System.out.println("Player disconnected: " + idSelf);

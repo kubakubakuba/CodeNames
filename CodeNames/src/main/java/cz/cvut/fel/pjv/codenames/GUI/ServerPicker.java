@@ -45,11 +45,6 @@ public class ServerPicker extends Application {
         buttonContainer.setSpacing(10); // Set spacing between buttons
         buttonContainer.setPadding(new Insets(10)); // Set padding around the container
 
-        // Add buttons to the VBox
-        //placeholder
-        //find number of active sessions and
-        //create a connect button for each one
-
 
         LobbyController controller = new LobbyController(ID, serverIP, serverPort);
         sessions = controller.getServerSessions();
