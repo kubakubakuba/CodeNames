@@ -6,7 +6,7 @@ import java.util.Collections;
 
 public class Deck {
 
-    final static String NAME_FILE = "cz/cvut/fel/pjv/codenames/Names.dck";
+    final static String NAME_FILE = "src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck";
     private ArrayList<ArrayList<Card>> cards;
     private ArrayList<String> wordBuffer;
 
@@ -21,11 +21,13 @@ public class Deck {
    }
 
    private void initWordBuffer()    {
+        ArrayList<String> tempbuf = new ArrayList<String>();
        try (BufferedReader br = new BufferedReader(new FileReader(NAME_FILE))) {
            String line;
            while ((line = br.readLine()) != null) {
-               wordBuffer.add(line);
+               tempbuf.add(line);
            }
+           wordBuffer =tempbuf;
        }catch (
                FileNotFoundException e) {
            System.out.println("File not found " + e.getMessage());

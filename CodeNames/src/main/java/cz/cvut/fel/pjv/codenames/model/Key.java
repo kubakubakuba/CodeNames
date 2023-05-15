@@ -10,7 +10,8 @@ public class Key {
         RED,
         BLUE,
         ASSASSIN,
-        CIVILIAN
+        CIVILIAN,
+        EMPTY
     }
     private int[] RBCACardCountRStarts = {9,8,7,1};
     private int[] RBCACardCountBStarts = {8,9,7,1};
@@ -26,13 +27,15 @@ public class Key {
 
     public Key(Player.PlayerTeam startingTeam)    {
 
-        //for testing purposes
-        for (KeyType[] row : test) {
-            ArrayList<KeyType> arrayListRow = new ArrayList<>(Arrays.asList(row));
-            solution.add(arrayListRow);
-        };
-//        //for game
-//        solution = generateKey(startingTeam);
+//        ArrayList<ArrayList<KeyType>> testArray = new ArrayList<ArrayList<KeyType>>();
+//        //for testing purposes
+//        for (KeyType[] row : test) {
+//            ArrayList<KeyType> arrayListRow = new ArrayList<>(Arrays.asList(row));
+//            testArray.add(arrayListRow);
+//        }
+//        solution=testArray;
+        //for game
+        solution = generateKey(startingTeam);
     }
     public ArrayList<ArrayList<KeyType>> getSolution() {
         return solution;

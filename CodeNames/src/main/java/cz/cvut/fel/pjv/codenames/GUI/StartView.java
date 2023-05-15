@@ -30,7 +30,7 @@ public class StartView extends Application {
         // Create a label with custom text
         Label headingLabel = new Label("CodeNames");
         headingLabel.setPadding(new Insets(25));
-        headingLabel.setStyle("-fx-font-family: 'Comic Sans MS'; -fx-font-size: 62px;");
+        headingLabel.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-size: 62px;");
         Pane titlepane = new BorderPane(headingLabel);
 
         Label nameLabel = new Label("Enter your name:   ");
