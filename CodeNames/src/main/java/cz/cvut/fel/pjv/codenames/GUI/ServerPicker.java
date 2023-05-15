@@ -70,8 +70,10 @@ public class ServerPicker extends Application {
 
         // Create a ScrollPane and set the buttonContainer as its content
         ScrollPane scrollPane = new ScrollPane(buttonContainer);
-        scrollPane.setMaxWidth(150);
+        scrollPane.setMaxWidth(300);
         scrollPane.setMaxHeight(200);
+        scrollPane.setPrefViewportWidth(150);
+        scrollPane.setPrefViewportHeight(200);
 
         // Create and format label
         Label label = new Label("Pick Session");

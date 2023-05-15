@@ -1,15 +1,17 @@
 package cz.cvut.fel.pjv.codenames.model;
 
 public class Card {
-    private enum color{ RED, BLUE, WHITE, BLACK }
     private final String name;
-    private final Card.color color;
-    public Card(String name, color c) {
+    private Key.KeyType cardType;
+    public Card(String name) {
         this.name = name;
-        this.color = c;
     }
+
 
     public String getName() {
         return name;
     }
+    public Key.KeyType getCardType() {return cardType;}
+    public void setCardType(Key.KeyType cardType) {this.cardType = cardType;}
+
 }

@@ -1,21 +1,53 @@
 package cz.cvut.fel.pjv.codenames.model;
 
-import java.io.File;
-import java.util.Queue;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class Deck {
-    private Queue<Card> deck;
 
-    public Deck(File cards) {
-        //add cards into temp array, shuffle them and push them into queue
-        //add cards into deck from config file
+    final static String NAME_FILE = "cz/cvut/fel/pjv/codenames/Names.dck";
+    private ArrayList<ArrayList<Card>> cards;
+    private ArrayList<String> wordBuffer;
+
+    public Deck() {
+        initWordBuffer();
+        Collections.shuffle(wordBuffer);
+        cards = buildDeck(wordBuffer);
     }
 
-    public Card getCard(){
-        return deck.poll(); //popping the first element
-    }
+   public Deck (ArrayList<String> loadedCardNames){
+       cards =  buildDeck(loadedCardNames);
+   }
 
-    public void addCard(Card card){
-        deck.add(card);
+   private void initWordBuffer()    {
+       try (BufferedReader br = new BufferedReader(new FileReader(NAME_FILE))) {
+           String line;
+           while ((line = br.readLine()) != null) {
+               wordBuffer.add(line);
+           }
+       }catch (
+               FileNotFoundException e) {
+           System.out.println("File not found " + e.getMessage());
+       } catch (IOException e) {
+           System.out.println(e.getMessage());
+       }
+   }
+
+    public ArrayList<ArrayList<Card>> getCards() {return cards;}
+
+    private ArrayList<ArrayList<Card>> buildDeck(ArrayList<String> oneD){
+        ArrayList<ArrayList<Card>> result = new ArrayList<>();
+        int rows = 5;
+        int cols = 5;
+        for (int row = 0; row < rows; row++) {
+            ArrayList<Card> rowList = new ArrayList<>();
+            for (int col = 0; col < cols; col++) {
+                int index = (row * cols) + col;
+                rowList.add(new Card(oneD.get(index)));
+            }
+            result.add(rowList);
+        }
+        return result;
     }
 }

@@ -5,6 +5,7 @@ import cz.cvut.fel.pjv.codenames.model.Game;
 
 import java.lang.reflect.Array;
 import java.net.Socket;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,8 @@ public class Session {
     private UUID sessionId;
 
     private Game game;
+    private Buffer loadedGame;
+    private Buffer loadedCards;
 
     private HashMap<String, Socket> listeners;
     public Lobby getLobby() {
@@ -36,14 +39,18 @@ public class Session {
         listeners = new HashMap<String, Socket>();
     }
 
-    public boolean connectToSession(String guest)   {
-        lobby.getListOfIds().add(guest);
-        return true;
+    public void startNewGame(){
+        game = new Game(lobby.getListOfPlayers());
     }
-
-    public boolean disconnectFromSession(String guest)   {
-        lobby.getListOfIds().remove(guest);
-        return true;
+    public void startGameWDeck(){
+        //game = new Game(Buffer loadedDeck)
+        //or probably decode the deck to a ArrayList<String>
+    }
+    public void startLoadedGame(){
+        //game = new Game(Buffer loadedGame)
+    }
+    public void loadGame(){
+        //write serialized game data t a buffer in session for later passing to startLoadedGame
     }
 
     public HashMap<String, Socket> getListeners() {

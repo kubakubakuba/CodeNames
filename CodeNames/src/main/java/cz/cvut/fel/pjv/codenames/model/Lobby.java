@@ -12,6 +12,5 @@ public class Lobby {
     public List<String> getListOfIds() {
         return listOfIds;
     }
-
     public HashMap<String, Player> getListOfPlayers() {return listOfPlayers;}
 }
