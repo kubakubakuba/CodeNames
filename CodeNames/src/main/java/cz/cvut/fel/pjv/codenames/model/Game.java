@@ -8,11 +8,11 @@ import java.util.Random;
 
 public class Game {
     private Board board;
-    private Player[] players;
-    private String current_prompt;
-    private int prompt_num_cards;
+    private String currentPrompt;
+    private int currentNumCards;
     private HashMap<String, Player> listOfPlayers;
     public HashMap<String,Player> getListOfPlayers() {return listOfPlayers;};
+
     public void saveGame(){};
     public void loadGame(){};
 

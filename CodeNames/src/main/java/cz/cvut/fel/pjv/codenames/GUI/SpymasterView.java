@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -13,11 +14,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class SpymasterView extends Application {
 
+    Label currentTurnLabel;
+    String currentTurnText;
     private GameController localControl;
     public SpymasterView(GameController controller, Stage stage) {
         //super(controller);
@@ -36,6 +38,15 @@ public class SpymasterView extends Application {
     @Override
     public void start(Stage gameStage) {
 
+        localControl.getCurrentTurn();
+        currentTurnLabel = new Label("Turn of: " + currentTurnText);
+        currentTurnLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
+        currentTurnLabel.setAlignment(Pos.TOP_CENTER);
+        HBox turnPane = new HBox();
+        turnPane.getChildren().addAll(currentTurnLabel);
+        turnPane.setAlignment(Pos.CENTER);
+        turnPane.setPadding(new Insets(10));
+
         Label promptFieldLabel = new Label("EnterPrompt");
         promptFieldLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         TextField promptField = new TextField();
@@ -49,6 +60,7 @@ public class SpymasterView extends Application {
         HBox numPromptBox = new HBox();
 
         Button commitPrompt = new Button("Commit Prompt");
+
         Button saveBtn = new Button("Save game");
 
         promptBox.getChildren().addAll(promptFieldLabel,promptField);
@@ -64,6 +76,12 @@ public class SpymasterView extends Application {
         spymasterInputBox.setAlignment(Pos.TOP_CENTER);
         spymasterInputBox.setStyle("-fx-background-color: gray;");
         spymasterInputBox.setPadding(new Insets(20));
+
+        VBox upperField = new VBox();
+        upperField.getChildren().addAll(
+                turnPane,
+                spymasterInputBox
+        );
 
         GridPane boardContainer = new GridPane();
         boardContainer.setHgap(30);
@@ -96,7 +114,7 @@ public class SpymasterView extends Application {
                 cardPane.getChildren().add(cardLabel);
                 boardContainer.add(cardPane, c, r);
 
-                StackPane.setAlignment(cardLabel, Pos.CENTER);
+                cardPane.setAlignment(cardLabel, Pos.CENTER);
             }
         }
 
@@ -104,7 +122,7 @@ public class SpymasterView extends Application {
         mainLayout.setSpacing(10);
         mainLayout.setPadding(new Insets(20));
         mainLayout.getChildren().addAll(
-                spymasterInputBox,
+                upperField,
                 boardContainer
         );
         Scene scene = new Scene(mainLayout, 1000, 800);
@@ -116,15 +134,27 @@ public class SpymasterView extends Application {
         gameStage.setOnCloseRequest(event -> {
             localControl.disconnect();
         });
-        //TODO implement button functions
-        commitPrompt.setOnAction(actionEvent -> {
 
+        commitPrompt.setOnAction(actionEvent -> {
+            if(!localControl.commitPrompt()){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error in commiting prompt");
+                alert.setHeaderText(null);
+                alert.setContentText("Invalid Prompt format");
+                alert.showAndWait();
+                System.err.println("Inputted invalid prompt");
+            }
         });
 
         saveBtn.setOnAction(actionEvent -> {
-
+            localControl.saveGame();
         });
 
         gameStage.show();
+    }
+
+
+    public void update()    {
+
     }
 }

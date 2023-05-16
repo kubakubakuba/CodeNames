@@ -93,6 +93,14 @@ public class LobbyView extends Application {
 
         });
 
+        buttonStart.setOnAction(e -> {
+            //TODO
+        });
+
+        buttonLoad.setOnAction(e -> {
+            //TODO
+        });
+
         // Set spacing between label1, label2, and buttons
         HBox gameStarter = new HBox(50);
         gameStarter.getChildren().addAll(buttonStart, buttonLoad, buttonLoadDeck);
