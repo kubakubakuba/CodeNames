@@ -10,10 +10,10 @@ public class Board {
     private Deck deck;
     private Player.PlayerTeam startingTeam;
 
-    public Board() {
+    public Board(String dckFile) {
         startingTeam = initStartingTeam();
         key = new Key(startingTeam);
-        deck = new Deck();
+        deck = new Deck(dckFile);
         transferKeyToCards(key,deck);
     }
 
@@ -27,7 +27,7 @@ public class Board {
             }
         }
     }
-    private Player.PlayerTeam initStartingTeam()    {
+    private Player.PlayerTeam initStartingTeam(){
         int randIdx  = new Random().nextInt(2);
         Player.PlayerTeam [] teams= {Player.PlayerTeam.RED, Player.PlayerTeam.BLUE};
         return teams[randIdx];

@@ -39,8 +39,8 @@ public class Session {
         listeners = new HashMap<String, Socket>();
     }
 
-    public void startNewGame(){
-        game = new Game(lobby.getListOfPlayers());
+    public void startNewGame(String dckFile){
+        game = new Game(lobby.getListOfPlayers(), dckFile);
     }
     public void startGameWDeck(){
         //game = new Game(Buffer loadedDeck)

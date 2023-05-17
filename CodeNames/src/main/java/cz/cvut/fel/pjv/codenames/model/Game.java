@@ -7,17 +7,17 @@ import java.util.List;
 import java.util.Random;
 
 public class Game {
-    private Board board;
-    private String currentPrompt;
-    private int currentNumCards;
     private HashMap<String, Player> listOfPlayers;
     public HashMap<String,Player> getListOfPlayers() {return listOfPlayers;};
+
+    private GameData gameData;
 
     public void saveGame(){};
     public void loadGame(){};
 
-    public Game(HashMap<String,Player> listOfPlayers) {
-        board = new Board();
+    public Game(HashMap<String,Player> listOfPlayers, String dckFile) {
+        Board board = new Board(dckFile);
+        this.gameData = new GameData(board);
         this.listOfPlayers = listOfPlayers;
     }
     private void loadLoadedGame(){
@@ -28,5 +28,8 @@ public class Game {
 
     }
 
+    public GameData getGameData(){
+        return this.gameData;
+    }
 
 }

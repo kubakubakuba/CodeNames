@@ -16,7 +16,7 @@ public class Server implements Runnable{
 
     public HashMap<String, Session> getActiveSessions() {return activeSessions;}
 
-    public void Server()    {
+    public void Server(){
         //host, socket,
     }
 

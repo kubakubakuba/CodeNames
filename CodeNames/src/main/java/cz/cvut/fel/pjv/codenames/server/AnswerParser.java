@@ -10,9 +10,12 @@ public class AnswerParser {
         ONE_ARG,
         SESSION_LIST,
         PLAYER_COUNT,
+        PLAYER_COUNT_ROLES,
         ID_LIST,
         UPDATE,
         END_LISTEN,
+        START_GAME,
+        GAME_DATA,
         UNKNOWN_COMMAND
     }
 
@@ -25,6 +28,11 @@ public class AnswerParser {
     }
 
     public AnswerParser(String answer){
+        if(answer.startsWith("gamedata;")){
+            this.answer = AnswerType.GAME_DATA;
+            this.arguments = new String[]{answer.substring(9)};
+            return;
+        }
         String[] parts = answer.split(";");
 
         switch (parts[0].toLowerCase()) {
@@ -36,6 +44,9 @@ public class AnswerParser {
             case "update" -> this.answer = AnswerType.UPDATE;
             case "endlisten" -> this.answer = AnswerType.END_LISTEN;
             case "idlist" -> this.answer = AnswerType.ID_LIST;
+            case "playercountroles" -> this.answer = AnswerType.PLAYER_COUNT_ROLES;
+            case "startgame" -> this.answer = AnswerType.START_GAME;
+            case "gamedata" -> this.answer = AnswerType.GAME_DATA;
             default -> this.answer = AnswerType.UNKNOWN_COMMAND;
         }
 

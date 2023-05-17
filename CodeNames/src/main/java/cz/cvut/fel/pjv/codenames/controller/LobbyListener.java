@@ -1,8 +1,10 @@
 package cz.cvut.fel.pjv.codenames.controller;
 
+import cz.cvut.fel.pjv.codenames.GUI.GameView;
 import cz.cvut.fel.pjv.codenames.GUI.LobbyView;
 import cz.cvut.fel.pjv.codenames.server.AnswerParser;
 import cz.cvut.fel.pjv.codenames.model.Client;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,11 +46,17 @@ public class LobbyListener implements Runnable {
                         lobbyView.update();
                     }
                     if(answerParser.getAnswer() == AnswerParser.AnswerType.END_LISTEN){
-                        running = false;
+                        stop();
+                    }
+                    if(answerParser.getAnswer() == AnswerParser.AnswerType.START_GAME){
+                        lobbyView.startGame();
+
+                        stop();
                     }
                 }
             }
 
+            System.out.println("Listener stopped");
             socket.close();
             reader.close();
         } catch (IOException e) {
@@ -57,9 +65,5 @@ public class LobbyListener implements Runnable {
     }
     public void stop(){
         running = false;
-    }
-    private void update() {
-        // Implement your update logic here
-        System.out.println("Update function called");
     }
 }

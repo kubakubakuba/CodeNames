@@ -13,7 +13,8 @@ public class LobbyController {
 
     private String hostId;
 
-    private int[] RBNPlayers = {0,0,0};
+    private int[] RBNPlayers = {0, 0, 0};
+    private int[] playerRoles = {0, 0, 0, 0, 0, 0, 0};
     private int playerCount = 0;
 
     private String serverIP = "localhost";
@@ -21,8 +22,9 @@ public class LobbyController {
 
 
     public int getPlayerCount() {return playerCount;}
-    public int[] getRBPlayers() {return RBNPlayers;}
+    public int[] getRBNPlayers() {return RBNPlayers;}
 
+    public int[] getPlayerRoles() {return playerRoles;}
     public Client getLocalClient() {
         return localClient;
     }
@@ -31,13 +33,13 @@ public class LobbyController {
         localClient = new Client(id, serverIP, serverPort);
     }
 
-    public void parseServeIPString(String serverIP){
+    /*public void parseServeIPString(String serverIP){
         String[] parts = serverIP.split(":");
         this.serverIP = parts[0];
         this.serverPort = Integer.parseInt(parts[1]);
 
         System.out.println(this.serverIP + this.serverPort);
-    }
+    }*/
 
     //implement start client and start server
     public boolean createServerSession(String hostId)   {
@@ -61,7 +63,7 @@ public class LobbyController {
         String serverAnswer = localClient.sendCommand("connect;" + guestId + ';' + sessionId + ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(serverAnswer);
 
-        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
+        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("null"))){
             System.err.println("Received unexpected server answer!");
             return false;
         }
@@ -110,7 +112,7 @@ public class LobbyController {
         }
     }
 
-    public void setPlayerCount()    {
+    public void updatePlayerCount()    {
         String answer = localClient.sendCommand("getplayercount;" + localClient.getId()+ ";"+
                                                 localClient.getSessionId()+ ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(answer);
@@ -122,6 +124,22 @@ public class LobbyController {
             playerCount = RBNPlayers[0] + RBNPlayers[1] + RBNPlayers[2];
         }
 
+    }
+
+    public void updatePlayerRoles(){
+        String answer = localClient.sendCommand("getplayerroles;" + localClient.getId()+ ";"+
+                                                localClient.getSessionId()+ ';', serverIP, serverPort);
+
+        AnswerParser parser = new AnswerParser(answer);
+        if(parser.getAnswer() == AnswerParser.AnswerType.PLAYER_COUNT_ROLES) {
+            playerRoles[0] = Integer.parseInt(parser.getArguments()[0]);
+            playerRoles[1] = Integer.parseInt(parser.getArguments()[1]);
+            playerRoles[2] = Integer.parseInt(parser.getArguments()[2]);
+            playerRoles[3] = Integer.parseInt(parser.getArguments()[3]);
+            playerRoles[4] = Integer.parseInt(parser.getArguments()[4]);
+            playerRoles[5] = Integer.parseInt(parser.getArguments()[5]);
+            playerRoles[6] = Integer.parseInt(parser.getArguments()[6]);
+        }
     }
 
     public boolean chooseTeam(Player.PlayerTeam team)    {
@@ -148,7 +166,7 @@ public class LobbyController {
                 localClient.getSessionId()+ ';'+ role + ';', serverIP, serverPort);
         AnswerParser parser = new AnswerParser(answer);
 
-        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0] == "null")){
+        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("null"))){
             System.err.println("Received unexpected server answer!");
             return false;
         }
@@ -168,6 +186,11 @@ public class LobbyController {
     }
 
 
+    public void startTheGame(){
+        String answer = localClient.sendCommand("startgame;" + localClient.getId()+ ";"+
+                localClient.getSessionId() + ';', serverIP, serverPort);
+
+    }
     //implement feedback from server to model
 
 }

@@ -1,6 +1,5 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
-import cz.cvut.fel.pjv.codenames.controller.GameController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -61,8 +60,8 @@ public class ServerPicker extends Application {
                 }
                 controller.getLocalClient().setSessionId(label);
                 controller.setHostId();
-                controller.setPlayerCount();
-                LobbyView lobby = new LobbyView(new Stage(), ID, controller, 0);
+                controller.updatePlayerCount();
+                LobbyView lobby = new LobbyView(new Stage(), ID, controller, false);
                 previousStage.close();
             });
             buttonContainer.getChildren().add(button);

@@ -6,11 +6,12 @@ import java.util.Collections;
 
 public class Deck {
 
-    final static String NAME_FILE = "src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck";
+    private String dckFile;
     private ArrayList<ArrayList<Card>> cards;
     private ArrayList<String> wordBuffer;
 
-    public Deck() {
+    public Deck(String dckFile){
+        this.dckFile = dckFile;
         initWordBuffer();
         Collections.shuffle(wordBuffer);
         cards = buildDeck(wordBuffer);
@@ -22,7 +23,7 @@ public class Deck {
 
    private void initWordBuffer()    {
         ArrayList<String> tempbuf = new ArrayList<String>();
-       try (BufferedReader br = new BufferedReader(new FileReader(NAME_FILE))) {
+       try (BufferedReader br = new BufferedReader(new FileReader(dckFile))) {
            String line;
            while ((line = br.readLine()) != null) {
                tempbuf.add(line);

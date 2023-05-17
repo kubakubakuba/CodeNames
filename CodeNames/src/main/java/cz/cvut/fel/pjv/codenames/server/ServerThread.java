@@ -1,9 +1,11 @@
 package cz.cvut.fel.pjv.codenames.server;
 
+import cz.cvut.fel.pjv.codenames.model.Game;
 import cz.cvut.fel.pjv.codenames.model.Player;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,7 @@ public class ServerThread extends Thread {
             if(set.getValue().getID().equals(playerId)){
                 continue; //skip self
             }
-            if(set.getValue().getRole() == role){
+            if(set.getValue().getRole() == role && set.getValue().getTeam() == players.get(playerId).getTeam()){
                 System.err.println("Role in team already taken!");
                 return false;
             }
@@ -295,6 +297,59 @@ public class ServerThread extends Thread {
                     System.out.printf("response: %s\n", response);
                 }
 
+                if(parser.getCommand() == CommandParser.CommandType.GET_PLAYER_ROLES){
+                    String idSelf = parser.getArguments()[0];
+                    String idSession = parser.getArguments()[1];
+
+                    LOGGER.log(Level.INFO, "Player "+ idSelf + " requested player count");
+                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
+                        System.err.println("Player not in session!");
+                        writer.println("1arg;null");
+                        return;
+                    }
+
+                    Session s = server.getActiveSessions().get(idSession);
+                    HashMap<String,Player> players = s.getLobby().getListOfPlayers();
+
+                    int[] pRoles = {0, 0, 0, 0, 0, 0, 0}; //red roles x y z, blue roles x y z, none role 7 total
+
+                    for (Map.Entry<String, Player> entry : players.entrySet())    {
+                        Player p = entry.getValue();
+                        if(p.getRole() == Player.PlayerRole.SPY_MASTER && p.getTeam() == Player.PlayerTeam.RED){
+                            pRoles[0]++;
+                        }
+
+                        if(p.getRole() == Player.PlayerRole.FIELD_OPERATIVE && p.getTeam() == Player.PlayerTeam.RED) {
+                            pRoles[1]++;
+                        }
+
+                        if(p.getRole() == Player.PlayerRole.FIELD_OPERATIVE_LEADER && p.getTeam() == Player.PlayerTeam.RED){
+                            pRoles[2]++;
+                        }
+
+                        if(p.getRole() == Player.PlayerRole.SPY_MASTER && p.getTeam() == Player.PlayerTeam.BLUE){
+                            pRoles[3]++;
+                        }
+
+                        if(p.getRole() == Player.PlayerRole.FIELD_OPERATIVE && p.getTeam() == Player.PlayerTeam.BLUE){
+                            pRoles[4]++;
+                        }
+
+                        if(p.getRole() == Player.PlayerRole.FIELD_OPERATIVE_LEADER && p.getTeam() == Player.PlayerTeam.BLUE){
+                            pRoles[5]++;
+                        }
+
+                        if (p.getRole() == Player.PlayerRole.NONE) {
+                            pRoles[6]++;
+                        }
+
+                    }
+
+                    String response = "playercountroles;" + pRoles[0] + ";" + pRoles[1] + ";" + pRoles[2] + ";" + pRoles[3] + ";" + pRoles[4] + ";" + pRoles[5] + ";" + pRoles[6] + ";";
+                    writer.println(response);
+                    System.out.printf("response: %s\n", response);
+                }
+
                 if (parser.getCommand() == CommandParser.CommandType.GET_LOBBY_IDS)
                 {
                     String idSelf = parser.getArguments()[0];
@@ -344,7 +399,72 @@ public class ServerThread extends Thread {
                     sendUpdates(idSession);
                 }
 
+                if(parser.getCommand() == CommandParser.CommandType.START_GAME){
+                    String idSelf = parser.getArguments()[0];
+                    String idSession = parser.getArguments()[1];
 
+                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
+                        System.err.println("Player not in session!");
+                        writer.println("1arg;null");
+                        return;
+                    }
+
+                    Session s = server.getActiveSessions().get(idSession);
+                    if(!s.getHostId().equals(idSelf)){
+                        System.err.println("Player is not host!");
+                        writer.println("1arg;null");
+                        return;
+                    }
+
+                    if(s.getLobby().getListOfPlayers().size() < 4){
+                        System.err.println("Not enough players to start game!");
+                        writer.println("1arg;null");
+                        return;
+                    }
+
+                    //TODO: pass the deck path from host selected file
+                    s.startNewGame("src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck");
+
+                    for(Socket ss : s.getListeners().values()){
+                        PrintWriter playerWriter = null;
+                        try {
+                            playerWriter = new PrintWriter(ss.getOutputStream(), true);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                        playerWriter.println("startgame;");
+                    }
+
+                }
+
+                if(parser.getCommand() == CommandParser.CommandType.GET_GAME_DATA){
+                    String idSelf = parser.getArguments()[0];
+                    String idSession = parser.getArguments()[1];
+
+                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
+                        System.err.println("Player not in session!");
+                        writer.println("1arg;null");
+                        return;
+                    }
+
+                    Session s = server.getActiveSessions().get(idSession);
+                    if(s.getGame() == null){
+                        System.err.println("Game not started!");
+                        writer.println("1arg;null");
+                        return;
+                    }
+
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ObjectOutputStream oos = new ObjectOutputStream(baos);
+                    oos.writeObject(s.getGame());
+                    oos.close();
+
+                    String gameData = Base64.getEncoder().encodeToString(baos.toByteArray());
+
+                    String response = "gamedata;" + gameData;
+                    writer.println(response);
+                    System.out.printf("response: %s\n", response);
+                }
 
             } while(parser.getCommand() != CommandParser.CommandType.TERMINATE_SERVER);
             LOGGER.log(Level.INFO, "Server thread terminated");

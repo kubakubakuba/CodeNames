@@ -62,12 +62,12 @@ public class GameController {
     //loads data into instances and passes to gameKey and gameDeck
     public void getSessionKey(){}
 
-    //checks if numberofCards dosen't exceed 8
+    //checks if number of Cards doesn't exceed 8
     public boolean commitPrompt(){return true;}
 
-    //commands for fieldoperative leader:
+    //commands for field operative leader:
 
-    //checks if Card hasnt been chosen already
+    //checks if Card hasn't been chosen already
     public boolean makeChoice(String chosenName){return true;}
 
     //commands for all:

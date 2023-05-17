@@ -30,7 +30,7 @@ public class StartView extends Application {
         // Create a label with custom text
         Label headingLabel = new Label("CodeNames");
         headingLabel.setPadding(new Insets(25));
-        headingLabel.setStyle("-fx-font-family: 'Times New Roman'; -fx-font-size: 62px;");
+        headingLabel.setStyle("-fx-font-family: 'Calibri'; -fx-font-size: 62px;");
         Pane titlepane = new BorderPane(headingLabel);
 
         Label nameLabel = new Label("Enter your name:   ");
@@ -131,9 +131,9 @@ public class StartView extends Application {
                 return;
             }
             //controller.initSocket();
-            controller.getHostId();
-            controller.setPlayerCount();
-            LobbyView lobby = new LobbyView(new Stage(), id, controller, 0);
+            //controller.getHostId();
+            controller.updatePlayerCount();
+            LobbyView lobby = new LobbyView(new Stage(), id, controller, true);
             stage.close();
         });
 

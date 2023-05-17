@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class LobbyView extends Application {
 
     private String ID;
-    private boolean isHost = false;
+    private boolean isHost;
 
     private Label playerCounter;
     private ScrollPane scrollPane;
@@ -28,23 +28,31 @@ public class LobbyView extends Application {
     private Label localTeam;
     private Label localRole;
 
+    private Stage stage;
     private LobbyController localControl = null;
 
-    public LobbyView(Stage lobbyStage, String ID, LobbyController control) {
+    /*public LobbyView(Stage lobbyStage, String ID, LobbyController control) {
+        this.stage = lobbyStage;
         this.ID = ID;
         this.localControl = control;
         start(lobbyStage);
+
+        System.out.println("setting lobby stage");
 
         Thread serverListenerThread = new Thread(new LobbyListener(this, localControl.getLocalClient()));
 
         serverListenerThread.start();
-    }
-    public LobbyView(Stage lobbyStage, String ID, LobbyController control, int x) {
+    }*/
+
+    public LobbyView(Stage lobbyStage, String ID, LobbyController control, boolean isPlayerHost) {
+        this.stage = lobbyStage;
         this.ID = ID;
         this.localControl = control;
-        isHost = true;
+        isHost = isPlayerHost;
         localControl.setHostId();
         start(lobbyStage);
+
+        System.out.println("isPlayerHost: " + isPlayerHost);
 
         Thread serverListenerThread = new Thread(new LobbyListener(this, localControl.getLocalClient()));
 
@@ -94,7 +102,18 @@ public class LobbyView extends Application {
         });
 
         buttonStart.setOnAction(e -> {
-            //TODO
+            if(canStartGame()){
+                System.out.println("Starting game!");
+                localControl.startTheGame();
+                System.out.println("creating new stage from within host");
+                //GuiTesting game = new GuiTesting();
+                //game.start(new Stage());
+
+                //this.stage.close();
+            }
+            else{
+                System.out.println("Cannot start game!");
+            }
         });
 
         buttonLoad.setOnAction(e -> {
@@ -150,8 +169,8 @@ public class LobbyView extends Application {
         scrollPane.setMaxSize(200,150);
 
         // Labels
-        redCounter = new Label("Number of RED players:" + localControl.getRBPlayers()[0]);
-        blueCounter = new Label("Number of BLUE players:" + localControl.getRBPlayers()[1]);
+        redCounter = new Label("Number of RED players:" + localControl.getRBNPlayers()[0]);
+        blueCounter = new Label("Number of BLUE players:" + localControl.getRBNPlayers()[1]);
         redCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         blueCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
@@ -259,7 +278,7 @@ public class LobbyView extends Application {
     }
 
     public void update() {
-        localControl.setPlayerCount();
+        localControl.updatePlayerCount();
         javafx.application.Platform.runLater(() -> {
             playerCounter.setText("Number of players: " + localControl.getPlayerCount());
 
@@ -271,15 +290,36 @@ public class LobbyView extends Application {
             }
             scrollPane.setContent(scrollBox);
 
-            redCounter.setText("Number of RED players:" + localControl.getRBPlayers()[0]);
-            blueCounter.setText("Number of BLUE players:" + localControl.getRBPlayers()[1]);
+            redCounter.setText("Number of RED players:" + localControl.getRBNPlayers()[0]);
+            blueCounter.setText("Number of BLUE players:" + localControl.getRBNPlayers()[1]);
 
             localTeam.setText("Your Team: " + localControl.getLocalClient().getPlayer().getTeam());
             localRole.setText("Your Role: " + localControl.getLocalClient().getPlayer().getRole());
         });
     }
 
-    public void teamError() {
+    private boolean canStartGame(){
+        localControl.updatePlayerCount();
+        localControl.updatePlayerRoles();
+
+        if(localControl.getRBNPlayers()[0] < 2 || localControl.getRBNPlayers()[1] < 2){
+            System.out.println("Not enough players in one of the teams");
+            System.out.println("Red players: " + localControl.getRBNPlayers()[0]);
+            System.out.println("Blue players: " + localControl.getRBNPlayers()[1]);
+            return false;
+        }
+
+        int[] pRoles = localControl.getPlayerRoles();
+
+        int noneCount = pRoles[6];
+        if(pRoles[0] != 1 || pRoles[2] != 1 || pRoles[3] != 1 || pRoles[5] != 1 || noneCount > 0){
+            return false;
+        }
+
+        return true;
+    }
+
+    private void teamError(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error in Team");
         alert.setHeaderText(null);
@@ -288,22 +328,31 @@ public class LobbyView extends Application {
         System.err.println("Unable to join team");
     }
 
-    public void roleError(boolean roleNotChosen) {
+    private void roleError(boolean roleNotChosen){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error in choosing role");
         alert.setHeaderText(null);
-        if (roleNotChosen)
-        {
+        if (roleNotChosen){
             alert.setContentText("You need to be in a team to choose a role");
             alert.showAndWait();
             System.err.println("You need to be in a team to choose a role");
         }
-        else {
+        else{
             alert.setContentText("Role is already occupied");
             alert.showAndWait();
             System.err.println("Role is already occupied");
         }
     }
 
-
+    public void startGame(){
+        if(!isHost){
+            javafx.application.Platform.runLater(() -> {
+                System.out.println("creating new stage ");
+                GuiTesting game = new GuiTesting();
+                game.start(new Stage());
+                this.stage.close();
+                //stage.close();
+            });
+        }
+    }
 }

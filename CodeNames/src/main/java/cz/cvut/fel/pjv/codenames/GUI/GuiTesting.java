@@ -26,7 +26,7 @@ public class GuiTesting extends Application {
     GridPane boardContainer;
 
     Key key = new Key(Player.PlayerTeam.RED);
-    Deck deck = new Deck();
+    Deck deck = new Deck("src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck");
 
     private GameController localControl;
 
