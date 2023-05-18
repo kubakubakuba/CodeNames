@@ -190,6 +190,11 @@ public class LobbyController {
         String answer = localClient.sendCommand("startgame;" + localClient.getId()+ ";"+
                 localClient.getSessionId() + ';', serverIP, serverPort);
 
+        AnswerParser parser = new AnswerParser(answer);
+        if(parser.getArguments()[0] == "null"){
+            System.err.println("Starting the game was not granted by server!");
+        }
+
     }
     //implement feedback from server to model
 

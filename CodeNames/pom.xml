@@ -57,13 +57,26 @@
                 <version>0.0.8</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
-                        <id>default-cli</id>
+                        <!-- Configuration for running the client -->
+                        <id>client-cli</id>
                         <configuration>
-                            <mainClass>cz.cvut.fel.pjv.codenames/cz.cvut.fel.pjv.codenames.HelloApplication</mainClass>
+                            <mainClass>cz.cvut.fel.pjv.codenames.GUI.StartView</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <!-- Configuration for running the server -->
+                        <id>server-cli</id>
+                        <configuration>
+                            <mainClass>cz.cvut.fel.pjv.codenames.server.ServerStart</mainClass>
+                            <launcher>server</launcher>
+                            <jlinkZipName>server</jlinkZipName>
+                            <jlinkImageName>server</jlinkImageName>
                             <noManPages>true</noManPages>
                             <stripDebug>true</stripDebug>
                             <noHeaderFiles>true</noHeaderFiles>
