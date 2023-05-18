@@ -16,6 +16,9 @@ public class AnswerParser {
         END_LISTEN,
         START_GAME,
         GAME_DATA,
+        MESSAGE,
+        CHAT_ENABLE,
+        CHAT_DISABLE,
         UNKNOWN_COMMAND
     }
 
@@ -47,6 +50,9 @@ public class AnswerParser {
             case "playercountroles" -> this.answer = AnswerType.PLAYER_COUNT_ROLES;
             case "startgame" -> this.answer = AnswerType.START_GAME;
             case "gamedata" -> this.answer = AnswerType.GAME_DATA;
+            case "message" -> this.answer = AnswerType.MESSAGE;
+            case "chatenable" -> this.answer = AnswerType.CHAT_ENABLE;
+            case "chatdisable" -> this.answer = AnswerType.CHAT_DISABLE;
             default -> this.answer = AnswerType.UNKNOWN_COMMAND;
         }
 

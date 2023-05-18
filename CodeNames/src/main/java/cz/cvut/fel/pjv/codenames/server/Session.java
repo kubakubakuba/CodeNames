@@ -22,6 +22,7 @@ public class Session {
     private Buffer loadedCards;
 
     private HashMap<String, Socket> listeners;
+    private HashMap<String, Socket> chatListeners;
     public Lobby getLobby() {
         return lobby;
     }
@@ -37,6 +38,7 @@ public class Session {
         hostId = host;
         sessionId = UUID.randomUUID();
         listeners = new HashMap<String, Socket>();
+        chatListeners = new HashMap<String, Socket>();
     }
 
     public void startNewGame(String dckFile){
@@ -57,7 +59,15 @@ public class Session {
         return this.listeners;
     }
 
+    public HashMap<String, Socket> getChatListeners() {
+        return this.chatListeners;
+    }
+
     public void addListener(Socket listener, String id) {
         this.listeners.put(id, listener);
+    }
+
+    public void addChatListener(Socket listener, String id) {
+        this.chatListeners.put(id, listener);
     }
 }

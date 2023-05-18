@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
+import cz.cvut.fel.pjv.codenames.controller.ChatController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -134,6 +135,8 @@ public class StartView extends Application {
             //controller.getHostId();
             controller.updatePlayerCount();
             LobbyView lobby = new LobbyView(new Stage(), id, controller, true);
+            ChatController chatController = new ChatController(controller.getLocalClient());
+            chatController.displayChatWindow();
             stage.close();
         });
 

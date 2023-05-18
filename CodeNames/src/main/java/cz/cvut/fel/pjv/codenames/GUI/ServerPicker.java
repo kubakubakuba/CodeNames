@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
+import cz.cvut.fel.pjv.codenames.controller.ChatController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -63,6 +64,8 @@ public class ServerPicker extends Application {
                 controller.updatePlayerCount();
                 LobbyView lobby = new LobbyView(new Stage(), ID, controller, false);
                 previousStage.close();
+                ChatController chatController = new ChatController(controller.getLocalClient());
+                chatController.displayChatWindow();
             });
             buttonContainer.getChildren().add(button);
         }

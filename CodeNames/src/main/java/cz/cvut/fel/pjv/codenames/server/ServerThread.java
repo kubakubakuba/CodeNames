@@ -38,6 +38,18 @@ public class ServerThread extends Thread {
         }
     }
 
+    private void sendMessages(String session, String message){
+        for(Socket s : server.getActiveSessions().get(session).getChatListeners().values()){
+            PrintWriter playerWriter = null;
+            try {
+                playerWriter = new PrintWriter(s.getOutputStream(), true);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            playerWriter.println("message;" + message.replace(";", ","));
+        }
+    }
+
     private boolean checkRoleAvailable(String playerId, String sessionId, Player.PlayerRole role){
         Session session = server.getActiveSessions().get(sessionId);
         HashMap<String, Player> players = session.getLobby().getListOfPlayers();
@@ -102,6 +114,21 @@ public class ServerThread extends Thread {
                     }
                 }
 
+                if(parser.getCommand() == CommandParser.CommandType.LISTEN_CHAT){
+                    String session = parser.getArguments()[0];
+                    String id = parser.getArguments()[1];
+                    Session s = server.getActiveSessions().get(session);
+                    LOGGER.log(Level.INFO, "Player " + parser.getArguments()[1] + " is listening to all chat messages in " + session);
+
+                    if(s.getLobby().getListOfPlayers().containsKey(id)){
+                        s.addChatListener(socket, id);
+                        writer.println("accept;"); //accept the listener
+                    }
+                    else{
+                        writer.println("decline;"); //accept the listener
+                    }
+                }
+
                 if(parser.getCommand() == CommandParser.CommandType.SEND_MESSAGE){
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
@@ -125,7 +152,9 @@ public class ServerThread extends Thread {
                         }
                     }
 
-                    sendUpdates(idSession);
+                    sendMessages(idSession, message);
+
+                    writer.println("1arg;true");
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.MAKE_MOVE){
