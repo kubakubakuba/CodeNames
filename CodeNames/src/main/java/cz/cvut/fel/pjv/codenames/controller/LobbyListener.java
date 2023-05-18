@@ -50,7 +50,6 @@ public class LobbyListener implements Runnable {
                     }
                     if(answerParser.getAnswer() == AnswerParser.AnswerType.START_GAME){
                         lobbyView.startGame();
-
                         stop();
                     }
                 }

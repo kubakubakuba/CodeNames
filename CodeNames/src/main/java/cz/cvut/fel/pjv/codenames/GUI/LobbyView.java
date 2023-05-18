@@ -103,11 +103,12 @@ public class LobbyView extends Application {
 
         buttonStart.setOnAction(e -> {
             if(canStartGame()){
+                this.stage.close();
                 System.out.println("Starting game!");
                 localControl.startTheGame();
                 System.out.println("creating new stage from within host");
-                //GuiTesting game = new GuiTesting();
-                //game.start(new Stage());
+                GuiTesting game = new GuiTesting();
+                game.start(new Stage());
 
                 //this.stage.close();
             }

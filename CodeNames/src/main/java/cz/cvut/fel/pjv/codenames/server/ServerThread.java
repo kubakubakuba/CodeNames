@@ -434,7 +434,7 @@ public class ServerThread extends Thread {
                         }
                         playerWriter.println("startgame;");
                     }
-
+                    writer.println("1arg;true");
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.GET_GAME_DATA){
