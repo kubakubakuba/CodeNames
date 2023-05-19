@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Deck {
+public class Deck implements Serializable {
 
     private String dckFile;
     private ArrayList<ArrayList<Card>> cards;

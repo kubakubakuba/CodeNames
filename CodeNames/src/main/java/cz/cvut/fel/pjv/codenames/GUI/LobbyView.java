@@ -20,7 +20,6 @@ public class LobbyView extends Application {
 
     private String ID;
     private boolean isHost;
-
     private Label playerCounter;
     private ScrollPane scrollPane;
     private Label redCounter;
@@ -106,9 +105,8 @@ public class LobbyView extends Application {
                 this.stage.close();
                 System.out.println("Starting game!");
                 localControl.startTheGame();
-                System.out.println("creating new stage from within host");
-                GuiTesting game = new GuiTesting();
-                game.start(new Stage());
+                //GuiTesting game = new GuiTesting();
+                //game.start(new Stage());
 
                 //this.stage.close();
             }
@@ -346,7 +344,6 @@ public class LobbyView extends Application {
     }
 
     public void startGame(){
-        if(!isHost){
             javafx.application.Platform.runLater(() -> {
                 System.out.println("creating new stage ");
                 GuiTesting game = new GuiTesting();
@@ -354,6 +351,5 @@ public class LobbyView extends Application {
                 this.stage.close();
                 //stage.close();
             });
-        }
     }
 }

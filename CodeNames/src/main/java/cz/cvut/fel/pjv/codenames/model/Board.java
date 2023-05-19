@@ -1,9 +1,10 @@
 package cz.cvut.fel.pjv.codenames.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Board {
+public class Board implements Serializable {
 
     private ArrayList<ArrayList<Card>> Cards;
     private Key key;
@@ -19,7 +20,7 @@ public class Board {
 
     //load Board
 
-    private void transferKeyToCards(Key key, Deck deck){
+    void transferKeyToCards(Key key, Deck deck){
         ArrayList<ArrayList<Key.KeyType>> solution = key.getSolution();
         for(int r =0; r<5; r++){
             for(int c = 0; c<5; c++){
@@ -33,4 +34,31 @@ public class Board {
         return teams[randIdx];
     }
 
+    public Key getKey() {
+        return key;
+    }
+
+    public Deck getDeck() {
+        return deck;
+    }
+
+    public Player.PlayerTeam getStartingTeam() {
+        return startingTeam;
+    }
+
+    public int getCardLeft(Player.PlayerTeam pteam){
+        int ret = 0;
+        for(int r =0; r<5; r++){
+            for(int c = 0; c<5; c++){
+                if(deck.getCards().get(r).get(c).getCardType() == Key.KeyType.RED && pteam == Player.PlayerTeam.RED){
+                    ret++;
+                }
+                if(deck.getCards().get(r).get(c).getCardType() == Key.KeyType.BLUE && pteam == Player.PlayerTeam.BLUE){
+                    ret++;
+                }
+            }
+        }
+
+        return ret;
+    }
 }

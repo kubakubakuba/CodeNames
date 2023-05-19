@@ -1,10 +1,14 @@
 package cz.cvut.fel.pjv.codenames.controller;
 
-import cz.cvut.fel.pjv.codenames.model.Client;
-import cz.cvut.fel.pjv.codenames.model.Deck;
-import cz.cvut.fel.pjv.codenames.model.Key;
+import cz.cvut.fel.pjv.codenames.GUI.GameView;
+import cz.cvut.fel.pjv.codenames.model.*;
+import cz.cvut.fel.pjv.codenames.server.AnswerParser;
+import javafx.stage.Stage;
 
+import java.io.*;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class GameController {
     private Client localClient;
@@ -16,7 +20,6 @@ public class GameController {
 
     private Deck gameDeck;
 
-
     private String currentTurnText;
     private String currentPromptText;
     private int currentPromptCardCount;
@@ -26,23 +29,34 @@ public class GameController {
     public String getCurrentPromptText() {return currentPromptText;}
     public int getCurrentPromptCardCount() {return currentPromptCardCount;}
 
-
+    private GameView gameView;
     private String serverIP = "localhost";
     private int serverPort = 1313;
-    
+
+    private ChatController chatController;
+
+    private GameListener gameListen;
 
     public Client getClient() {
         return localClient;
     }
 
-    public GameController(Client client) {
+    public GameController(Client client, ChatController chatController){
         this.localClient = client;
         serverIP = localClient.getServerIP();
         serverPort = localClient.getServerPort();
         revealedCardsBoard = initRevealedCards();
     }
 
-    //only for spymaster
+    public void displayGameWindow(){
+        gameView.start(new Stage());
+
+        System.out.println("starting game listener");
+        Thread gameListenerThread = new Thread(gameListen);
+
+        gameListenerThread.start();
+    }
+
     public Key getKey() {return gamekey;}
     public Deck getDeck() {return gameDeck;}
 
@@ -77,10 +91,21 @@ public class GameController {
 
     public void getSessionDeck(){}
     public void saveGame(){}
-    public void getCurrentTurn(){
-        //Todo implement getCurrentTurn loads teamcolor and role of current turn to currentTurnText
+        //TODO: implement getCurrentTurn loads teamcolor and role of current turn to currentTurnText
+
+    public void update(GameData data) {
+        //init variable object from data
+        String team = (data.getCurrentTurnTeam() == Player.PlayerTeam.RED) ? "RED" : "BLUE";
+        String role = (data.getCurrentTurnRole() == Player.PlayerRole.SPY_MASTER) ? "SPYMASTER" : "FIELD OPERATIVES";
+        this.currentTurnText = team + " " + role;
+        this.gameDeck = data.getBoard().getDeck();
+        this.gamekey = data.getBoard().getKey();
+        this.revealedCardsBoard = data.getRevealedCardsBoard();
+        this.currentPromptText = data.getLastPromptText();
+        this.currentPromptCardCount = data.getLastPromptCardCount();
     }
-    public void getCurrentPrompt(){} //gets prompt string and prompt cardcount to CurrentPrompt and Currentpromptcardcount
+
+}
 
 
 }

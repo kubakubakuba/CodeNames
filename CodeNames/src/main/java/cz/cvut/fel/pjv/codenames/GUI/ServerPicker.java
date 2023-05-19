@@ -66,6 +66,8 @@ public class ServerPicker extends Application {
                 previousStage.close();
                 ChatController chatController = new ChatController(controller.getLocalClient());
                 chatController.displayChatWindow();
+
+                controller.setChatController(chatController);
             });
             buttonContainer.getChildren().add(button);
         }

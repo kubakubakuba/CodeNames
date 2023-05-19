@@ -20,6 +20,15 @@ public class LobbyController {
     private String serverIP = "localhost";
     private int serverPort = 1313;
 
+    private ChatController chatController;
+
+    public ChatController getChatController() {
+        return chatController;
+    }
+
+    public void setChatController(ChatController chatController) {
+        this.chatController = chatController;
+    }
 
     public int getPlayerCount() {return playerCount;}
     public int[] getRBNPlayers() {return RBNPlayers;}
@@ -188,10 +197,10 @@ public class LobbyController {
 
     public void startTheGame(){
         String answer = localClient.sendCommand("startgame;" + localClient.getId()+ ";"+
-                localClient.getSessionId() + ';', serverIP, serverPort);
+                localClient.getSessionId() + ';' + "src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck;", serverIP, serverPort);
 
         AnswerParser parser = new AnswerParser(answer);
-        if(parser.getArguments()[0] == "null"){
+        if(parser.getArguments()[0].equals("null")){
             System.err.println("Starting the game was not granted by server!");
         }
 

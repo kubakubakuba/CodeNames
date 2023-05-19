@@ -14,18 +14,20 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.util.ArrayList;
+import javafx.stage.StageStyle;
 
 public class ChatView extends Application {
     private Stage stage;
-    private TextArea messages;
-    private TextArea input;
+    private TextArea chatLog;
+    private TextArea inputField;
 
     private boolean enabled = false;
     private ChatController chatControl;
 
     private Client localClient;
+
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     public ChatView(ChatController chatControl, Client client) {
         this.chatControl = chatControl;
@@ -33,21 +35,20 @@ public class ChatView extends Application {
     }
     public void start(Stage stage) {
         this.stage = stage;
-        //stage.setTitle("CodeNames Chat - " + localClient.getId());
-        //stage.centerOnScreen();
+        stage.initStyle(StageStyle.UNDECORATED);
         showChatWindow("CodeNames Chat - " + localClient.getId());
     }
 
-    public void showChatWindow(String userName) {
+    public void showChatWindow(String title) {
         Label msgLabel = new Label("Chat log");
-        messages = new TextArea();
-        messages.setEditable(false);
-        messages.setWrapText(true);
-        VBox.setVgrow(messages, Priority.ALWAYS);
+        chatLog = new TextArea();
+        chatLog.setEditable(false);
+        chatLog.setWrapText(true);
+        VBox.setVgrow(chatLog, Priority.ALWAYS);
         Label inputLabel = new Label("Send message");
-        input = new TextArea();
-        input.setMaxHeight(28);
-        input.setOnKeyPressed((event) -> {
+        inputField = new TextArea();
+        inputField.setMaxHeight(28);
+        inputField.setOnKeyPressed((event) -> {
             if (event.getCode() == KeyCode.ENTER) {
                 sendMessage();
             }
@@ -56,21 +57,31 @@ public class ChatView extends Application {
         sendButton.setOnAction((ActionEvent e) -> {
             sendMessage();
         });
-        VBox vbox = new VBox(4, msgLabel, messages, inputLabel, input, sendButton);
+        VBox vbox = new VBox(4, msgLabel, chatLog, inputLabel, inputField, sendButton);
         vbox.setPadding(new Insets(8));
         vbox.setAlignment(Pos.CENTER);
-        Scene chatScene = new Scene(vbox, 640, 480);
-        stage.setTitle(userName);
-        stage.setScene(chatScene);
+        Scene scene = new Scene(vbox, 640, 480);
+        stage.setTitle(title);
+        stage.setScene(scene);
+
+        scene.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+        scene.setOnMouseDragged(event -> {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        });
+
         stage.show();
     }
 
     private void sendMessage() {
-        String message = removeLineBreaks(input.getText().strip());
+        String message = removeLineBreaks(inputField.getText().strip());
         if (message.length() > 0) {
             message = message.replace(";", ",");
             chatControl.sendMessage(message);
-            input.setText("");
+            inputField.setText("");
         }
     }
 
@@ -81,15 +92,26 @@ public class ChatView extends Application {
 
     public void addMessage(String msg) {
         javafx.application.Platform.runLater(() -> {
-            messages.appendText(msg + "\n\n");
+            chatLog.appendText(msg + "\n\n");
         });
     }
 
     public void enableChat(){
         enabled = true;
+        javafx.application.Platform.runLater(() -> {
+            inputField.setDisable(false);
+        });
     }
 
     public void disableChat(){
         enabled = false;
+        javafx.application.Platform.runLater(() -> {
+            inputField.setDisable(true);
+        });
+    }
+
+    public void closeChat(){
+        stage.close();
+        System.exit(0);
     }
 }

@@ -30,11 +30,11 @@ public class ChatController {
         chatListenerThread.start();
     }
     public void setChatDisable(){
-
+        chatView.disableChat();
     }
 
     public void setChatEnable(){
-
+        chatView.enableChat();
     }
 
     public void sendMessage(String message){
@@ -70,5 +70,10 @@ public class ChatController {
         }
 
         return serverAnswer;
+    }
+
+    public void closeChat(){
+        chatListen.stop();
+        chatView.closeChat();
     }
 }

@@ -11,17 +11,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class FieldOperativeLeaderView extends GameView {
+public class FieldOperativeLeaderView extends Application {
 
     Label currentTurnLabel;
     Label promptLabel;
     Label promptCardCountLabel;
     GridPane boardContainer;
     private GameController localControl;
-    public FieldOperativeLeaderView(GameController controller, Stage stage) {
-        super(controller);
+    public FieldOperativeLeaderView(GameController controller) {
+        //super(controller);
         this.localControl = controller;
-        start(stage);
+        //start(stage);
     }
 
     public static void main(String[] args) {
@@ -43,7 +43,7 @@ public class FieldOperativeLeaderView extends GameView {
         promptLabel = new Label("Entered prompt: " +localControl.getCurrentPromptText());
         promptLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
-        promptCardCountLabel = new Label("Num Cards:" + localControl.getCurrentPromptCardCount());
+        promptCardCountLabel = new Label("Num Cards: " + localControl.getCurrentPromptCardCount());
         promptCardCountLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
         Button saveBtn = new Button("Save game");
@@ -67,8 +67,9 @@ public class FieldOperativeLeaderView extends GameView {
         boardContainer.setVgap(30);
 
         for (int r = 0; r < 5; r++) {
+            final int row = r;
             for (int c = 0; c < 5; c++) {
-
+                final int col = c;
                 String name = localControl.getDeck().getCards().get(r).get(c).getName();
 
                 Button choiceButton =new Button();

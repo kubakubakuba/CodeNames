@@ -24,6 +24,7 @@ public class CommandParser {
         START_GAME,
         GET_GAME_DATA,
         LISTEN_CHAT,
+        LISTEN_GAME,
         UNKNOWN_COMMAND
     }
 
@@ -63,6 +64,7 @@ public class CommandParser {
             case "getgamedata" -> this.command = CommandType.GET_GAME_DATA;
             case "listenchat" -> this.command = CommandType.LISTEN_CHAT;
             case "message" -> this.command = CommandType.SEND_MESSAGE;
+            case "listengame" -> this.command = CommandType.LISTEN_GAME;
             default -> this.command = CommandType.UNKNOWN_COMMAND;
         }
 

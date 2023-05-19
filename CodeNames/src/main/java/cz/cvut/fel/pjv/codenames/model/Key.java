@@ -1,11 +1,12 @@
 package cz.cvut.fel.pjv.codenames.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class Key {
+public class Key implements Serializable {
     public enum KeyType{
         RED,
         BLUE,

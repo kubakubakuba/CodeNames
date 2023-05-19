@@ -21,7 +21,7 @@ public class SpymasterView extends Application {
     Label currentTurnLabel;
     String currentTurnText;
     private GameController localControl;
-    public SpymasterView(GameController controller, Stage stage) {
+    public SpymasterView(GameController controller) {
         //super(controller);
         this.localControl = controller;
 
@@ -37,9 +37,9 @@ public class SpymasterView extends Application {
 
     @Override
     public void start(Stage gameStage) {
+        localControl.getGameData();
 
-        localControl.getCurrentTurn();
-        currentTurnLabel = new Label("Turn of: " + currentTurnText);
+        currentTurnLabel = new Label("Turn of: " + localControl.getCurrentTurnText());
         currentTurnLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         currentTurnLabel.setAlignment(Pos.TOP_CENTER);
         HBox turnPane = new HBox();

@@ -1,7 +1,9 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
 import cz.cvut.fel.pjv.codenames.controller.GameController;
+import cz.cvut.fel.pjv.codenames.model.Client;
 import cz.cvut.fel.pjv.codenames.model.Key;
+import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,16 +14,18 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-public class FieldOperativeView extends GameView {
+public class FieldOperativeView extends Application {
 
     Label currentTurnLabel;
     Label promptLabel;
     Label promptCardCountLabel;
     GridPane boardContainer;
 
+    private Client localClient;
+
     private GameController localControl;
-    public FieldOperativeView(GameController controller, Stage stage) {
-        super(controller);
+    public FieldOperativeView(GameController controller) {
+        //super(controller);
         this.localControl = controller;
         localControl.getSessionDeck();
         start(stage);

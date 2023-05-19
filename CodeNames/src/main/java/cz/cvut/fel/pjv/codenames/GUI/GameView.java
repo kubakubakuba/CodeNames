@@ -20,6 +20,7 @@ public class GameView extends Application {
         determineView(role);
     }
 
+
     public void determineView(Player.PlayerRole role)   {
         if (role == Player.PlayerRole.SPY_MASTER){
             SpymasterView view = new SpymasterView(localControl, new Stage());
@@ -34,6 +35,14 @@ public class GameView extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-
+        if(role == Player.PlayerRole.SPY_MASTER){
+            viewS.start(primaryStage);
+        }
+        if(role == Player.PlayerRole.FIELD_OPERATIVE){
+            viewF.start(primaryStage);
+        }
+        if(role == Player.PlayerRole.FIELD_OPERATIVE_LEADER){
+            viewL.start(primaryStage);
+        }
     }
 }

@@ -1,6 +1,8 @@
 package cz.cvut.fel.pjv.codenames.model;
 
-public class Card {
+import java.io.Serializable;
+
+public class Card implements Serializable {
     private final String name;
     private Key.KeyType cardType;
     public Card(String name) {

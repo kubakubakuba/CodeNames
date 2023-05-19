@@ -1,14 +1,12 @@
 package cz.cvut.fel.pjv.codenames.server;
 
 import cz.cvut.fel.pjv.codenames.model.Game;
+import cz.cvut.fel.pjv.codenames.model.Key;
 import cz.cvut.fel.pjv.codenames.model.Player;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +26,18 @@ public class ServerThread extends Thread {
 
     private void sendUpdates(String session){
         for(Socket s : server.getActiveSessions().get(session).getListeners().values()){
+            PrintWriter playerWriter = null;
+            try {
+                playerWriter = new PrintWriter(s.getOutputStream(), true);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            playerWriter.println("update;");
+        }
+    }
+
+    private void gameUpdates(String session){
+        for(Socket s : server.getActiveSessions().get(session).getGameListeners().values()){
             PrintWriter playerWriter = null;
             try {
                 playerWriter = new PrintWriter(s.getOutputStream(), true);
@@ -76,6 +86,40 @@ public class ServerThread extends Thread {
         return true;
     }
 
+    public String serialize(Serializable object) {
+        try {
+            // Create a ByteArrayOutputStream to hold the serialized object
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            // Create an ObjectOutputStream to write the object into the ByteArrayOutputStream
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+            // Write the object to the ObjectOutputStream
+            oos.writeObject(object);
+
+            // Close the streams
+            oos.close();
+
+            // Convert the ByteArrayOutputStream to a base64 string
+            byte[] bytes = baos.toByteArray();
+            return Base64.getEncoder().encodeToString(bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private boolean compareTeamCard(Key.KeyType key, Player.PlayerTeam team){
+        if(key == Key.KeyType.RED && team == Player.PlayerTeam.RED){
+            return true;
+        }
+        if(key == Key.KeyType.BLUE && team == Player.PlayerTeam.BLUE){
+            return true;
+        }
+        return false;
+    }
+
     public void run(){
         try{
             InputStream input = socket.getInputStream();
@@ -107,10 +151,10 @@ public class ServerThread extends Thread {
 
                     if(s.getLobby().getListOfPlayers().containsKey(id)){
                         s.addListener(socket, id);
-                        writer.println("accept;"); //accept the listener
+                        writer.println("1arg;true"); //accept the listener
                     }
                     else{
-                        writer.println("decline;"); //accept the listener
+                        writer.println("1arg;false"); //accept the listener
                     }
                 }
 
@@ -122,10 +166,25 @@ public class ServerThread extends Thread {
 
                     if(s.getLobby().getListOfPlayers().containsKey(id)){
                         s.addChatListener(socket, id);
-                        writer.println("accept;"); //accept the listener
+                        writer.println("1arg;true"); //accept the listener
                     }
                     else{
-                        writer.println("decline;"); //accept the listener
+                        writer.println("1arg;false"); //accept the listener
+                    }
+                }
+
+                if(parser.getCommand() == CommandParser.CommandType.LISTEN_GAME){
+                    String session = parser.getArguments()[0];
+                    String id = parser.getArguments()[1];
+                    Session s = server.getActiveSessions().get(session);
+                    LOGGER.log(Level.INFO, "Player " + parser.getArguments()[1] + " is listening to game updates in " + session);
+
+                    if(s.getLobby().getListOfPlayers().containsKey(id)){
+                        s.addGameListener(socket, id);
+                        writer.println("1arg;true"); //accept the listener
+                    }
+                    else{
+                        writer.println("1arg;false"); //accept the listener
                     }
                 }
 
@@ -138,7 +197,7 @@ public class ServerThread extends Thread {
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
@@ -160,20 +219,106 @@ public class ServerThread extends Thread {
                 if(parser.getCommand() == CommandParser.CommandType.MAKE_MOVE){
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
-                    String move = parser.getArguments()[2];
+                    int yCoord = Integer.parseInt(parser.getArguments()[2]);
+                    int xCoord = Integer.parseInt(parser.getArguments()[3]);
 
-                    LOGGER.log(Level.INFO, "Player " + idSelf + " made move: " + move + " at session " + idSession);
+                    LOGGER.log(Level.INFO, "Field operative " + idSelf + " clicked on X: " + xCoord + " Y: " + yCoord + " at session: "+ idSession);
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+                    if(xCoord < 0 || xCoord > 4 || yCoord < 0 || yCoord > 4){
+                        System.err.println("Invalid coordinates!");
+                        writer.println("1arg;false");
                         return;
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
-                    //TODO: make move through game controller
 
-                    sendUpdates(idSession);
+                    ArrayList<ArrayList<Key.KeyType>> discovered = s.getGame().getGameData().getRevealedCardsBoard();
+
+                    if(discovered.get(yCoord).get(xCoord) != Key.KeyType.EMPTY){
+                        System.err.println("Field operative clicked on already discovered card!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+                    Key.KeyType correct = s.getGame().getGameData().getBoard().getKey().getSolution().get(yCoord).get(xCoord);
+                    s.getGame().getGameData().revealCardInRevealedCards(yCoord,xCoord,correct);
+
+                    if(correct == Key.KeyType.ASSASSIN){
+                        s.getGame().getGameData().setLastPromptCardCount(0);
+                        sendMessages(String.valueOf(s), "_____You found the assassin! The game ends!_____");
+                    }
+
+                    if(compareTeamCard(correct, s.getGame().getGameData().getCurrentTurnTeam())){
+                        if(s.getGame().getGameData().getLastPromptCardCount() == 1){
+                            s.getGame().getGameData().setLastPromptCardCount(0);
+                            s.getGame().getGameData().setCurrentTurnTeam(s.getGame().getGameData().getCurrentTurnTeam() == Player.PlayerTeam.RED ? Player.PlayerTeam.BLUE : Player.PlayerTeam.RED);
+                            s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER); //change the team and set the other leader to type again
+                            sendMessages(String.valueOf(s), "_____Correct guess! Other team plays now._____");
+                        }
+                        else{
+                            s.getGame().getGameData().setLastPromptCardCount(s.getGame().getGameData().getLastPromptCardCount() - 1);
+                            s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER); //change only the leader to type again
+                            sendMessages(String.valueOf(s), "_____Correct guess!_____");
+                        }
+                    }
+                    else{
+                        s.getGame().getGameData().setLastPromptCardCount(0);
+                        s.getGame().getGameData().setCurrentTurnTeam(s.getGame().getGameData().getCurrentTurnTeam() == Player.PlayerTeam.RED ? Player.PlayerTeam.BLUE : Player.PlayerTeam.RED);
+                        s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER); //change the team and set the other leader to type again
+                        sendMessages(String.valueOf(s), "_____Wrong guess! Other team plays now._____");
+                    }
+
+                    gameUpdates(idSession);
+
+                    writer.println("1arg;true");
+                }
+
+                if (parser.getCommand() == CommandParser.CommandType.COMMIT_PROMPT){
+                    String idSelf = parser.getArguments()[0];
+                    String idSession = parser.getArguments()[1];
+                    String prompt = parser.getArguments()[2];
+                    int count = Integer.parseInt(parser.getArguments()[3]);
+
+                    LOGGER.log(Level.INFO, "Field operative leader " + idSelf + " prompted: " + prompt + " with count: " + count + " at session: "+ idSession);
+
+                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
+                        System.err.println("Player not in session!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+                    Session s = server.getActiveSessions().get(idSession);
+
+                    System.out.println(s.getGame().getGameData().getBoard().getCardLeft(s.getGame().getGameData().getCurrentTurnTeam()));
+
+                    if(count < 0 || count > s.getGame().getGameData().getBoard().getCardLeft(s.getGame().getGameData().getCurrentTurnTeam())){
+                        System.err.println("Invalid count!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+                    if(s.getGame().getGameData().getCurrentTurnRole() != Player.PlayerRole.SPY_MASTER){
+                        System.err.println("Player is not spymaster!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+
+                    s.getGame().getGameData().setLastPromptCardCount(count);
+                    s.getGame().getGameData().setLastPromptText(prompt);
+                    s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE);
+
+                    writer.println("1arg;true;");
+
+                    sendMessages(String.valueOf(s), "_____Leader prompt: " + prompt + " with count: " + count + "_____");
+
+                    gameUpdates(idSession);
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.CREATE_SESSION){
@@ -192,7 +337,7 @@ public class ServerThread extends Thread {
 
                     LOGGER.log(Level.INFO, "Player " + idSelf + " connected to session " + idSession);
 
-                    String response = "1arg;null;";
+                    String response = "1arg;false;";
                     if(server.getActiveSessions().containsKey(idSession)){
                         Session s = server.getActiveSessions().get(idSession);
                         s.getLobby().getListOfIds().add(idSelf);
@@ -214,7 +359,7 @@ public class ServerThread extends Thread {
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
@@ -304,7 +449,7 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player "+ idSelf + " requested player count");
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
                     Session s = server.getActiveSessions().get(idSession);
@@ -333,7 +478,7 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player "+ idSelf + " requested player count");
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
@@ -387,7 +532,7 @@ public class ServerThread extends Thread {
                     System.out.println(server.getActiveSessions().toString() + server.getActiveSessions().get(idSession).getLobby().getListOfPlayers());
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
                     Session s = server.getActiveSessions().get(idSession);
@@ -409,7 +554,7 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player " + idSelf + " requested to disconnect from session " + idSession);
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
                     Session s = server.getActiveSessions().get(idSession);
@@ -431,28 +576,29 @@ public class ServerThread extends Thread {
                 if(parser.getCommand() == CommandParser.CommandType.START_GAME){
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
+                    String deckPath = parser.getArguments()[2];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
                     if(!s.getHostId().equals(idSelf)){
                         System.err.println("Player is not host!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
                     if(s.getLobby().getListOfPlayers().size() < 4){
                         System.err.println("Not enough players to start game!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
                     //TODO: pass the deck path from host selected file
-                    s.startNewGame("src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck");
+                    s.startNewGame(deckPath);
 
                     for(Socket ss : s.getListeners().values()){
                         PrintWriter playerWriter = null;
@@ -463,7 +609,10 @@ public class ServerThread extends Thread {
                         }
                         playerWriter.println("startgame;");
                     }
+
                     writer.println("1arg;true");
+
+                    sendMessages(idSession, "_____THE GAME HAS BEEN STARTED!_____");
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.GET_GAME_DATA){
@@ -472,27 +621,24 @@ public class ServerThread extends Thread {
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
                         System.err.println("Player not in session!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
                     if(s.getGame() == null){
                         System.err.println("Game not started!");
-                        writer.println("1arg;null");
+                        writer.println("1arg;false");
                         return;
                     }
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ObjectOutputStream oos = new ObjectOutputStream(baos);
-                    oos.writeObject(s.getGame());
-                    oos.close();
-
-                    String gameData = Base64.getEncoder().encodeToString(baos.toByteArray());
+                    String gameData = serialize(s.getGame().getGameData());
+                    System.out.println("printing game data: " + gameData);
 
                     String response = "gamedata;" + gameData;
                     writer.println(response);
                     System.out.printf("response: %s\n", response);
+
                 }
 
             } while(parser.getCommand() != CommandParser.CommandType.TERMINATE_SERVER);

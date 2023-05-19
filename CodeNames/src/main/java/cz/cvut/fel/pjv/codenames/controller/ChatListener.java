@@ -29,7 +29,7 @@ public class ChatListener implements Runnable {
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 
             writer.println("listenchat;" + client.getSessionId().toString() + ";" + client.getId() + ";");
-            System.out.println(reader.readLine());
+            System.out.println(reader.readLine()); //TODO: check for server answer
 
             String message;
             while (running) {

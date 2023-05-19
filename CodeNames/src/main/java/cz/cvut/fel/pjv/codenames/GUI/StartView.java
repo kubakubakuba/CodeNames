@@ -137,6 +137,8 @@ public class StartView extends Application {
             LobbyView lobby = new LobbyView(new Stage(), id, controller, true);
             ChatController chatController = new ChatController(controller.getLocalClient());
             chatController.displayChatWindow();
+
+            controller.setChatController(chatController);
             stage.close();
         });
 
