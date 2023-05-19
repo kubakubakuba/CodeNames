@@ -15,6 +15,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+
 public class ChatView extends Application {
     private Stage stage;
     private TextArea messages;
@@ -78,7 +80,9 @@ public class ChatView extends Application {
     }
 
     public void addMessage(String msg) {
-        messages.appendText(msg + "\n\n");
+        javafx.application.Platform.runLater(() -> {
+            messages.appendText(msg + "\n\n");
+        });
     }
 
     public void enableChat(){
