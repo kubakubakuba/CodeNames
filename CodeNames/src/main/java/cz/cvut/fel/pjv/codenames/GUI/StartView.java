@@ -141,6 +141,9 @@ public class StartView extends Application {
             stage.close();
         });
 
+        stage.setOnCloseRequest(e -> {
+            System.exit(0);
+        });
         stage.setTitle("Codenames");
         stage.setScene(scene);
         stage.show();

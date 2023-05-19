@@ -47,6 +47,7 @@ public class Session {
     public void startNewGame(String dckFile){
         game = new Game(lobby.getListOfPlayers(), dckFile);
     }
+
     public void startGameWDeck(){
         //game = new Game(Buffer loadedDeck)
         //or probably decode the deck to a ArrayList<String>

@@ -6,7 +6,6 @@ import java.util.Random;
 
 public class Board implements Serializable {
 
-    private ArrayList<ArrayList<Card>> Cards;
     private Key key;
     private Deck deck;
     private Player.PlayerTeam startingTeam;

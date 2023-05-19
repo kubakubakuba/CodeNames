@@ -1,8 +1,10 @@
 package cz.cvut.fel.pjv.codenames.model;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class GameData implements java.io.Serializable{
+    
     private Board board; //board
     private ArrayList<ArrayList<Key.KeyType>> revealedCardsBoard; //which spaces were already guessed
     private String lastPromptText;
@@ -12,9 +14,11 @@ public class GameData implements java.io.Serializable{
 
     public GameData(Board board){
         this.board = board;
-        this.round = new Random().nextInt(2);
-        this.guessedSpaceIndexes = new int[25];
-        this.lastPrompt = "";
+        currentTurnTeam = board.getStartingTeam();
+        currentTurnRole = Player.PlayerRole.SPY_MASTER;
+        this.revealedCardsBoard = initRevealedCards();
+        this.lastPromptText = "";
+        this.lastPromptCardCount = 0;
     }
 
     public GameData(String game_file){

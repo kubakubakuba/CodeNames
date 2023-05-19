@@ -30,8 +30,7 @@ public class FieldOperativeView extends Application {
     public FieldOperativeView(GameController controller) {
         //super(controller);
         this.localControl = controller;
-        localControl.getSessionDeck();
-        start(stage);
+        //start(stage);
     }
 
     public static void main(String[] args) {
@@ -40,8 +39,8 @@ public class FieldOperativeView extends Application {
 
     @Override
     public void start(Stage gameStage) {
+        localControl.getGameData();
 
-        localControl.getCurrentTurn();
         currentTurnLabel = new Label("Turn of: " + localControl.getCurrentTurnText());
         currentTurnLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         currentTurnLabel.setAlignment(Pos.TOP_CENTER);
@@ -80,18 +79,47 @@ public class FieldOperativeView extends Application {
             for (int c = 0; c < 5; c++) {
                 StackPane cardPane = new StackPane();
                 cardPane.setPrefSize(200, 100);
+
                 String name = localControl.getDeck().getCards().get(r).get(c).getName();
+                Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
+
                 Label cardLabel = new Label(name);
                 cardLabel.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
 
-                cardPane.getChildren().add(cardLabel);
-                cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,
-                        CornerRadii.EMPTY, new BorderWidths(5))));
-                boardContainer.add(cardPane, c, r);
+                if (revealedStatus == Key.KeyType.EMPTY) {
+                    cardPane.getChildren().add(cardLabel);
+                    cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,
+                            CornerRadii.EMPTY, new BorderWidths(5))));
+                    cardPane.setAlignment(cardLabel, Pos.CENTER);
+                }
+                else {
+                    String imgpath = "";
+                    if (revealedStatus == Key.KeyType.RED) {
+                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
+                        imgpath = randomize(sa,2);
+                    }
+                    if (revealedStatus == Key.KeyType.BLUE) {
+                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
+                        imgpath = randomize(sa,2);
+                    }
+                    if (revealedStatus == Key.KeyType.CIVILIAN) {
+                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
+                        imgpath = randomize(sa,2);
 
-                cardPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,
-                        CornerRadii.EMPTY, new BorderWidths(5))));
-                cardPane.setAlignment(cardLabel, Pos.CENTER);
+                    }
+                    if (revealedStatus == Key.KeyType.ASSASSIN) {
+                        imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
+                    }
+                    Image backgroundImage = new Image(imgpath);
+                    BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+                    BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                            BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+                    cardPane.setBackground(new Background(backgroundImg));
+                }
+                boardContainer.add(cardPane, r, c);
             }
         }
 
@@ -117,5 +145,86 @@ public class FieldOperativeView extends Application {
         });
 
         gameStage.show();
+    }
+
+    public void update()    {
+        localControl.getGameData();
+        javafx.application.Platform.runLater(() -> {
+            currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+
+            promptLabel.setText("Entered prompt: " +localControl.getCurrentPromptText());
+            promptCardCountLabel.setText("Num Cards:" + localControl.getCurrentPromptCardCount());
+
+            boardContainer = new GridPane();
+            boardContainer.setHgap(30);
+            boardContainer.setVgap(30);
+
+            for (int r = 0; r < 5; r++) {
+                for (int c = 0; c < 5; c++) {
+                    StackPane cardPane = new StackPane();
+                    cardPane.setPrefSize(200, 100);
+
+                    String name = localControl.getDeck().getCards().get(r).get(c).getName();
+                    Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
+                    Label cardLabel = new Label(name);
+
+                    if (revealedStatus == Key.KeyType.EMPTY) {
+                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.BLUE) {
+                            cardPane.setStyle("-fx-background-color: blue;");
+                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
+                        }
+                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.RED) {
+                            cardPane.setStyle("-fx-background-color: red;");
+                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
+                        }
+                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.ASSASSIN) {
+                            cardPane.setStyle("-fx-background-color: gray;");
+                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
+                        }
+                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.CIVILIAN) {
+                            cardPane.setStyle("-fx-background-color: yellow;");
+                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
+                        }
+
+                        cardPane.getChildren().add(cardLabel);
+                    }
+                    else {
+                        String imgpath = "";
+                        if (revealedStatus == Key.KeyType.RED) {
+                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
+                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
+                            imgpath = randomize(sa,2);
+                        }
+                        if (revealedStatus == Key.KeyType.BLUE) {
+                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
+                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
+                            imgpath = randomize(sa,2);
+                        }
+                        if (revealedStatus == Key.KeyType.CIVILIAN) {
+                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
+                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
+                            imgpath = randomize(sa,2);
+
+                        }
+                        if (revealedStatus == Key.KeyType.ASSASSIN) {
+                            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
+                        }
+                        Image backgroundImage = new Image(imgpath);
+                        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+                        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+                        cardPane.setBackground(new Background(backgroundImg));
+                    }
+                    boardContainer.add(cardPane, r, c);
+                    cardPane.setAlignment(cardLabel, Pos.CENTER);
+                }
+            }
+        });
+
+    }
+
+    public String randomize(String[] field, int len){
+        int randIdx  = new Random().nextInt(len);
+        return field[randIdx];
     }
 }

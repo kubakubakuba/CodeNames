@@ -1,5 +1,6 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
+import cz.cvut.fel.pjv.codenames.controller.GameController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyListener;
 import cz.cvut.fel.pjv.codenames.model.Player;
@@ -67,6 +68,9 @@ public class LobbyView extends Application {
         lobbyStage.setOnCloseRequest(event -> {
             localControl.disconnect();
             //System.out.println("Disonnected");
+            localControl.getChatController().closeChat();
+            //close chat
+            System.exit(0);
         });
 
         lobbyStage.show();
@@ -345,11 +349,17 @@ public class LobbyView extends Application {
 
     public void startGame(){
             javafx.application.Platform.runLater(() -> {
-                System.out.println("creating new stage ");
-                GuiTesting game = new GuiTesting();
-                game.start(new Stage());
+                System.out.println("creating new stage for game");
+                //GuiTesting game = new GuiTesting();
+                //game.start(new Stage());
+
+                GameController gameController = new GameController(localControl.getLocalClient(), localControl.getChatController());
+                //GameView game = new GameView(gameController);
+                System.out.println("displaying game window");
+                gameController.displayGameWindow();
+                System.out.println("game window displayed");
+
                 this.stage.close();
-                //stage.close();
             });
     }
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 
 public class GameController {
+
     private Client localClient;
 
     //for all (tracking revealed cards)
@@ -26,6 +27,7 @@ public class GameController {
     private int currentPromptCardCount;
 
     public ArrayList<ArrayList<Key.KeyType>> getRevealedCardsBoard() {return revealedCardsBoard;}
+
     public String getCurrentTurnText() {return currentTurnText;}
     public String getCurrentPromptText() {return currentPromptText;}
     public int getCurrentPromptCardCount() {return currentPromptCardCount;}
@@ -46,7 +48,9 @@ public class GameController {
         this.localClient = client;
         serverIP = localClient.getServerIP();
         serverPort = localClient.getServerPort();
-        revealedCardsBoard = initRevealedCards();
+        this.chatController = chatController;
+        this.gameView = new GameView(this);
+        this.gameListen = new GameListener(gameView, this);
     }
 
     public void displayGameWindow(){
@@ -61,36 +65,84 @@ public class GameController {
     public Key getKey() {return gamekey;}
     public Deck getDeck() {return gameDeck;}
 
-    public ArrayList<ArrayList<Key.KeyType>> initRevealedCards(){
-        ArrayList<ArrayList<Key.KeyType>> noReveals = new ArrayList<ArrayList<Key.KeyType>>();
-        for (int r = 0; r < 5; r++ ){
-            ArrayList<Key.KeyType> row = new ArrayList<Key.KeyType>();
-            for (int c = 0; c < 5; c++){
-                row.add(Key.KeyType.EMPTY);
-            }
-            noReveals.add(row);
+    
+    //checks if number of Cards doesn't exceed 9 or is less than 1
+    public boolean commitPrompt(String promptText, int cardCount){
+
+        if (cardCount > 9 || cardCount < 1) {
+            return false;
         }
-        return noReveals;
+
+        String answer = sendCommand("commitprompt;" + this.getClient().getId()+ ";"
+                + this.getClient().getSessionId().toString() + ";"
+                + promptText + ";"
+                + cardCount + ";");
+        AnswerParser answerParser = new AnswerParser(answer);
+        return answerParser.getArguments()[0].equals("true");
     }
-    //commands for spymaster:
-    //gets serialized key and Deck, using a DEck and key constructor
-    //loads data into instances and passes to gameKey and gameDeck
-    public void getSessionKey(){}
 
-    //checks if number of Cards doesn't exceed 8
-    public boolean commitPrompt(){return true;}
+    public void getGameData(){
+        String answer = sendCommand("getgamedata;" + this.getClient().getId()+ ";"
+                                                + this.getClient().getSessionId().toString() + ";");
+        AnswerParser answerParser = new AnswerParser(answer);
+        String dataString = answerParser.getArguments()[0];
+        byte[] decodedGameData = Base64.getDecoder().decode(dataString);
+        GameData gameData = null;
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(decodedGameData);
 
-    //commands for field operative leader:
+            ObjectInputStream ois = new ObjectInputStream(bais);
+
+            gameData = (GameData)ois.readObject();
+
+            ois.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        if (gameData != null) {
+            update(gameData);
+        }
+        else{
+            System.out.println("Game data is null");
+        }
+    }
+
+    private String sendCommand(String command) {
+        String serverAnswer = "1arg;null";
+
+        try {
+            Socket sock = new Socket(localClient.getServerIP(), localClient.getServerPort());
+            OutputStream output = sock.getOutputStream();
+            PrintWriter writer = new PrintWriter(output, true);
+
+            writer.println(command);
+
+            InputStream input = sock.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+            serverAnswer = reader.readLine();
+            return serverAnswer;
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return serverAnswer;
+    }
 
     //checks if Card hasn't been chosen already
-    public boolean makeChoice(String chosenName){return true;}
+    public boolean makeChoice(int x, int y){return true;}
 
-    //commands for all:
-    public void disconnect(){}
+    public void disconnect() {
+        //save game at host
+        //close session
+    }
     //once someone disconnects it should save the game and close the game for all
     //-> will be implemented in gameListener
-
-    public void getSessionDeck(){}
+    
     public void saveGame(){}
         //TODO: implement getCurrentTurn loads teamcolor and role of current turn to currentTurnText
 
@@ -109,4 +161,3 @@ public class GameController {
 }
 
 
-}

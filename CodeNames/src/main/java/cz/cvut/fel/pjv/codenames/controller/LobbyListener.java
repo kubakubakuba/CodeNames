@@ -20,6 +20,7 @@ public class LobbyListener implements Runnable {
     LobbyView lobbyView;
 
     private Client client;
+
     public LobbyListener(LobbyView lobbyView, Client client){
         this.client = client;
         this.lobbyView = lobbyView;

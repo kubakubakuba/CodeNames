@@ -1,6 +1,7 @@
 package cz.cvut.fel.pjv.codenames.GUI;
 
 import cz.cvut.fel.pjv.codenames.controller.GameController;
+import cz.cvut.fel.pjv.codenames.model.Key;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,8 +34,8 @@ public class FieldOperativeLeaderView extends Application {
 
     @Override
     public void start(Stage gameStage) {
+        localControl.getGameData();
 
-        localControl.getCurrentTurn();
         currentTurnLabel = new Label("Turn of: " + localControl.getCurrentTurnText());
         currentTurnLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
         currentTurnLabel.setAlignment(Pos.TOP_CENTER);
@@ -74,18 +75,49 @@ public class FieldOperativeLeaderView extends Application {
             for (int c = 0; c < 5; c++) {
                 final int col = c;
                 String name = localControl.getDeck().getCards().get(r).get(c).getName();
+                Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
+
 
                 Button choiceButton =new Button();
                 choiceButton.setPrefSize(200,100);
-                choiceButton.setText(name);
-                choiceButton.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
+                if (revealedStatus == Key.KeyType.EMPTY) {
+                    choiceButton.setText(name);
+                    choiceButton.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
+                }
+                else {
+                    String imgpath = "";
+                    if (revealedStatus == Key.KeyType.RED) {
+                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
+                        imgpath = randomize(sa,2);
+                    }
+                    if (revealedStatus == Key.KeyType.BLUE) {
+                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
+                        imgpath = randomize(sa,2);
+                    }
+                    if (revealedStatus == Key.KeyType.CIVILIAN) {
+                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
+                        imgpath = randomize(sa,2);
 
-                boardContainer.add(choiceButton, c, r);
+                    }
+                    if (revealedStatus == Key.KeyType.ASSASSIN) {
+                        imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
+                    }
+                    Image backgroundImage = new Image(imgpath);
+                    BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+                    BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                            BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+                    choiceButton.setBackground(new Background(backgroundImg));
+                }
+                boardContainer.add(choiceButton, r, c);
 
                 choiceButton.setOnAction(e -> {
-                    if(!localControl.makeChoice(name)){
-                        //alert
+                    if(!localControl.makeChoice(row, col)){
+                        //alert illegal move
                     }
+
                 });
             }
         }
@@ -114,4 +146,74 @@ public class FieldOperativeLeaderView extends Application {
         gameStage.show();
     }
 
+    public void update()    {
+        localControl.getGameData();
+        javafx.application.Platform.runLater(() -> {
+            currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+
+            promptLabel.setText("Entered prompt: " +localControl.getCurrentPromptText());
+            promptCardCountLabel.setText("Num Cards:" + localControl.getCurrentPromptCardCount());
+
+            boardContainer = new GridPane();
+            boardContainer.setHgap(30);
+            boardContainer.setVgap(30);
+
+            for (int r = 0; r < 5; r++) {
+                final int row = r;
+                for (int c = 0; c < 5; c++) {
+                    final int col = c;
+                    String name = localControl.getDeck().getCards().get(r).get(c).getName();
+                    Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
+
+
+                    Button choiceButton =new Button();
+                    choiceButton.setPrefSize(200,100);
+                    if (revealedStatus == Key.KeyType.EMPTY) {
+                        choiceButton.setText(name);
+                        choiceButton.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
+                    }
+                    else {
+                        String imgpath = "";
+                        if (revealedStatus == Key.KeyType.RED) {
+                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
+                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
+                            imgpath = randomize(sa,2);
+                        }
+                        if (revealedStatus == Key.KeyType.BLUE) {
+                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
+                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
+                            imgpath = randomize(sa,2);
+                        }
+                        if (revealedStatus == Key.KeyType.CIVILIAN) {
+                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
+                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
+                            imgpath = randomize(sa,2);
+
+                        }
+                        if (revealedStatus == Key.KeyType.ASSASSIN) {
+                            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
+                        }
+                        Image backgroundImage = new Image(imgpath);
+                        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+                        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+                        choiceButton.setBackground(new Background(backgroundImg));
+                    }
+                    boardContainer.add(choiceButton, r, c);
+
+                    choiceButton.setOnAction(e -> {
+                        if(!localControl.makeChoice(row, col)){
+                            //alert illegal move
+                        }
+
+                    });
+                }
+            }
+
+        });
+    }
+    public String randomize(String[] field, int len){
+        int randIdx  = new Random().nextInt(len);
+        return field[randIdx];
+    }
 }
