@@ -32,18 +32,6 @@ public class LobbyView extends Application {
     private Stage stage;
     private LobbyController localControl = null;
 
-    /*public LobbyView(Stage lobbyStage, String ID, LobbyController control) {
-        this.stage = lobbyStage;
-        this.ID = ID;
-        this.localControl = control;
-        start(lobbyStage);
-
-        System.out.println("setting lobby stage");
-
-        Thread serverListenerThread = new Thread(new LobbyListener(this, localControl.getLocalClient()));
-
-        serverListenerThread.start();
-    }*/
 
     public LobbyView(Stage lobbyStage, String ID, LobbyController control, boolean isPlayerHost) {
         this.stage = lobbyStage;
@@ -110,10 +98,7 @@ public class LobbyView extends Application {
                 this.stage.close();
                 System.out.println("Starting game!");
                 localControl.startTheGame();
-                //GuiTesting game = new GuiTesting();
-                //game.start(new Stage());
 
-                //this.stage.close();
             }
             else{
                 System.out.println("Cannot start game!");
@@ -351,8 +336,6 @@ public class LobbyView extends Application {
     public void startGame(){
             javafx.application.Platform.runLater(() -> {
                 System.out.println("creating new stage for game");
-                //GuiTesting game = new GuiTesting();
-                //game.start(new Stage());
 
                 GameController gameController = new GameController(localControl.getLocalClient(), localControl.getChatController());
                 //GameView game = new GameView(gameController);

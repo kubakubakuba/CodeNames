@@ -165,6 +165,7 @@ public class FieldOperativeView extends Application {
             promptLabel.setText("Entered prompt: " +localControl.getCurrentPromptText());
             promptCardCountLabel.setText("Num Cards:" + localControl.getCurrentPromptCardCount());
 
+            //boardContainer.getChildren().clear();
             boardContainer = new GridPane();
             boardContainer.setHgap(30);
             boardContainer.setVgap(30);

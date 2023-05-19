@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 import static java.lang.Integer.parseInt;
@@ -21,7 +22,8 @@ import static java.lang.Integer.parseInt;
 public class SpymasterView extends Application {
 
     Label currentTurnLabel;
-    GridPane boardContainer;
+    //GridPane boardContainer;
+    StackPane[][] cardPanes  = new StackPane[5][5];
 
     private GameController localControl;
     public SpymasterView(GameController controller) {
@@ -37,6 +39,7 @@ public class SpymasterView extends Application {
 
     @Override
     public void start(Stage gameStage) {
+
         localControl.getGameData();
 
         currentTurnLabel = new Label("Turn of: " + localControl.getCurrentTurnText());
@@ -83,14 +86,14 @@ public class SpymasterView extends Application {
                 spymasterInputBox
         );
 
-        boardContainer = new GridPane();
+        GridPane boardContainer = new GridPane();
         boardContainer.setHgap(30);
         boardContainer.setVgap(30);
 
         for (int r = 0; r < 5; r++) {
             for (int c = 0; c < 5; c++) {
-                StackPane cardPane = new StackPane();
-                cardPane.setPrefSize(200, 100);
+                cardPanes[r][c] = new StackPane();
+                cardPanes[r][c].setPrefSize(200, 100);
 
                 String name = localControl.getDeck().getCards().get(r).get(c).getName();
                 Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
@@ -98,23 +101,23 @@ public class SpymasterView extends Application {
 
                 if (revealedStatus == Key.KeyType.EMPTY) {
                     if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.BLUE) {
-                        cardPane.setStyle("-fx-background-color: blue;");
+                        cardPanes[r][c].setStyle("-fx-background-color: blue;");
                         cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
                     }
                     if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.RED) {
-                        cardPane.setStyle("-fx-background-color: red;");
+                        cardPanes[r][c].setStyle("-fx-background-color: red;");
                         cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
                     }
                     if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.ASSASSIN) {
-                        cardPane.setStyle("-fx-background-color: gray;");
+                        cardPanes[r][c].setStyle("-fx-background-color: gray;");
                         cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
                     }
                     if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.CIVILIAN) {
-                        cardPane.setStyle("-fx-background-color: yellow;");
+                        cardPanes[r][c].setStyle("-fx-background-color: yellow;");
                         cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
                     }
 
-                    cardPane.getChildren().add(cardLabel);
+                    cardPanes[r][c].getChildren().add(cardLabel);
                 }
                 else {
                     String imgpath = "";
@@ -141,11 +144,11 @@ public class SpymasterView extends Application {
                     BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
                     BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
                             BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-                    cardPane.setBackground(new Background(backgroundImg));
+                    cardPanes[r][c].setBackground(new Background(backgroundImg));
                 }
-                boardContainer.add(cardPane, r, c);
+                boardContainer.add(cardPanes[r][c], r, c);
 
-                cardPane.setAlignment(cardLabel, Pos.CENTER);
+                cardPanes[r][c].setAlignment(cardLabel, Pos.CENTER);
             }
         }
 
@@ -187,73 +190,110 @@ public class SpymasterView extends Application {
 
 
     public void update()    {
+
+        ArrayList<ArrayList<Key.KeyType>> old = localControl.getRevealedCardsBoard();
         localControl.getGameData();
+        int [] idxs = localControl.getChangedTileIdx(old, localControl.getRevealedCardsBoard());
+
         javafx.application.Platform.runLater(() -> {
             currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
-            boardContainer = new GridPane();
-            boardContainer.setHgap(30);
-            boardContainer.setVgap(30);
+            if (idxs[0] != -1) {
+                String name = localControl.getDeck().getCards().get(idxs[0]).get(idxs[1]).getName();
+                Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(idxs[0]).get(idxs[1]);
+                System.out.println("x: " + idxs[0] + " y: " + idxs[1]);
+                System.out.println("revealed status: " + revealedStatus);
+                //Label cardLabel = new Label(name);
 
-            for (int r = 0; r < 5; r++) {
-                for (int c = 0; c < 5; c++) {
-                    StackPane cardPane = new StackPane();
-                    cardPane.setPrefSize(200, 100);
-
-                    String name = localControl.getDeck().getCards().get(r).get(c).getName();
-                    Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
-                    Label cardLabel = new Label(name);
-
-                    if (revealedStatus == Key.KeyType.EMPTY) {
-                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.BLUE) {
-                            cardPane.setStyle("-fx-background-color: blue;");
-                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
-                        }
-                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.RED) {
-                            cardPane.setStyle("-fx-background-color: red;");
-                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
-                        }
-                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.ASSASSIN) {
-                            cardPane.setStyle("-fx-background-color: gray;");
-                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
-                        }
-                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.CIVILIAN) {
-                            cardPane.setStyle("-fx-background-color: yellow;");
-                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
-                        }
-
-                        cardPane.getChildren().add(cardLabel);
-                    }
-                    else {
-                        String imgpath = "";
-                        if (revealedStatus == Key.KeyType.RED) {
-                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
+                String imgpath = "";
+                if (revealedStatus == Key.KeyType.RED) {
+                    String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
                                     "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
-                            imgpath = randomize(sa,2);
-                        }
-                        if (revealedStatus == Key.KeyType.BLUE) {
-                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
-                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
-                            imgpath = randomize(sa,2);
-                        }
-                        if (revealedStatus == Key.KeyType.CIVILIAN) {
-                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
-                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
-                            imgpath = randomize(sa,2);
-
-                        }
-                        if (revealedStatus == Key.KeyType.ASSASSIN) {
-                            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
-                        }
-                        Image backgroundImage = new Image(imgpath);
-                        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
-                        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
-                                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-                        cardPane.setBackground(new Background(backgroundImg));
-                    }
-                    boardContainer.add(cardPane, r, c);
-                    cardPane.setAlignment(cardLabel, Pos.CENTER);
+                    imgpath = randomize(sa,2);
                 }
+                if (revealedStatus == Key.KeyType.BLUE) {
+                    String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
+                            "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
+                    imgpath = randomize(sa,2);
+                }
+                if (revealedStatus == Key.KeyType.CIVILIAN) {
+                    String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
+                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.png"};
+                    imgpath = randomize(sa,2);
+                }
+                if (revealedStatus == Key.KeyType.ASSASSIN) {
+                    imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
+                }
+                Image backgroundImage = new Image(imgpath);
+                BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+                BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                                    BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+                cardPanes[idxs[0]][idxs[1]].getChildren().clear();
+                cardPanes[idxs[0]][idxs[1]].setBackground(new Background(backgroundImg));
             }
+
+
+//            for (int r = 0; r < 5; r++) {
+//                for (int c = 0; c < 5; c++) {
+//                    //StackPane cardPane = new StackPane();
+//                    //cardPane.setPrefSize(200, 100);
+//
+//                    String name = localControl.getDeck().getCards().get(r).get(c).getName();
+//                    Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
+//                    Label cardLabel = new Label(name);
+//
+//                    if (revealedStatus == Key.KeyType.EMPTY) {
+//                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.BLUE) {
+//                            cardPanes[r][c].setStyle("-fx-background-color: blue;");
+//                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
+//                        }
+//                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.RED) {
+//                            cardPanes[r][c].setStyle("-fx-background-color: red;");
+//                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
+//                        }
+//                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.ASSASSIN) {
+//                            cardPanes[r][c].setStyle("-fx-background-color: gray;");
+//                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: white");
+//                        }
+//                        if (localControl.getKey().getSolution().get(r).get(c) == Key.KeyType.CIVILIAN) {
+//                            cardPanes[r][c].setStyle("-fx-background-color: yellow;");
+//                            cardLabel.setStyle("-fx-font-family: Tahoma; -fx-font-size: 20px;-fx-text-fill: black");
+//                        }
+//
+//                        //cardPanes[r][c].getChildren().add(cardLabel);
+//                    }
+//                    else {
+//                        String imgpath = "";
+//                        if (revealedStatus == Key.KeyType.RED) {
+//                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
+//                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
+//                            imgpath = randomize(sa,2);
+//                        }
+//                        if (revealedStatus == Key.KeyType.BLUE) {
+//                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
+//                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
+//                            imgpath = randomize(sa,2);
+//                        }
+//                        if (revealedStatus == Key.KeyType.CIVILIAN) {
+//                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
+//                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.png"};
+//                            imgpath = randomize(sa,2);
+//
+//                        }
+//                        if (revealedStatus == Key.KeyType.ASSASSIN) {
+//                            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
+//                        }
+//                        Image backgroundImage = new Image(imgpath);
+//                        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+//                        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+//                                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+//                        cardPanes[r][c].getChildren().remove(name);
+//                        cardPanes[r][c].setBackground(new Background(backgroundImg));
+//                        cardPanes[r][c].setStyle("-fx-background-color: transparent;");
+//
+//                    }
+//                    //cardPanes[r][c].setAlignment(cardLabel, Pos.CENTER);
+//                }
+//            }
         });
     }
 
