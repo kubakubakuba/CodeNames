@@ -60,6 +60,18 @@ public class ServerThread extends Thread {
         }
     }
 
+    private void endGame(String session, String winner){
+        for(Socket s : server.getActiveSessions().get(session).getGameListeners().values()){
+            PrintWriter playerWriter = null;
+            try {
+                playerWriter = new PrintWriter(s.getOutputStream(), true);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            playerWriter.println("end;" + winner + ";");
+        }
+    }
+
     private boolean checkRoleAvailable(String playerId, String sessionId, Player.PlayerRole role){
         Session session = server.getActiveSessions().get(sessionId);
         HashMap<String, Player> players = session.getLobby().getListOfPlayers();
@@ -238,6 +250,24 @@ public class ServerThread extends Thread {
 
                     Session s = server.getActiveSessions().get(idSession);
 
+                    if(s.getGame().getGameData().getLastPromptCardCount() <= 0){
+                        System.err.println("Cannon click on card when no prompt cards left!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+                    if(!(s.getGame().getGameData().getCurrentTurnTeam() == s.getLobby().getListOfPlayers().get(idSelf).getTeam())){
+                        System.err.println("Incorrect player team!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+                    if(!(s.getGame().getGameData().getCurrentTurnRole() == Player.PlayerRole.FIELD_OPERATIVE || s.getGame().getGameData().getCurrentTurnRole() == Player.PlayerRole.FIELD_OPERATIVE_LEADER)){
+                        System.err.println("Incorrect role!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
                     ArrayList<ArrayList<Key.KeyType>> discovered = s.getGame().getGameData().getRevealedCardsBoard();
 
                     if(discovered.get(yCoord).get(xCoord) != Key.KeyType.EMPTY){
@@ -251,32 +281,36 @@ public class ServerThread extends Thread {
 
                     if(correct == Key.KeyType.ASSASSIN){
                         s.getGame().getGameData().setLastPromptCardCount(0);
-                        sendMessages(String.valueOf(s), "_____You found the assassin! The game ends!_____");
+                        sendMessages(idSession, "_____You found the assassin! The game ends!_____");
+                        endGame(idSession, s.getGame().getGameData().getCurrentTurnTeam() == Player.PlayerTeam.RED ? "BLUE" : "RED");
+                        s.getGame().getGameData().setGameEnded(true);
+                        s.getGame().getGameData().setWinner(s.getGame().getGameData().getCurrentTurnTeam() == Player.PlayerTeam.RED ? Player.PlayerTeam.BLUE : Player.PlayerTeam.RED);
+                        writer.println("1arg;true");
                     }
 
                     if(compareTeamCard(correct, s.getGame().getGameData().getCurrentTurnTeam())){
                         if(s.getGame().getGameData().getLastPromptCardCount() == 1){
                             s.getGame().getGameData().setLastPromptCardCount(0);
                             s.getGame().getGameData().setCurrentTurnTeam(s.getGame().getGameData().getCurrentTurnTeam() == Player.PlayerTeam.RED ? Player.PlayerTeam.BLUE : Player.PlayerTeam.RED);
-                            s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER); //change the team and set the other leader to type again
-                            sendMessages(String.valueOf(s), "_____Correct guess! Other team plays now._____");
+                            s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.SPY_MASTER);
+                            sendMessages(idSession, "_____Correct guess! Other team plays now._____");
                         }
                         else{
                             s.getGame().getGameData().setLastPromptCardCount(s.getGame().getGameData().getLastPromptCardCount() - 1);
-                            s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER); //change only the leader to type again
-                            sendMessages(String.valueOf(s), "_____Correct guess!_____");
+                            s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER);
+                            sendMessages(idSession, "_____Correct guess!_____");
                         }
                     }
                     else{
                         s.getGame().getGameData().setLastPromptCardCount(0);
                         s.getGame().getGameData().setCurrentTurnTeam(s.getGame().getGameData().getCurrentTurnTeam() == Player.PlayerTeam.RED ? Player.PlayerTeam.BLUE : Player.PlayerTeam.RED);
-                        s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.FIELD_OPERATIVE_LEADER); //change the team and set the other leader to type again
-                        sendMessages(String.valueOf(s), "_____Wrong guess! Other team plays now._____");
+                        s.getGame().getGameData().setCurrentTurnRole(Player.PlayerRole.SPY_MASTER);
+                        sendMessages(idSession, "_____Wrong guess! Other team plays now._____");
                     }
 
-                    gameUpdates(idSession);
-
                     writer.println("1arg;true");
+
+                    gameUpdates(idSession);
                 }
 
                 if (parser.getCommand() == CommandParser.CommandType.COMMIT_PROMPT){
@@ -284,8 +318,6 @@ public class ServerThread extends Thread {
                     String idSession = parser.getArguments()[1];
                     String prompt = parser.getArguments()[2];
                     int count = Integer.parseInt(parser.getArguments()[3]);
-
-                    LOGGER.log(Level.INFO, "Field operative leader " + idSelf + " prompted: " + prompt + " with count: " + count + " at session: "+ idSession);
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
                         System.err.println("Player not in session!");
@@ -295,20 +327,31 @@ public class ServerThread extends Thread {
 
                     Session s = server.getActiveSessions().get(idSession);
 
-                    System.out.println(s.getGame().getGameData().getBoard().getCardLeft(s.getGame().getGameData().getCurrentTurnTeam()));
+                    LOGGER.log(Level.INFO,  s.getGame().getListOfPlayers().get(idSelf).getTeam() +  " prompted: " + prompt + " with count: " + count + " at session: "+ idSession);
 
-                    if(count < 0 || count > s.getGame().getGameData().getBoard().getCardLeft(s.getGame().getGameData().getCurrentTurnTeam())){
+                    if(count < 0 || count > 9){
                         System.err.println("Invalid count!");
                         writer.println("1arg;false");
                         return;
                     }
 
-                    if(s.getGame().getGameData().getCurrentTurnRole() != Player.PlayerRole.SPY_MASTER){
+                    if(s.getGame().getListOfPlayers().get(idSelf).getRole() != Player.PlayerRole.SPY_MASTER){
                         System.err.println("Player is not spymaster!");
                         writer.println("1arg;false");
                         return;
                     }
 
+                    if(s.getGame().getListOfPlayers().get(idSelf).getTeam() != s.getGame().getGameData().getCurrentTurnTeam()){
+                        System.err.println("Player is not on the current turn team!");
+                        writer.println("1arg;false");
+                        return;
+                    }
+
+                    if(s.getGame().getGameData().getCurrentTurnRole() != Player.PlayerRole.SPY_MASTER){
+                        System.err.println("Player is not on the current turn role!");
+                        writer.println("1arg;false");
+                        return;
+                    }
 
                     s.getGame().getGameData().setLastPromptCardCount(count);
                     s.getGame().getGameData().setLastPromptText(prompt);
@@ -316,7 +359,7 @@ public class ServerThread extends Thread {
 
                     writer.println("1arg;true;");
 
-                    sendMessages(String.valueOf(s), "_____Leader prompt: " + prompt + " with count: " + count + "_____");
+                    sendMessages(idSession, "_____Leader prompt: " + prompt + " with count: " + count + "_____");
 
                     gameUpdates(idSession);
                 }

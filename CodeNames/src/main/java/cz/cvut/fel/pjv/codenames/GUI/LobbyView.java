@@ -3,6 +3,7 @@ package cz.cvut.fel.pjv.codenames.GUI;
 import cz.cvut.fel.pjv.codenames.controller.GameController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyController;
 import cz.cvut.fel.pjv.codenames.controller.LobbyListener;
+import cz.cvut.fel.pjv.codenames.model.Key;
 import cz.cvut.fel.pjv.codenames.model.Player;
 import javafx.application.Application;
 import javafx.geometry.Insets;

@@ -48,6 +48,11 @@ public class GameListener implements Runnable {
                     if(answerParser.getAnswer() == AnswerParser.AnswerType.END_LISTEN){
                         stop();
                     }
+                    if(answerParser.getAnswer() == AnswerParser.AnswerType.END){
+                        gameView.update();
+                        gameView.gameEnd();
+                        stop();
+                    }
                 }
             }
 

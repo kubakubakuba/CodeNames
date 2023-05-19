@@ -70,4 +70,16 @@ public class GameView extends Application {
             viewL.start(primaryStage);
         }
     }
+
+    public void gameEnd(){
+        if(role == Player.PlayerRole.SPY_MASTER){
+            viewS.gameEnd();
+        }
+        if(role == Player.PlayerRole.FIELD_OPERATIVE){
+            viewF.gameEnd();
+        }
+        if(role == Player.PlayerRole.FIELD_OPERATIVE_LEADER){
+            viewL.gameEnd();
+        }
+    }
 }

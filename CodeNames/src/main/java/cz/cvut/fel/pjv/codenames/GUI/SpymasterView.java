@@ -261,4 +261,7 @@ public class SpymasterView extends Application {
         int randIdx  = new Random().nextInt(len);
         return field[randIdx];
     }
+
+    public void gameEnd() {
+    }
 }

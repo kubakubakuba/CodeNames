@@ -40,6 +40,9 @@ public class GameController {
 
     private GameListener gameListen;
 
+    private Player.PlayerRole currentTurnRole;
+    private Player.PlayerTeam currentTurnTeam;
+
     public Client getClient() {
         return localClient;
     }
@@ -134,7 +137,19 @@ public class GameController {
     }
 
     //checks if Card hasn't been chosen already
-    public boolean makeChoice(int x, int y){return true;}
+    public boolean makeChoice(int x, int y){
+        getGameData();
+
+        if (x < 0 || y < 0 || x > 4 || y > 4) {
+            return false;
+        }
+
+        String answer = sendCommand("makemove;" + this.getClient().getId()+ ";"
+                + this.getClient().getSessionId().toString() + ";" + x + ";" + y + ";");
+
+        AnswerParser answerParser = new AnswerParser(answer);
+        return answerParser.getArguments()[0].equals("true");
+    }
 
     public void disconnect() {
         //save game at host
@@ -156,8 +171,27 @@ public class GameController {
         this.revealedCardsBoard = data.getRevealedCardsBoard();
         this.currentPromptText = data.getLastPromptText();
         this.currentPromptCardCount = data.getLastPromptCardCount();
+        this.currentTurnRole = data.getCurrentTurnRole();
+        this.currentTurnTeam = data.getCurrentTurnTeam();
     }
 
+    public int[] getChangedTileIdx(ArrayList<ArrayList<Key.KeyType>> old, ArrayList<ArrayList<Key.KeyType>> n) {
+        int[] idxs = {-1, -1};
+        for (int i = 0; i <5 ; i++){
+            for(int j = 0; j < 5; j++){
+                if (old.get(i).get(j) != n.get(i).get(j)){
+                    idxs[0] = i;
+                    idxs[1] = j;
+                    return idxs;
+                }
+            }
+        }
+        return idxs;
+    }
+
+    public ChatController getChatController() {
+        return chatController;
+    }
 }
 
 

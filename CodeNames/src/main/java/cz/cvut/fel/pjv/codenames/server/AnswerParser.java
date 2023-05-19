@@ -19,6 +19,7 @@ public class AnswerParser {
         MESSAGE,
         CHAT_ENABLE,
         CHAT_DISABLE,
+        END,
         UNKNOWN_COMMAND
     }
 
@@ -53,6 +54,7 @@ public class AnswerParser {
             case "message" -> this.answer = AnswerType.MESSAGE;
             case "chatenable" -> this.answer = AnswerType.CHAT_ENABLE;
             case "chatdisable" -> this.answer = AnswerType.CHAT_DISABLE;
+            case "end" -> this.answer = AnswerType.END;
             default -> this.answer = AnswerType.UNKNOWN_COMMAND;
         }
 

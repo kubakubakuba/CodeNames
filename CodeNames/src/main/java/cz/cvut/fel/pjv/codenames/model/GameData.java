@@ -12,6 +12,26 @@ public class GameData implements java.io.Serializable{
     private Player.PlayerTeam currentTurnTeam;
     private Player.PlayerRole currentTurnRole;
 
+    private boolean gameEnded;
+
+    private Player.PlayerTeam winner;
+
+    public Player.PlayerTeam getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player.PlayerTeam winner) {
+        this.winner = winner;
+    }
+
+    public boolean hasGameEnded() {
+        return gameEnded;
+    }
+
+    public void setGameEnded(boolean gameEnded) {
+        this.gameEnded = gameEnded;
+    }
+
     public GameData(Board board){
         this.board = board;
         currentTurnTeam = board.getStartingTeam();

@@ -13,7 +13,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Logger;
 
 public class FieldOperativeLeaderView extends Application {
 
@@ -22,6 +24,7 @@ public class FieldOperativeLeaderView extends Application {
     Label promptCardCountLabel;
     GridPane boardContainer;
     private GameController localControl;
+    private Button[][] buttons = new Button[5][5];
     public FieldOperativeLeaderView(GameController controller) {
         //super(controller);
         this.localControl = controller;
@@ -112,6 +115,7 @@ public class FieldOperativeLeaderView extends Application {
                     choiceButton.setBackground(new Background(backgroundImg));
                 }
                 boardContainer.add(choiceButton, r, c);
+                buttons[r][c] = choiceButton;
 
                 choiceButton.setOnAction(e -> {
                     if(!localControl.makeChoice(row, col)){
@@ -136,6 +140,8 @@ public class FieldOperativeLeaderView extends Application {
 
 
         gameStage.setOnCloseRequest(event -> {
+            //TODO: save game on host PC and terminate gamelobby
+            localControl.getChatController().closeChat();
             localControl.disconnect();
         });
 
@@ -147,73 +153,84 @@ public class FieldOperativeLeaderView extends Application {
     }
 
     public void update()    {
+        System.out.println("update");
+
+        ArrayList<ArrayList<Key.KeyType>> old = localControl.getRevealedCardsBoard();
         localControl.getGameData();
+        int [] idxs = localControl.getChangedTileIdx(old, localControl.getRevealedCardsBoard()); //the indexes of button that changed
         javafx.application.Platform.runLater(() -> {
             currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
 
             promptLabel.setText("Entered prompt: " +localControl.getCurrentPromptText());
             promptCardCountLabel.setText("Num Cards:" + localControl.getCurrentPromptCardCount());
 
-            boardContainer = new GridPane();
-            boardContainer.setHgap(30);
-            boardContainer.setVgap(30);
+            int row = idxs[0];
+            int col = idxs[1];
 
-            for (int r = 0; r < 5; r++) {
-                final int row = r;
-                for (int c = 0; c < 5; c++) {
-                    final int col = c;
-                    String name = localControl.getDeck().getCards().get(r).get(c).getName();
-                    Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
+            if (idxs[0] != -1) {
+                String name = localControl.getDeck().getCards().get(row).get(col).getName();
+                Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(row).get(col);
+                System.out.println("Codename " + name + " revealed as " + revealedStatus);
 
+                Button choiceButton = buttons[row][col];  // Get button from array
+                choiceButton.setPrefSize(200, 100);
 
-                    Button choiceButton =new Button();
-                    choiceButton.setPrefSize(200,100);
-                    if (revealedStatus == Key.KeyType.EMPTY) {
-                        choiceButton.setText(name);
-                        choiceButton.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
+                System.out.println("revealed status: " + revealedStatus + "keytype equals" + revealedStatus.equals(Key.KeyType.EMPTY));
+                if (revealedStatus == Key.KeyType.EMPTY) {
+                    System.out.println("reveal type empty");
+                    choiceButton.setText(name);
+                    choiceButton.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
+                } else {
+                    String imgpath = "";
+                    if (revealedStatus == Key.KeyType.RED) {
+                        String[] sa = {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
+                        imgpath = randomize(sa, 2);
+                        choiceButton.setText("");
                     }
-                    else {
-                        String imgpath = "";
-                        if (revealedStatus == Key.KeyType.RED) {
-                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
-                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
-                            imgpath = randomize(sa,2);
-                        }
-                        if (revealedStatus == Key.KeyType.BLUE) {
-                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
-                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
-                            imgpath = randomize(sa,2);
-                        }
-                        if (revealedStatus == Key.KeyType.CIVILIAN) {
-                            String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
-                                    "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
-                            imgpath = randomize(sa,2);
-
-                        }
-                        if (revealedStatus == Key.KeyType.ASSASSIN) {
-                            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
-                        }
-                        Image backgroundImage = new Image(imgpath);
-                        BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
-                        BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
-                                BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
-                        choiceButton.setBackground(new Background(backgroundImg));
+                    if (revealedStatus == Key.KeyType.BLUE) {
+                        String[] sa = {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
+                        imgpath = randomize(sa, 2);
+                        choiceButton.setText("");
                     }
-                    boardContainer.add(choiceButton, r, c);
+                    if (revealedStatus == Key.KeyType.CIVILIAN) {
+                        String[] sa = {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
+                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
+                        imgpath = randomize(sa, 2);
+                        choiceButton.setText("");
 
-                    choiceButton.setOnAction(e -> {
-                        if(!localControl.makeChoice(row, col)){
-                            //alert illegal move
-                        }
-
-                    });
+                    }
+                    if (revealedStatus == Key.KeyType.ASSASSIN) {
+                        imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
+                        choiceButton.setText("");
+                    }
+                    System.out.println("imgpath: " + imgpath);
+                    Image backgroundImage = new Image(imgpath);
+                    BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
+                    BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
+                            BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
+                    choiceButton.setBackground(new Background(backgroundImg));
                 }
-            }
 
+                choiceButton.setOnAction(e -> {
+                    if (!localControl.makeChoice(row, col)) {
+                        System.err.println("Invalid choice!");
+                    }
+                });
+            }
         });
     }
     public String randomize(String[] field, int len){
         int randIdx  = new Random().nextInt(len);
         return field[randIdx];
+    }
+
+    public void gameEnd() {
+        for(Button[] button : buttons){
+            for(Button b : button){
+                b.setDisable(true);
+            }
+        }
     }
 }
