@@ -143,6 +143,7 @@ public class SpymasterView extends Application {
                 alert.setContentText("Invalid Prompt format");
                 alert.showAndWait();
                 System.err.println("Inputted invalid prompt");
+                return;
             }
         });
 
@@ -156,5 +157,10 @@ public class SpymasterView extends Application {
 
     public void update()    {
 
+    }
+
+    public String randomize(String[] field, int len){
+        int randIdx  = new Random().nextInt(len);
+        return field[randIdx];
     }
 }

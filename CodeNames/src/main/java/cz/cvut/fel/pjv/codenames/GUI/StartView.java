@@ -72,7 +72,6 @@ public class StartView extends Application {
         StackPane bckgrndPane = new StackPane();
         Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
         BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
-        // Create the background image
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
                                         BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         bckgrndPane.setBackground(new Background(backgroundImg));

@@ -21,6 +21,7 @@ public class GameController {
     private Deck gameDeck;
 
     private String currentTurnText;
+
     private String currentPromptText;
     private int currentPromptCardCount;
 
