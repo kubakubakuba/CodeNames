@@ -48,6 +48,11 @@ public class Session {
         game = new Game(lobby.getListOfPlayers(), dckFile);
     }
 
+    public void loadGame(String gameData){
+        game = new Game(lobby.getListOfPlayers());
+        game.loadGame(gameData);
+    }
+
     public void startGameWDeck(){
         //game = new Game(Buffer loadedDeck)
         //or probably decode the deck to a ArrayList<String>
@@ -82,4 +87,5 @@ public class Session {
     public void addGameListener(Socket listener, String id) {
         this.gameListeners.put(id, listener);
     }
+
 }

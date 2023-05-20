@@ -15,7 +15,10 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class LobbyView extends Application {
@@ -55,9 +58,8 @@ public class LobbyView extends Application {
         lobbyStage.setTitle("Lobby hosted by " + localControl.getHostId());
 
         lobbyStage.setOnCloseRequest(event -> {
-            localControl.disconnect();
-            //System.out.println("Disonnected");
             localControl.getChatController().closeChat();
+            localControl.disconnect();
             //close chat
             System.exit(0);
         });
@@ -81,7 +83,7 @@ public class LobbyView extends Application {
 
         FileChooser fileChooser = new FileChooser();
 
-        Button buttonStart = new Button("Start game");
+        Button buttonStart = new Button("New game");
         Button buttonLoad = new Button("Load game");
         Button buttonLoadDeck = new Button("Load deck");
 
@@ -90,7 +92,9 @@ public class LobbyView extends Application {
             fileChooser.getExtensionFilters().addAll(
                     new FileChooser.ExtensionFilter("CodeNames Deck files", "*.dck"));
             File deckFile = fileChooser.showOpenDialog(buttonLoadDeck.getScene().getWindow());
-
+            if (deckFile != null) {
+                localControl.setGameDeck(deckFile.getAbsolutePath());
+            }
         });
 
         buttonStart.setOnAction(e -> {
@@ -106,7 +110,42 @@ public class LobbyView extends Application {
         });
 
         buttonLoad.setOnAction(e -> {
-            //TODO
+            if(!canStartGame()) {
+                System.err.println("Cannot start game!");
+                return;
+            }
+
+            FileChooser fChooser = new FileChooser();
+            fChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("CodeNames save file", "*.cdn"));
+            File selectedFile = fChooser.showOpenDialog(stage);
+
+            if (selectedFile == null) {
+                System.err.println("No file selected!");
+                return;
+            }
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
+                StringBuilder fileContent = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fileContent.append(line).append("\n");
+                }
+
+                String content = fileContent.toString();
+
+                boolean ok = localControl.loadTheGame(content);
+                if(ok){
+                    this.stage.close();
+                    System.out.println("Starting (loading) game!");
+                }
+                else{
+                    System.out.println("Cannot start game!");
+                }
+            } catch (IOException ex) {
+                System.err.println("Error occurred while reading file contents!");
+                ex.printStackTrace();
+            }
         });
 
         // Set spacing between label1, label2, and buttons
@@ -262,6 +301,7 @@ public class LobbyView extends Application {
                 BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         bckgrndPane.setBackground(new Background(backgroundImg));
         bckgrndPane.getChildren().addAll(layout);
+        bckgrndPane.setAlignment(Pos.CENTER);
         bckgrndPane.setAlignment(Pos.CENTER);
         return new Scene(bckgrndPane, 650, 600);
     }

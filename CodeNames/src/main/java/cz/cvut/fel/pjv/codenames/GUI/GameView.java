@@ -3,10 +3,9 @@ package cz.cvut.fel.pjv.codenames.GUI;
 import cz.cvut.fel.pjv.codenames.controller.GameController;
 import cz.cvut.fel.pjv.codenames.controller.GameListener;
 import cz.cvut.fel.pjv.codenames.controller.LobbyListener;
-import cz.cvut.fel.pjv.codenames.model.Client;
-import cz.cvut.fel.pjv.codenames.model.Game;
-import cz.cvut.fel.pjv.codenames.model.Player;
+import cz.cvut.fel.pjv.codenames.model.*;
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class GameView extends Application {
@@ -29,7 +28,6 @@ public class GameView extends Application {
 
         //Thread serverListenerThread = new Thread(new GameListener(this ,localControl));
         //serverListenerThread.start();
-
         determineView(role);
     }
 
@@ -82,4 +80,5 @@ public class GameView extends Application {
             viewL.gameEnd();
         }
     }
+
 }

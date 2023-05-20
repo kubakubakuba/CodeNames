@@ -36,7 +36,7 @@ public class Client {
         return player;
     }
 
-    public String sendCommand(String command, String hostname, int port){
+    public String sendCommand(String command){
         try{
             Socket sock = new Socket(serverIP, serverPort);
             this.socket = sock;
@@ -45,10 +45,10 @@ public class Client {
 
             String serverAnswer;
 
-            command += this.getId();
+            /*command += this.getId();
             if (sessionId != null){
                 command += this.getSessionId().toString();
-            }
+            }*/
             writer.println(command);
 
             InputStream input = sock.getInputStream();
@@ -75,7 +75,12 @@ public class Client {
     }
 
     public void setSessionId(String argument) {
-        sessionId = UUID.fromString(argument);
+        try {
+            sessionId = UUID.fromString(argument);
+        }
+        catch (Exception e){
+            System.out.println("Invalid session id, caused by connecting to lobby with username that is already in use.");
+        }
     }
 
     public Socket getSocket() {

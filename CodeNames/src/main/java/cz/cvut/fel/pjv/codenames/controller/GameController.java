@@ -3,12 +3,15 @@ package cz.cvut.fel.pjv.codenames.controller;
 import cz.cvut.fel.pjv.codenames.GUI.GameView;
 import cz.cvut.fel.pjv.codenames.model.*;
 import cz.cvut.fel.pjv.codenames.server.AnswerParser;
+import cz.cvut.fel.pjv.codenames.server.ServerThread;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameController {
 
@@ -25,6 +28,11 @@ public class GameController {
 
     private String currentPromptText;
     private int currentPromptCardCount;
+
+    private ImageArray redCards;
+    private ImageArray blueCards;
+    private ImageArray neutralCards;
+    private final static Logger LOGGER = Logger.getLogger(GameController.class.getName());
 
     public ArrayList<ArrayList<Key.KeyType>> getRevealedCardsBoard() {return revealedCardsBoard;}
 
@@ -54,6 +62,7 @@ public class GameController {
         this.chatController = chatController;
         this.gameView = new GameView(this);
         this.gameListen = new GameListener(gameView, this);
+        loadImageFiles();
     }
 
     public void displayGameWindow(){
@@ -152,13 +161,37 @@ public class GameController {
     }
 
     public void disconnect() {
-        //save game at host
-        //close session
+        System.out.println("Disconnecting");
+
+        String answer = sendCommand("disconnect;" + this.getClient().getId()+ ";"
+                + this.getClient().getSessionId().toString() + ";");
+        AnswerParser answerParser = new AnswerParser(answer);
+
+        if (answerParser.getArguments()[0].equals("true")) {
+            System.out.println("Disconnected");
+        }
+        else{
+            System.out.println("Error while disconnecting");
+        }
     }
     //once someone disconnects it should save the game and close the game for all
     //-> will be implemented in gameListener
     
-    public void saveGame(){}
+    public void saveGame(File file){
+        String answer = sendCommand("getgamedata;" + this.getClient().getId()+ ";"
+                + this.getClient().getSessionId().toString() + ";");
+        AnswerParser answerParser = new AnswerParser(answer);
+        String dataString = answerParser.getArguments()[0];
+
+        try {
+            PrintWriter writer;
+            writer = new PrintWriter(file);
+            writer.println(dataString);
+            writer.close();
+        } catch (IOException ex) {
+            Logger.getLogger("Cannon save file!").log(Level.SEVERE, null, ex);
+        }
+    }
         //TODO: implement getCurrentTurn loads teamcolor and role of current turn to currentTurnText
 
     public void update(GameData data) {
@@ -191,6 +224,47 @@ public class GameController {
 
     public ChatController getChatController() {
         return chatController;
+    }
+
+    public GameView getGameView() {
+        return gameView;
+    }
+
+    private void loadImageFiles(){
+        this.redCards = new ImageArray("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_red_1.png");
+        for(int i = 2; i < 9; i++){
+            redCards.addImage("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_red_" + i + ".png");
+        }
+        this.blueCards = new ImageArray("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_blue_1.png");
+        for(int i = 2; i < 10; i++){
+            blueCards.addImage("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_blue_" + i + ".png");
+        }
+        this.neutralCards = new ImageArray("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_civ_1.png");
+        for(int i = 2; i < 7; i++){
+            neutralCards.addImage("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_civ_" + i + ".png");
+        }
+
+        redCards.shuffle();
+        blueCards.shuffle();
+        neutralCards.shuffle();
+    }
+
+    public String getImage(Key.KeyType key){
+        String imgpath = "";
+        if (key == Key.KeyType.RED) {
+            imgpath = redCards.getNext();
+        }
+        if (key == Key.KeyType.BLUE) {
+            imgpath = blueCards.getNext();
+        }
+        if (key == Key.KeyType.CIVILIAN) {
+            imgpath = neutralCards.getNext();
+
+        }
+        if (key == Key.KeyType.ASSASSIN) {
+            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_black.png";
+        }
+        return imgpath;
     }
 }
 

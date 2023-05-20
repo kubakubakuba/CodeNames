@@ -112,6 +112,6 @@ public class ChatView extends Application {
 
     public void closeChat(){
         stage.close();
-        System.exit(0);
+        //System.exit(0);
     }
 }

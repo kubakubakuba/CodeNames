@@ -11,8 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.logging.Logger;
@@ -82,32 +84,14 @@ public class FieldOperativeLeaderView extends Application {
 
 
                 Button choiceButton =new Button();
-                choiceButton.setPrefSize(200,100);
+                choiceButton.setPrefSize(202,162);
                 if (revealedStatus == Key.KeyType.EMPTY) {
                     choiceButton.setText(name);
                     choiceButton.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
                 }
                 else {
-                    String imgpath = "";
-                    if (revealedStatus == Key.KeyType.RED) {
-                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
-                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
-                        imgpath = randomize(sa,2);
-                    }
-                    if (revealedStatus == Key.KeyType.BLUE) {
-                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
-                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
-                        imgpath = randomize(sa,2);
-                    }
-                    if (revealedStatus == Key.KeyType.CIVILIAN) {
-                        String[] sa= {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
-                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
-                        imgpath = randomize(sa,2);
-
-                    }
-                    if (revealedStatus == Key.KeyType.ASSASSIN) {
-                        imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
-                    }
+                    String imgpath = localControl.getImage(revealedStatus);
+                    System.out.println("got image path: " + imgpath);
                     Image backgroundImage = new Image(imgpath);
                     BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
                     BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
@@ -143,10 +127,23 @@ public class FieldOperativeLeaderView extends Application {
             //TODO: save game on host PC and terminate gamelobby
             localControl.getChatController().closeChat();
             localControl.disconnect();
+            System.exit(0);
         });
 
         saveBtn.setOnAction(actionEvent -> {
-            localControl.saveGame();
+            FileChooser fileChooser = new FileChooser();
+
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("CodeNames files (*.cdn)", "*.cdn");
+            fileChooser.getExtensionFilters().add(extFilter);
+
+            File file = fileChooser.showSaveDialog(new Stage());
+
+            if (file != null) {
+                localControl.saveGame(file);
+            }
+            else{
+                System.err.println("File is null");
+            }
         });
 
         gameStage.show();
@@ -181,30 +178,8 @@ public class FieldOperativeLeaderView extends Application {
                     choiceButton.setText(name);
                     choiceButton.setStyle("-fx-font-size: 20; -fx-font-family: Tahoma");
                 } else {
-                    String imgpath = "";
-                    if (revealedStatus == Key.KeyType.RED) {
-                        String[] sa = {"file:src/main/resources/cz/cvut/fel/pjv/codenames/red_f.jpg",
-                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/red_m.jpg"};
-                        imgpath = randomize(sa, 2);
-                        choiceButton.setText("");
-                    }
-                    if (revealedStatus == Key.KeyType.BLUE) {
-                        String[] sa = {"file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_f.jpg",
-                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/blu_m.jpg"};
-                        imgpath = randomize(sa, 2);
-                        choiceButton.setText("");
-                    }
-                    if (revealedStatus == Key.KeyType.CIVILIAN) {
-                        String[] sa = {"file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_f.jpg",
-                                "file:src/main/resources/cz/cvut/fel/pjv/codenames/civ_m.jpg"};
-                        imgpath = randomize(sa, 2);
-                        choiceButton.setText("");
-
-                    }
-                    if (revealedStatus == Key.KeyType.ASSASSIN) {
-                        imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/ass.jpg";
-                        choiceButton.setText("");
-                    }
+                    String imgpath = localControl.getImage(revealedStatus);
+                    choiceButton.setText("");
                     System.out.println("imgpath: " + imgpath);
                     Image backgroundImage = new Image(imgpath);
                     BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);

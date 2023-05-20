@@ -4,6 +4,7 @@ import cz.cvut.fel.pjv.codenames.GUI.GameView;
 import cz.cvut.fel.pjv.codenames.model.Client;
 import cz.cvut.fel.pjv.codenames.model.GameData;
 import cz.cvut.fel.pjv.codenames.server.AnswerParser;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
@@ -45,7 +46,12 @@ public class GameListener implements Runnable {
                     if (answerParser.getAnswer() == AnswerParser.AnswerType.UPDATE){
                         gameView.update();
                     }
+                    if(answerParser.getAnswer() == AnswerParser.AnswerType.START_GAME){
+                        gameView.start(new Stage());
+                    }
                     if(answerParser.getAnswer() == AnswerParser.AnswerType.END_LISTEN){
+                        gameView.update();
+                        gameView.gameEnd();
                         stop();
                     }
                     if(answerParser.getAnswer() == AnswerParser.AnswerType.END){

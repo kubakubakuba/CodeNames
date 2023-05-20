@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -38,6 +39,9 @@ public class ServerPicker extends Application {
     }
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setOnCloseRequest(event -> {
+            System.exit(0);
+        });
     }
     public Scene createScene() {
         // Create a VBox to hold the buttons
@@ -53,10 +57,15 @@ public class ServerPicker extends Application {
             Button button = new Button(label);
 
             button.setOnAction(actionEvent -> {
-
                 //attempt to connect to session
                 if (!controller.connectToSession(ID, label)) {
-                    //log connection failed
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Error in Team");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Unable to join team, you have the same name as someone else in the team.");
+                    alert.showAndWait();
+
+                    System.err.println("Unable to join team");
                     return;
                 }
                 controller.getLocalClient().setSessionId(label);
