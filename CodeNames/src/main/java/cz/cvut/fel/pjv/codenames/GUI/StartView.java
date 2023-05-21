@@ -23,13 +23,12 @@ public class StartView extends Application {
 
     private String id;
     private String serverIP;
-    public static void main() {
+    public void startApp() {
         launch();
     }
 
     @Override
     public void start(Stage stage) {
-
         // Create a label with custom text
         Label headingLabel = new Label("CodeNames");
         headingLabel.setPadding(new Insets(25));

@@ -58,7 +58,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>cz.cvut.fel.pjv.codenames.server.ServerStart</mainClass>
+                            <mainClass>cz.cvut.fel.pjv.codenames.server.Start</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

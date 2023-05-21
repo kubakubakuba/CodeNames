@@ -36,6 +36,12 @@ public class AnswerParser {
      * @param answer - answer string to parse, split by semicolons
      */
     public AnswerParser(String answer){
+        if(answer == null){
+            this.answer = AnswerType.EMPTY;
+            this.arguments = null;
+            return;
+        }
+
         if(answer.startsWith("gamedata;")){
             this.answer = AnswerType.GAME_DATA;
             this.arguments = new String[]{answer.substring(9)};

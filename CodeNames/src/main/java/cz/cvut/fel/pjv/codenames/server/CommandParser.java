@@ -42,11 +42,14 @@ public class CommandParser {
      * @param command - command string to parse, split by semicolons
      */
     public CommandParser(String command){
-        command = command;
+        if(command == null){
+            this.command = CommandType.EMPTY;
+            this.arguments = null;
+            return;
+        }
         String[] parts = command.split(";");
 
         System.out.println(command);
-        //System.out.println(parts);
 
         switch (parts[0].toLowerCase()) {
             case "startserver" -> this.command = CommandType.START_SERVER;
