@@ -8,14 +8,15 @@ import java.util.HashMap;
 
 public class Server implements Runnable{
 
-    private final int PORT = 1515;
+    private int PORT = 1515;
 
     private HashMap<String, Session> activeSessions = new HashMap<String, Session>();
 
     public HashMap<String, Session> getActiveSessions() {return activeSessions;}
 
     public Server(int port){
-        //host, socket,
+        this.PORT = port;
+        System.out.println("Starting server on port " + PORT);
     }
 
     @Override
