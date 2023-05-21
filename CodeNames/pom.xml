@@ -51,7 +51,7 @@
                     <target>17</target>
                     <compilerArgs>
                         <arg>--module-path</arg>
-                        <arg>path/to/javafx-sdk-VERSION/lib</arg>
+                        <arg>C:\javafx-sdk-17.0.7\lib</arg>
                         <arg>--add-modules</arg>
                         <arg>javafx.controls,javafx.fxml</arg>
                     </compilerArgs>
