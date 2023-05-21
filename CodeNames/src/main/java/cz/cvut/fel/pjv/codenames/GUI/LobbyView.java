@@ -31,7 +31,6 @@ public class LobbyView extends Application {
     private Label blueCounter;
     private Label localTeam;
     private Label localRole;
-
     private Stage stage;
     private LobbyController localControl = null;
 
@@ -60,11 +59,46 @@ public class LobbyView extends Application {
         lobbyStage.setOnCloseRequest(event -> {
             localControl.getChatController().closeChat();
             localControl.disconnect();
-            //close chat
             System.exit(0);
         });
 
         lobbyStage.show();
+    }
+
+    /**
+     * Updates the scene
+     */
+    public void update() {
+        localControl.updatePlayerCount();
+        javafx.application.Platform.runLater(() -> {
+            playerCounter.setText("Number of players: " + localControl.getPlayerCount());
+
+            VBox scrollBox = new VBox();
+
+            ArrayList<String> idList = localControl.getIdList();
+            for (String id : idList)  {
+                scrollBox.getChildren().add(new Label(id));
+            }
+            scrollPane.setContent(scrollBox);
+
+            redCounter.setText("Number of RED players:" + localControl.getRBNPlayers()[0]);
+            blueCounter.setText("Number of BLUE players:" + localControl.getRBNPlayers()[1]);
+
+            localTeam.setText("Your Team: " + localControl.getLocalClient().getPlayer().getTeam());
+            localRole.setText("Your Role: " + localControl.getLocalClient().getPlayer().getRole());
+        });
+    }
+
+    /**
+     * Shows an error message when the player is unable to start the game
+     */
+    public void startGame(){
+        javafx.application.Platform.runLater(() -> {
+            GameController gameController = new GameController(localControl.getLocalClient(), localControl.getChatController());
+            gameController.displayGameWindow();
+
+            this.stage.close();
+        });
     }
 
     /**
@@ -73,7 +107,7 @@ public class LobbyView extends Application {
      */
     private Scene createLobbyScene() {
 
-        if (ID.equals(localControl.getHostId())) {
+        if (isHost) {
             return createHostScene();
         } else {
             return createGuestLobby();
@@ -196,7 +230,7 @@ public class LobbyView extends Application {
         return setBackground(layout);
     }
 
-    public VBox createCommonView()  {
+    private VBox createCommonView()  {
 
         scrollPane = new ScrollPane();
         VBox scrollBox = new VBox();
@@ -309,7 +343,7 @@ public class LobbyView extends Application {
      * @param layout the layout of the scene
      * @return the scene with the background
      */
-    public Scene setBackground(VBox layout) {
+    private Scene setBackground(VBox layout) {
         StackPane bckgrndPane = new StackPane();
         Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
         BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
@@ -323,29 +357,6 @@ public class LobbyView extends Application {
         return new Scene(bckgrndPane, 650, 600);
     }
 
-    /**
-     * Updates the scene
-     */
-    public void update() {
-        localControl.updatePlayerCount();
-        javafx.application.Platform.runLater(() -> {
-            playerCounter.setText("Number of players: " + localControl.getPlayerCount());
-
-            VBox scrollBox = new VBox();
-
-            ArrayList<String> idList = localControl.getIdList();
-            for (String id : idList)  {
-                scrollBox.getChildren().add(new Label(id));
-            }
-            scrollPane.setContent(scrollBox);
-
-            redCounter.setText("Number of RED players:" + localControl.getRBNPlayers()[0]);
-            blueCounter.setText("Number of BLUE players:" + localControl.getRBNPlayers()[1]);
-
-            localTeam.setText("Your Team: " + localControl.getLocalClient().getPlayer().getTeam());
-            localRole.setText("Your Role: " + localControl.getLocalClient().getPlayer().getRole());
-        });
-    }
 
     /**
      * Checks if the game can be started
@@ -402,17 +413,5 @@ public class LobbyView extends Application {
             alert.showAndWait();
             System.err.println("Role is already occupied");
         }
-    }
-
-    /**
-     * Shows an error message when the player is unable to start the game
-     */
-    public void startGame(){
-            javafx.application.Platform.runLater(() -> {
-                GameController gameController = new GameController(localControl.getLocalClient(), localControl.getChatController());
-                gameController.displayGameWindow();
-
-                this.stage.close();
-            });
     }
 }

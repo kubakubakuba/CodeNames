@@ -25,17 +25,12 @@ public class FieldOperativeView extends Application {
     Label promptLabel;
     Label promptCardCountLabel;
     GridPane boardContainer;
-
-    private Client localClient;
-
     private GameController localControl;
 
     private Button saveBtn;
     private StackPane[][] stackPane = new StackPane[5][5];
     public FieldOperativeView(GameController controller) {
-        //super(controller);
         this.localControl = controller;
-        //start(stage);
     }
 
     public static void main(String[] args) {

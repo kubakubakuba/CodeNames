@@ -25,19 +25,15 @@ import static java.lang.Integer.parseInt;
 public class SpymasterView extends Application {
 
     Label currentTurnLabel;
-    //GridPane boardContainer;
     StackPane[][] cardPanes  = new StackPane[5][5];
-
     private HBox promptBox;
     private HBox numPromptBox;
     private Button commitPrompt;
     private GameController localControl;
     private Button saveBtn;
-    public SpymasterView(GameController controller) {
-        //super(controller);
-        this.localControl = controller;
 
-        //start(stage);
+    public SpymasterView(GameController controller) {
+        this.localControl = controller;
     }
 
     public static void main() {

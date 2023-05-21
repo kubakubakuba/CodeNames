@@ -53,21 +53,26 @@ public class LobbyController {
      * @param hostId id of host
      * @return true if session was created, false otherwise
      */
-    public boolean createServerSession(String hostId)   {
+    public int createServerSession(String hostId)   {
         //System.out.println("Write a command:");
         System.out.println("server: " + serverIP + serverPort);
         String serverAnswer = localClient.sendCommand("createSession;" + hostId + ';');
         AnswerParser parser = new AnswerParser(serverAnswer);
 
+        if(parser.getAnswer() == AnswerParser.AnswerType.EMPTY){
+            System.err.println("Server not running!");
+            return 1;
+        }
+
         if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("null") )){
             System.err.println("Received unexpected server answer!");
-            return false;
+            return 2;
         }
 
         if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
             localClient.setSessionId(parser.getArguments()[0]);
         }
-        return true;
+        return 0;
     }
 
     /**

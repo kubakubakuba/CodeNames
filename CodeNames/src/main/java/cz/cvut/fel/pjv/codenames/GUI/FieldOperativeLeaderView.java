@@ -28,9 +28,7 @@ public class FieldOperativeLeaderView extends Application {
     private Button saveBtn;
 
     public FieldOperativeLeaderView(GameController controller) {
-        //super(controller);
         this.localControl = controller;
-        //start(stage);
     }
 
     public static void main(String[] args) {

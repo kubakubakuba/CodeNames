@@ -22,10 +22,8 @@ public class ServerPicker extends Application {
     private Scene previousScene;
     private Stage previousStage;
     private String ID;
-
     private String serverIP;
     private int serverPort;
-
     private ArrayList<String> sessions;
 
     public static void main(String[] args) {

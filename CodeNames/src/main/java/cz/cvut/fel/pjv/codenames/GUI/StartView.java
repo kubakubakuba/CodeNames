@@ -132,9 +132,18 @@ public class StartView extends Application {
             LobbyController controller = new LobbyController(id, ipaddr, ipport);
             //call create session with id
 
-            if (!controller.createServerSession(id)){
-                //log session creation failed
-                return;
+            switch (controller.createServerSession(id)){
+                case 1:
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Unable to host");
+                    alert.setHeaderText(null);
+                    alert.setContentText("The server is not running");
+                    alert.showAndWait();
+                    System.err.println("The server is not running");
+                    return;
+                case 2:
+                    System.err.println("Unable to host game");
+                    return;
             }
             //call client connect to session
             if (!(controller.connectToSession(id, controller.getLocalClient().getSessionId().toString()) == 0))
@@ -142,6 +151,7 @@ public class StartView extends Application {
                 //log connection failed
                 return;
             }
+
             //controller.initSocket();
             //controller.getHostId();
             controller.updatePlayerCount();

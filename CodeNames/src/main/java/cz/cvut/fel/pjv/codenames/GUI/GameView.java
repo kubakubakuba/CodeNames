@@ -12,14 +12,10 @@ public class GameView extends Application {
 
     private Player.PlayerTeam team;
     private Player.PlayerRole role;
-
     private GameController localControl= null;
-
     private SpymasterView viewS;
     private FieldOperativeView viewF;
     private  FieldOperativeLeaderView viewL;
-
-    private Client localClient;
 
     public GameView(GameController controller)  {
         this.localControl = controller;
