@@ -10,14 +10,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Logger;
 
 public class FieldOperativeLeaderView extends Application {
 
@@ -27,6 +25,8 @@ public class FieldOperativeLeaderView extends Application {
     GridPane boardContainer;
     private GameController localControl;
     private Button[][] buttons = new Button[5][5];
+    private Button saveBtn;
+
     public FieldOperativeLeaderView(GameController controller) {
         //super(controller);
         this.localControl = controller;
@@ -55,7 +55,7 @@ public class FieldOperativeLeaderView extends Application {
         promptCardCountLabel = new Label("Num Cards: " + localControl.getCurrentPromptCardCount());
         promptCardCountLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
-        Button saveBtn = new Button("Save game");
+        saveBtn = new Button("Save game");
 
         HBox spymasterOutputBox = new HBox();
 
@@ -149,9 +149,10 @@ public class FieldOperativeLeaderView extends Application {
         gameStage.show();
     }
 
-    public void update()    {
-        System.out.println("update");
-
+    /**
+     * Updates the view of the board
+     */
+    public void update() {
         ArrayList<ArrayList<Key.KeyType>> old = localControl.getRevealedCardsBoard();
         localControl.getGameData();
         int [] idxs = localControl.getChangedTileIdx(old, localControl.getRevealedCardsBoard()); //the indexes of button that changed
@@ -170,7 +171,7 @@ public class FieldOperativeLeaderView extends Application {
                 System.out.println("Codename " + name + " revealed as " + revealedStatus);
 
                 Button choiceButton = buttons[row][col];  // Get button from array
-                choiceButton.setPrefSize(200, 100);
+                choiceButton.setPrefSize(202, 162);
 
                 System.out.println("revealed status: " + revealedStatus + "keytype equals" + revealedStatus.equals(Key.KeyType.EMPTY));
                 if (revealedStatus == Key.KeyType.EMPTY) {
@@ -196,16 +197,19 @@ public class FieldOperativeLeaderView extends Application {
             }
         });
     }
-    public String randomize(String[] field, int len){
-        int randIdx  = new Random().nextInt(len);
-        return field[randIdx];
-    }
 
+    /**
+     * Disables all buttons on the board (ends the game)
+     * Allows the user to save the game if the game has not ended correctly
+     */
     public void gameEnd() {
         for(Button[] button : buttons){
             for(Button b : button){
                 b.setDisable(true);
             }
+        }
+        if(localControl.hasGameEnded()){
+            saveBtn.setDisable(true);
         }
     }
 }

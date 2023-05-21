@@ -67,6 +67,10 @@ public class LobbyView extends Application {
         lobbyStage.show();
     }
 
+    /**
+     * Creates the lobby scene for the host and the guest
+     * @return the lobby scene
+     */
     private Scene createLobbyScene() {
 
         if (ID.equals(localControl.getHostId())) {
@@ -76,6 +80,10 @@ public class LobbyView extends Application {
         }
     }
 
+    /**
+     * Creates the lobby scene for the host
+     * @return the lobby scene
+     */
     private Scene createHostScene() {
 
         playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
@@ -168,6 +176,10 @@ public class LobbyView extends Application {
 
     }
 
+    /**
+     * Creates the guest lobby scene
+     * @return the guest lobby scene
+     */
     private Scene createGuestLobby() {
         playerCounter = new Label("Number of players:" + localControl.getPlayerCount());
         playerCounter.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
@@ -292,6 +304,11 @@ public class LobbyView extends Application {
         return commonLayout;
     }
 
+    /**
+     * Sets the background of the scene
+     * @param layout the layout of the scene
+     * @return the scene with the background
+     */
     public Scene setBackground(VBox layout) {
         StackPane bckgrndPane = new StackPane();
         Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
@@ -306,6 +323,9 @@ public class LobbyView extends Application {
         return new Scene(bckgrndPane, 650, 600);
     }
 
+    /**
+     * Updates the scene
+     */
     public void update() {
         localControl.updatePlayerCount();
         javafx.application.Platform.runLater(() -> {
@@ -327,6 +347,10 @@ public class LobbyView extends Application {
         });
     }
 
+    /**
+     * Checks if the game can be started
+     * @return true if the game can be started, false otherwise
+     */
     private boolean canStartGame(){
         localControl.updatePlayerCount();
         localControl.updatePlayerRoles();
@@ -348,6 +372,9 @@ public class LobbyView extends Application {
         return true;
     }
 
+    /**
+     * Shows an error message when the player is unable to join a team
+     */
     private void teamError(){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error in Team");
@@ -357,6 +384,10 @@ public class LobbyView extends Application {
         System.err.println("Unable to join team");
     }
 
+    /**
+     * Shows an error message when the player is unable to choose a role
+     * @param roleNotChosen true if the player is not in a team, false if the role is already occupied
+     */
     private void roleError(boolean roleNotChosen){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error in choosing role");
@@ -373,15 +404,13 @@ public class LobbyView extends Application {
         }
     }
 
+    /**
+     * Shows an error message when the player is unable to start the game
+     */
     public void startGame(){
             javafx.application.Platform.runLater(() -> {
-                System.out.println("creating new stage for game");
-
                 GameController gameController = new GameController(localControl.getLocalClient(), localControl.getChatController());
-                //GameView game = new GameView(gameController);
-                System.out.println("displaying game window");
                 gameController.displayGameWindow();
-                System.out.println("game window displayed");
 
                 this.stage.close();
             });

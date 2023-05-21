@@ -17,8 +17,11 @@ public class Board implements Serializable {
         transferKeyToCards(key,deck);
     }
 
-    //load Board
-
+    /**
+     * Transfers the key type from solution to cards
+     * @param key key to transfer
+     * @param deck deck to transfer to
+     */
     void transferKeyToCards(Key key, Deck deck){
         ArrayList<ArrayList<Key.KeyType>> solution = key.getSolution();
         for(int r =0; r<5; r++){
@@ -27,6 +30,11 @@ public class Board implements Serializable {
             }
         }
     }
+
+    /**
+     * Initializes the starting team
+     * @return starting team
+     */
     private Player.PlayerTeam initStartingTeam(){
         int randIdx  = new Random().nextInt(2);
         Player.PlayerTeam [] teams= {Player.PlayerTeam.RED, Player.PlayerTeam.BLUE};
@@ -43,21 +51,5 @@ public class Board implements Serializable {
 
     public Player.PlayerTeam getStartingTeam() {
         return startingTeam;
-    }
-
-    public int getCardLeft(Player.PlayerTeam pteam){
-        int ret = 0;
-        for(int r =0; r<5; r++){
-            for(int c = 0; c<5; c++){
-                if(deck.getCards().get(r).get(c).getCardType() == Key.KeyType.RED && pteam == Player.PlayerTeam.RED){
-                    ret++;
-                }
-                if(deck.getCards().get(r).get(c).getCardType() == Key.KeyType.BLUE && pteam == Player.PlayerTeam.BLUE){
-                    ret++;
-                }
-            }
-        }
-
-        return ret;
     }
 }

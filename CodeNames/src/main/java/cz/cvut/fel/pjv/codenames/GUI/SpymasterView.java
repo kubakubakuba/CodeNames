@@ -32,6 +32,7 @@ public class SpymasterView extends Application {
     private HBox numPromptBox;
     private Button commitPrompt;
     private GameController localControl;
+    private Button saveBtn;
     public SpymasterView(GameController controller) {
         //super(controller);
         this.localControl = controller;
@@ -70,7 +71,7 @@ public class SpymasterView extends Application {
 
         commitPrompt = new Button("Commit Prompt");
 
-        Button saveBtn = new Button("Save game");
+        saveBtn = new Button("Save game");
 
         promptBox.getChildren().addAll(promptFieldLabel,promptField);
         promptBox.setSpacing(10);
@@ -204,7 +205,6 @@ public class SpymasterView extends Application {
 
 
     public void update()    {
-
         ArrayList<ArrayList<Key.KeyType>> old = localControl.getRevealedCardsBoard();
         localControl.getGameData();
         int [] idxs = localControl.getChangedTileIdx(old, localControl.getRevealedCardsBoard());
@@ -229,14 +229,16 @@ public class SpymasterView extends Application {
         });
     }
 
-    public String randomize(String[] field, int len){
-        int randIdx  = new Random().nextInt(len);
-        return field[randIdx];
-    }
-
+    /**
+     * Ends the game, disables the commit button and the prompt field
+     * allows user to save the game if it has not been saved yet
+     */
     public void gameEnd() {
         commitPrompt.setDisable(true);
         promptBox.setDisable(true);
         numPromptBox.setDisable(true);
+        if(localControl.hasGameEnded()){
+            saveBtn.setDisable(true);
+        }
     }
 }

@@ -7,7 +7,6 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -31,6 +30,7 @@ public class FieldOperativeView extends Application {
 
     private GameController localControl;
 
+    private Button saveBtn;
     private StackPane[][] stackPane = new StackPane[5][5];
     public FieldOperativeView(GameController controller) {
         //super(controller);
@@ -60,7 +60,7 @@ public class FieldOperativeView extends Application {
         promptCardCountLabel = new Label("Num Cards:" + localControl.getCurrentPromptCardCount());
         promptCardCountLabel.setStyle("-fx-font-family: Impact; -fx-font-size: 20px;");
 
-        Button saveBtn = new Button("Save game");
+        saveBtn = new Button("Save game");
 
         HBox spymasterOutputBox = new HBox();
 
@@ -194,11 +194,12 @@ public class FieldOperativeView extends Application {
 
     }
 
-    public String randomize(String[] field, int len){
-        int randIdx  = new Random().nextInt(len);
-        return field[randIdx];
-    }
-
+    /**
+     * Disables the save button when the game ends
+     */
     public void gameEnd() {
+        if(localControl.hasGameEnded()){
+            saveBtn.setDisable(true);
+        }
     }
 }

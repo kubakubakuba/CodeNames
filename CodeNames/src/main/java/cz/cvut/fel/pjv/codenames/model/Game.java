@@ -26,6 +26,10 @@ public class Game {
         this.listOfPlayers = listOfPlayers;
     }
 
+    /**
+     * Loads the game from the data string
+     * @param gameData base64 encoded game data
+     */
     public void loadGame(String gameData){
         byte[] decodedGameData = Base64.getDecoder().decode(gameData);
         GameData gameDataObject = null;
@@ -51,14 +55,15 @@ public class Game {
         }
     }
 
-    private void loadLoadedDeck(){
-
-    }
-
     public GameData getGameData(){
         return this.gameData;
     }
 
+    /**
+     * Returns the number of cards left to be revealed
+     * @param color color of the cards
+     * @return number of cards left to be revealed
+     */
     public int getColorCardsLeft(Key.KeyType color){
         int ret = 0;
         for(ArrayList< Key.KeyType> array : gameData.getBoard().getKey().getSolution()){

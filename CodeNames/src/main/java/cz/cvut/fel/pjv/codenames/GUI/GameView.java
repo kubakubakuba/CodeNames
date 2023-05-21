@@ -31,7 +31,10 @@ public class GameView extends Application {
         determineView(role);
     }
 
-
+    /**
+     * Determines which view to display based on the role of the player
+     * @param role role of the player
+     */
     public void determineView(Player.PlayerRole role)   {
         if (role == Player.PlayerRole.SPY_MASTER){
             viewS = new SpymasterView(localControl);
@@ -44,6 +47,9 @@ public class GameView extends Application {
         }
     };
 
+    /**
+     * Updates the view based on the role of the player
+     */
     public void update(){
         if (role == Player.PlayerRole.SPY_MASTER){
             viewS.update();
@@ -56,6 +62,10 @@ public class GameView extends Application {
         }
     }
 
+    /**
+     * Starts the view based on the role of the player
+     * @param primaryStage stage to be displayed
+     */
     @Override
     public void start(Stage primaryStage) {
         if(role == Player.PlayerRole.SPY_MASTER){
@@ -69,6 +79,9 @@ public class GameView extends Application {
         }
     }
 
+    /**
+     * Ends the view based on the role of the player
+     */
     public void gameEnd(){
         if(role == Player.PlayerRole.SPY_MASTER){
             viewS.gameEnd();

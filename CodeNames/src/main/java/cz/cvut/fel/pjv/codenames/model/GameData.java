@@ -41,16 +41,22 @@ public class GameData implements java.io.Serializable{
         this.lastPromptCardCount = 0;
     }
 
-    public GameData(String game_file){
-        //load game from file
-    }
-
     public Board getBoard() {return board;}
 
+    /**
+     * Reveals a card in the revealed cards board
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param type type of the card
+     */
     public void revealCardInRevealedCards(int x, int y, Key.KeyType type){ revealedCardsBoard.get(x).set(y, type);}
 
     public ArrayList<ArrayList<Key.KeyType>> getRevealedCardsBoard() {return revealedCardsBoard;}
 
+    /**
+     * Initializes the revealed cards board
+     * @return revealed cards board
+     */
     public ArrayList<ArrayList<Key.KeyType>> initRevealedCards(){
         ArrayList<ArrayList<Key.KeyType>> noReveals = new ArrayList<ArrayList<Key.KeyType>>();
         for (int r = 0; r < 5; r++ ){

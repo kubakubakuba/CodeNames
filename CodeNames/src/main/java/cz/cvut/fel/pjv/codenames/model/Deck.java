@@ -21,6 +21,9 @@ public class Deck implements Serializable {
        cards =  buildDeck(loadedCardNames);
    }
 
+    /**
+     * Initializes the word buffer from a file
+     */
    private void initWordBuffer()    {
         ArrayList<String> tempbuf = new ArrayList<String>();
        try (BufferedReader br = new BufferedReader(new FileReader(dckFile))) {
@@ -39,6 +42,11 @@ public class Deck implements Serializable {
 
     public ArrayList<ArrayList<Card>> getCards() {return cards;}
 
+    /**
+     * Builds a 2D array of cards from a 1D array of card names
+     * @param oneD 1D array of card names
+     * @return 2D array of cards
+     */
     private ArrayList<ArrayList<Card>> buildDeck(ArrayList<String> oneD){
         ArrayList<ArrayList<Card>> result = new ArrayList<>();
         int rows = 5;

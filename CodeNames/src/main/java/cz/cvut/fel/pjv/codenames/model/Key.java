@@ -27,21 +27,17 @@ public class Key implements Serializable {
     };
 
     public Key(Player.PlayerTeam startingTeam)    {
-
-//        ArrayList<ArrayList<KeyType>> testArray = new ArrayList<ArrayList<KeyType>>();
-//        //for testing purposes
-//        for (KeyType[] row : test) {
-//            ArrayList<KeyType> arrayListRow = new ArrayList<>(Arrays.asList(row));
-//            testArray.add(arrayListRow);
-//        }
-//        solution=testArray;
-        //for game
         solution = generateKey(startingTeam);
     }
     public ArrayList<ArrayList<KeyType>> getSolution() {
         return solution;
     }
 
+    /**
+     * Generates a key for the game
+     * @param startingTeam team that starts
+     * @return generated key
+     */
     private ArrayList<ArrayList<KeyType>> generateKey(Player.PlayerTeam startingTeam)   {
         List<KeyType> generatedSolutionUnmod = new ArrayList<>();
         int[] CardTypeCounts;
@@ -67,6 +63,11 @@ public class Key implements Serializable {
         return convert1Dto2D(generatedSolutionUnmod);
     }
 
+    /**
+     * Converts a 1D array into a 2D array
+     * @param array array to convert
+     * @return converted array
+     */
     private ArrayList<ArrayList<KeyType>> convert1Dto2D(List<KeyType> array)   {
         ArrayList<ArrayList<KeyType>> result = new ArrayList<>();
 

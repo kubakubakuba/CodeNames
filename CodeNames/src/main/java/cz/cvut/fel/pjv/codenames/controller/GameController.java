@@ -3,7 +3,6 @@ package cz.cvut.fel.pjv.codenames.controller;
 import cz.cvut.fel.pjv.codenames.GUI.GameView;
 import cz.cvut.fel.pjv.codenames.model.*;
 import cz.cvut.fel.pjv.codenames.server.AnswerParser;
-import cz.cvut.fel.pjv.codenames.server.ServerThread;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -65,6 +64,9 @@ public class GameController {
         loadImageFiles();
     }
 
+    /**
+     * Displays the game window and starts the game listener thread
+     */
     public void displayGameWindow(){
         gameView.start(new Stage());
 
@@ -74,11 +76,12 @@ public class GameController {
         gameListenerThread.start();
     }
 
-    public Key getKey() {return gamekey;}
-    public Deck getDeck() {return gameDeck;}
-
-    
-    //checks if number of Cards doesn't exceed 9 or is less than 1
+    /**
+     * Sends command to server to commit prompt
+     * @param promptText text of the prompt
+     * @param cardCount number of cards
+     * @return true if command was successful, false otherwise
+     */
     public boolean commitPrompt(String promptText, int cardCount){
 
         if (cardCount > 9 || cardCount < 1) {
@@ -93,6 +96,9 @@ public class GameController {
         return answerParser.getArguments()[0].equals("true");
     }
 
+    /**
+     * Sends command to the server to get current game data, then updates the game
+     */
     public void getGameData(){
         String answer = sendCommand("getgamedata;" + this.getClient().getId()+ ";"
                                                 + this.getClient().getSessionId().toString() + ";");
@@ -122,30 +128,12 @@ public class GameController {
         }
     }
 
-    private String sendCommand(String command) {
-        String serverAnswer = "1arg;null";
-
-        try {
-            Socket sock = new Socket(localClient.getServerIP(), localClient.getServerPort());
-            OutputStream output = sock.getOutputStream();
-            PrintWriter writer = new PrintWriter(output, true);
-
-            writer.println(command);
-
-            InputStream input = sock.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-
-            serverAnswer = reader.readLine();
-            return serverAnswer;
-
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-
-        return serverAnswer;
-    }
-
-    //checks if Card hasn't been chosen already
+    /**
+     * Checks if card hasn't been chosen already
+     * @param x x coordinate of card
+     * @param y y coordinate of card
+     * @return true if card hasn't been chosen already
+     */
     public boolean makeChoice(int x, int y){
         getGameData();
 
@@ -164,9 +152,11 @@ public class GameController {
         sendCommand("disconnect;" + this.getClient().getId()+ ";"
                 + this.getClient().getSessionId().toString() + ";");
     }
-    //once someone disconnects it should save the game and close the game for all
-    //-> will be implemented in gameListener
-    
+
+    /**
+     * Saves game file into file
+     * @param file File to save game into
+     */
     public void saveGame(File file){
         String answer = sendCommand("getgamedata;" + this.getClient().getId()+ ";"
                 + this.getClient().getSessionId().toString() + ";");
@@ -184,6 +174,10 @@ public class GameController {
     }
         //TODO: implement getCurrentTurn loads teamcolor and role of current turn to currentTurnText
 
+    /**
+     * Updates local data from GameData
+     * @param data GameData object
+     */
     public void update(GameData data) {
         //init variable object from data
         String team = (data.getCurrentTurnTeam() == Player.PlayerTeam.RED) ? "RED" : "BLUE";
@@ -198,6 +192,12 @@ public class GameController {
         this.currentTurnTeam = data.getCurrentTurnTeam();
     }
 
+    /**
+     * Returns the index of the changed tile in the 2D ArrayList
+     * @param old - old 2D ArrayList
+     * @param n - new 2D ArrayList
+     * @return - index of the changed tile, if no tile changed returns {-1, -1}
+     */
     public int[] getChangedTileIdx(ArrayList<ArrayList<Key.KeyType>> old, ArrayList<ArrayList<Key.KeyType>> n) {
         int[] idxs = {-1, -1};
         for (int i = 0; i <5 ; i++){
@@ -220,6 +220,9 @@ public class GameController {
         return gameView;
     }
 
+    /**
+     * Loads all images of cards to ImageArrays and shuffles them.
+     */
     private void loadImageFiles(){
         this.redCards = new ImageArray("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_red_1.png");
         for(int i = 2; i < 9; i++){
@@ -239,22 +242,32 @@ public class GameController {
         neutralCards.shuffle();
     }
 
-    public String getImage(Key.KeyType key){
-        String imgpath = "";
-        if (key == Key.KeyType.RED) {
-            imgpath = redCards.getNext();
-        }
-        if (key == Key.KeyType.BLUE) {
-            imgpath = blueCards.getNext();
-        }
-        if (key == Key.KeyType.CIVILIAN) {
-            imgpath = neutralCards.getNext();
+    /**
+     * Sends command to the server
+     * @param command command to be sent
+     * @return server answer
+     */
+    private String sendCommand(String command) {
+        String serverAnswer = "1arg;null";
 
+        try {
+            Socket sock = new Socket(localClient.getServerIP(), localClient.getServerPort());
+            OutputStream output = sock.getOutputStream();
+            PrintWriter writer = new PrintWriter(output, true);
+
+            writer.println(command);
+
+            InputStream input = sock.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+            serverAnswer = reader.readLine();
+            return serverAnswer;
+
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        if (key == Key.KeyType.ASSASSIN) {
-            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_black.png";
-        }
-        return imgpath;
+
+        return serverAnswer;
     }
 }
 

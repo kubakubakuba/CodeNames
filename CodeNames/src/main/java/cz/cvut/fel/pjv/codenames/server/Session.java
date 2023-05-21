@@ -61,12 +61,6 @@ public class Session {
         game.loadGame(gameData);
     }
 
-    public void startGameWDeck(){
-        //game = new Game(Buffer loadedDeck)
-        //or probably decode the deck to a ArrayList<String>
-    }
-
-
     public HashMap<String, Socket> getListeners() {
         return this.listeners;
     }
@@ -79,14 +73,29 @@ public class Session {
         return this.gameListeners;
     }
 
+    /**
+     * Adds a listener to the session
+     * @param listener - socket to be added
+     * @param id - id of the socket
+     */
     public void addListener(Socket listener, String id) {
         this.listeners.put(id, listener);
     }
 
+    /**
+     * Adds a chat listener to the session
+     * @param listener - socket to be added
+     * @param id - id of the socket
+     */
     public void addChatListener(Socket listener, String id) {
         this.chatListeners.put(id, listener);
     }
 
+    /**
+     * Adds a game listener to the session
+     * @param listener - socket to be added
+     * @param id - id of the socket
+     */
     public void addGameListener(Socket listener, String id) {
         this.gameListeners.put(id, listener);
     }

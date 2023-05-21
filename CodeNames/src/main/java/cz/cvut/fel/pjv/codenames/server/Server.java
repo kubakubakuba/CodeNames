@@ -33,6 +33,10 @@ public class Server implements Runnable{
         }
     }
 
+    /**
+     * Adds a session to the active sessions
+     * @param session session id as string to be added
+     */
     public void addSession(Session session){
         activeSessions.put(session.getSessionId().toString(), session);
     }

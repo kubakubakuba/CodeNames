@@ -43,6 +43,11 @@ public class ServerPicker extends Application {
             System.exit(0);
         });
     }
+
+    /**
+     * Creates the scene for the server picker
+     * @return the scene
+     */
     public Scene createScene() {
         // Create a VBox to hold the buttons
         VBox buttonContainer = new VBox();

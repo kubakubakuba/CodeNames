@@ -9,6 +9,10 @@ public class ImageArray {
         this.currentIndex = 0;
     }
 
+    /**
+     * Returns the next image in the array
+     * @return next image
+     */
     public String getNext() {
         if (filePaths.length == 0) {
             System.err.println("No images in array");
@@ -20,6 +24,10 @@ public class ImageArray {
         return filePath;
     }
 
+    /**
+     * Adds an image to the array
+     * @param filePath path to the image
+     */
     public void addImage(String filePath) {
         filePaths = Arrays.copyOf(filePaths, filePaths.length + 1);
         filePaths[filePaths.length - 1] = filePath;
@@ -29,6 +37,9 @@ public class ImageArray {
         currentIndex = 0;
     }
 
+    /**
+     * Shuffles the array
+     */
     public void shuffle() {
         for (int i = 0; i < filePaths.length; i++) {
             int randomIndex = (int) (Math.random() * filePaths.length);

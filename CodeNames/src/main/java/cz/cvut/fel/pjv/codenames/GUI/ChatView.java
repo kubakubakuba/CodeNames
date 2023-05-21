@@ -39,6 +39,10 @@ public class ChatView extends Application {
         showChatWindow("CodeNames Chat - " + localClient.getId());
     }
 
+    /**
+     * Show the chat window
+     * @param title the title of the window
+     */
     public void showChatWindow(String title) {
         Label msgLabel = new Label("Chat log");
         chatLog = new TextArea();
@@ -76,26 +80,19 @@ public class ChatView extends Application {
         stage.show();
     }
 
-    private void sendMessage() {
-        String message = removeLineBreaks(inputField.getText().strip());
-        if (message.length() > 0) {
-            message = message.replace(";", ",");
-            chatControl.sendMessage(message);
-            inputField.setText("");
-        }
-    }
-
-    private String removeLineBreaks(String str) {
-        // see: https://stackoverflow.com/questions/2163045/how-to-remove-line-breaks-from-a-file-in-java
-        return str.replaceAll("\\R+", " ");
-    }
-
+    /**
+     * Add message to chat log
+     * @param msg the message to add
+     */
     public void addMessage(String msg) {
         javafx.application.Platform.runLater(() -> {
             chatLog.appendText(msg + "\n\n");
         });
     }
 
+    /**
+     * Enable chat
+     */
     public void enableChat(){
         enabled = true;
         javafx.application.Platform.runLater(() -> {
@@ -103,6 +100,9 @@ public class ChatView extends Application {
         });
     }
 
+    /**
+     * Disable chat
+     */
     public void disableChat(){
         enabled = false;
         javafx.application.Platform.runLater(() -> {
@@ -110,8 +110,10 @@ public class ChatView extends Application {
         });
     }
 
+    /**
+     * Close chat window
+     */
     public void closeChat(){
         stage.close();
-        //System.exit(0);
     }
 }

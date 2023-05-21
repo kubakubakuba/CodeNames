@@ -22,6 +22,9 @@ public class ChatController {
         this.chatListen = new ChatListener(this, client);
     }
 
+    /**
+     * Displays chat window and starts chat listener thread
+     */
     public void displayChatWindow(){
         chatView.start(new Stage());
 
@@ -29,14 +32,25 @@ public class ChatController {
 
         chatListenerThread.start();
     }
+
+    /**
+     * Disables chat window
+     */
     public void setChatDisable(){
         chatView.disableChat();
     }
 
+    /**
+     * Enables chat window
+     */
     public void setChatEnable(){
         chatView.enableChat();
     }
 
+    /**
+     * Sends message to server
+     * @param message message to be sent
+     */
     public void sendMessage(String message){
         String answer = sendMessageCommand(message);
         AnswerParser answerParser = new AnswerParser(answer);
@@ -45,10 +59,27 @@ public class ChatController {
         }
     }
 
+    /**
+     * Adds message to chat window
+     * @param message message to be added
+     */
     public void addMessage(String message){
         chatView.addMessage(message);
     }
 
+    /**
+     * Stops chat listener thread and closes chat window
+     */
+    public void closeChat(){
+        chatListen.stop();
+        chatView.closeChat();
+    }
+
+    /**
+     * Sends message command to server
+     * @param message message to be sent
+     * @return server answer string
+     */
     private String sendMessageCommand(String message) {
         String serverAnswer = "1arg;null";
 
@@ -70,10 +101,5 @@ public class ChatController {
         }
 
         return serverAnswer;
-    }
-
-    public void closeChat(){
-        chatListen.stop();
-        chatView.closeChat();
     }
 }

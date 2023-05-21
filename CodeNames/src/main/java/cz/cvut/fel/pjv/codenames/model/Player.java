@@ -22,12 +22,19 @@ public class Player {
         this.role = PlayerRole.NONE;
         this.socket = socket;
     }
+
+    /**
+     * Enum for player team
+     */
     public enum PlayerTeam{
         RED,
         BLUE,
         NONE
     }
 
+    /**
+     * Enum for player role
+     */
     public enum PlayerRole{
         SPY_MASTER,
         FIELD_OPERATIVE,

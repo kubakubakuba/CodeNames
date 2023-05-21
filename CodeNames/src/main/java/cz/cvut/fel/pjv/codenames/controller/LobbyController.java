@@ -45,19 +45,19 @@ public class LobbyController {
         localClient = new Client(id, serverIP, serverPort);
     }
 
+    /**
+     * Set game deck file
+     * @param deckFile path to deck file
+     */
     public void setGameDeck(String deckFile){
         this.deckFile = deckFile;
     }
 
-    /*public void parseServeIPString(String serverIP){
-        String[] parts = serverIP.split(":");
-        this.serverIP = parts[0];
-        this.serverPort = Integer.parseInt(parts[1]);
-
-        System.out.println(this.serverIP + this.serverPort);
-    }*/
-
-    //implement start client and start server
+    /**
+     * Creates new session on server
+     * @param hostId id of host
+     * @return true if session was created, false otherwise
+     */
     public boolean createServerSession(String hostId)   {
         //System.out.println("Write a command:");
         System.out.println("server: " + serverIP + serverPort);
@@ -75,6 +75,12 @@ public class LobbyController {
         return true;
     }
 
+    /**
+     * Connects to session on server
+     * @param guestId id of guest
+     * @param sessionId id of session
+     * @return 0 if connected, 1 if unexpected server answer, 2 if name taken, 3 if session invalid
+     */
     public int connectToSession(String guestId, String sessionId) {
         String serverAnswer = localClient.sendCommand("connect;" + guestId + ';' + sessionId + ';');
         AnswerParser parser = new AnswerParser(serverAnswer);
@@ -101,6 +107,10 @@ public class LobbyController {
         return 0;
     }
 
+    /**
+     * Get list of sessions from server
+     * @return list of sessions
+     */
     public ArrayList<String> getServerSessions(){
         String serverAnswer = localClient.sendCommand("getSessions;" + localClient.getId() + ';');
         AnswerParser parser = new AnswerParser(serverAnswer);
@@ -113,6 +123,10 @@ public class LobbyController {
         return new ArrayList<>(Arrays.asList(parser.getArguments()));
     }
 
+    /**
+     * Get list of players from server
+     * @return list of players
+     */
     public ArrayList<String> getIdList(){
         String serverAnswer = localClient.sendCommand("getlobbyids;" + localClient.getId() + ';' + localClient.getSessionId() + ";");
         AnswerParser parser = new AnswerParser(serverAnswer);
@@ -124,10 +138,17 @@ public class LobbyController {
         return new ArrayList<>(Arrays.asList(parser.getArguments()));
     }
 
+    /**
+     * Get host id from server
+     * @return host id
+     */
     public String getHostId(){
         return hostId;
     }
 
+    /**
+     * Set host id
+     */
     public void setHostId(){
         String answer = localClient.sendCommand("gethostid;" + localClient.getId()+ ";"+
                                                 localClient.getSessionId()+ ';');
@@ -138,6 +159,9 @@ public class LobbyController {
         }
     }
 
+    /**
+     * Updates player count with server
+     */
     public void updatePlayerCount()    {
         String answer = localClient.sendCommand("getplayercount;" + localClient.getId()+ ";"+
                                                 localClient.getSessionId()+ ';');
@@ -152,6 +176,9 @@ public class LobbyController {
 
     }
 
+    /**
+     * Updates player roles with server
+     */
     public void updatePlayerRoles(){
         String answer = localClient.sendCommand("getplayerroles;" + localClient.getId()+ ";"+
                                                 localClient.getSessionId()+ ';');
@@ -168,6 +195,11 @@ public class LobbyController {
         }
     }
 
+    /**
+     * Selects team for player
+     * @param team team to select
+     * @return true if successful, false if not
+     */
     public boolean chooseTeam(Player.PlayerTeam team)    {
         String answer = localClient.sendCommand("chooseteam;" + localClient.getId()+ ";"+
                         localClient.getSessionId()+ ';'+ team + ';');
@@ -186,6 +218,12 @@ public class LobbyController {
         }
         return true;
     }
+
+    /**
+     * Choose role for player
+     * @param role player role
+     * @return true if successful, false if not
+     */
 
     public boolean chooseRole(Player.PlayerRole role)    {
         String answer = localClient.sendCommand("chooserole;" + localClient.getId()+ ";"+
@@ -206,6 +244,9 @@ public class LobbyController {
         return true;
     }
 
+    /**
+     * Disconnect from server
+     */
     public void disconnect(){
         String answer = localClient.sendCommand("disconnect;" + localClient.getId() + ";" +
                 localClient.getSessionId() + ';');
@@ -215,7 +256,10 @@ public class LobbyController {
         }
     }
 
-
+    /**
+     * Start the game
+     * @return true if successful, false if not
+     */
     public boolean startTheGame(){
         String answer = localClient.sendCommand("startgame;" + localClient.getId()+ ";"+
                 localClient.getSessionId() + ';' + deckFile);
@@ -229,6 +273,11 @@ public class LobbyController {
         return true;
     }
 
+    /**
+     * Load the game from save file and start it
+     * @param data save file data
+     * @return true if successful, false if not
+     */
     public boolean loadTheGame(String data){
         String answer = localClient.sendCommand("loadgame;" + localClient.getId()+ ";"+
                 localClient.getSessionId() + ';' + data);
@@ -241,7 +290,4 @@ public class LobbyController {
 
         return true;
     }
-
-    //implement feedback from server to model
-
 }
