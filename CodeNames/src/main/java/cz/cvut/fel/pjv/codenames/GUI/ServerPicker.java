@@ -58,17 +58,16 @@ public class ServerPicker extends Application {
 
             button.setOnAction(actionEvent -> {
                 //attempt to connect to session
-                if (controller.connectToSession(ID, label) == 1) {
-                    connectError("Unexpected server answer, please try again.");
-                    return;
-                }
-                if (controller.connectToSession(ID, label) == 2) {
-                    connectError("You have the same name as someone else in the session.");
-                    return;
-                }
-                if (controller.connectToSession(ID, label) == 3) {
-                    connectError("The session does not exist anymore.");
-                    return;
+                switch (controller.connectToSession(ID, label)){
+                    case 1:
+                        connectError("Unexpected server answer, please try again.");
+                        return;
+                    case 2:
+                        connectError("You have the same name as someone else in the session.");
+                        return;
+                    case 3:
+                        connectError("The session does not exist anymore.");
+                        return;
                 }
                 controller.getLocalClient().setSessionId(label);
                 controller.setHostId();

@@ -161,18 +161,8 @@ public class GameController {
     }
 
     public void disconnect() {
-        System.out.println("Disconnecting");
-
-        String answer = sendCommand("disconnect;" + this.getClient().getId()+ ";"
+        sendCommand("disconnect;" + this.getClient().getId()+ ";"
                 + this.getClient().getSessionId().toString() + ";");
-        AnswerParser answerParser = new AnswerParser(answer);
-
-        if (answerParser.getArguments()[0].equals("true")) {
-            System.out.println("Disconnected");
-        }
-        else{
-            System.out.println("Error while disconnecting");
-        }
     }
     //once someone disconnects it should save the game and close the game for all
     //-> will be implemented in gameListener

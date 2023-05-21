@@ -31,6 +31,10 @@ public class AnswerParser {
         arguments = null;
     }
 
+    /**
+     * An answer parser that parses an answer string into an AnswerType and an array of arguments for that answer
+     * @param answer - answer string to parse, split by semicolons
+     */
     public AnswerParser(String answer){
         if(answer.startsWith("gamedata;")){
             this.answer = AnswerType.GAME_DATA;

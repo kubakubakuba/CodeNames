@@ -37,6 +37,10 @@ public class CommandParser {
         arguments = null;
     }
 
+    /**
+     * A Command Parser that parses a command string into a CommandType and an array of arguments for that command
+     * @param command - command string to parse, split by semicolons
+     */
     public CommandParser(String command){
         command = command;
         String[] parts = command.split(";");

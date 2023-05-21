@@ -27,6 +27,10 @@ public class ServerThread extends Thread {
         this.running = true;
     }
 
+    /**
+     * Send updates to all players in the session lobby
+     * @param session session id
+     */
     private void sendUpdates(String session){
         for(Socket s : server.getActiveSessions().get(session).getListeners().values()){
             PrintWriter playerWriter = null;
@@ -40,6 +44,10 @@ public class ServerThread extends Thread {
         LOGGER.log(Level.INFO, "Sent lobby updates to all players in session " + session);
     }
 
+    /**
+     * Send updates to all players in the session
+     * @param session session id
+     */
     private void gameUpdates(String session){
         for(Socket s : server.getActiveSessions().get(session).getGameListeners().values()){
             PrintWriter playerWriter = null;
@@ -53,6 +61,11 @@ public class ServerThread extends Thread {
         LOGGER.log(Level.INFO, "Sent game updates to all players in session " + session);
     }
 
+    /**
+     * Send messages to all players in the session
+     * @param session session id
+     * @param message message to send
+     */
     private void sendMessages(String session, String message){
         for(Socket s : server.getActiveSessions().get(session).getChatListeners().values()){
             PrintWriter playerWriter = null;
@@ -65,6 +78,10 @@ public class ServerThread extends Thread {
         }
     }
 
+    /**
+     * Send end game signal to all players in the session
+     * @param session session id
+     */
     private void endGame(String session){
         for(Socket s : server.getActiveSessions().get(session).getGameListeners().values()){
             PrintWriter playerWriter = null;
@@ -78,6 +95,13 @@ public class ServerThread extends Thread {
         LOGGER.log(Level.INFO, "Sent game end to all players in session " + session);
     }
 
+    /**
+     * Check if role is available to be selected
+     * @param playerId player id
+     * @param sessionId session id
+     * @param role role to check
+     * @return true if role is available, false otherwise
+     */
     private boolean checkRoleAvailable(String playerId, String sessionId, Player.PlayerRole role){
         Session session = server.getActiveSessions().get(sessionId);
         HashMap<String, Player> players = session.getLobby().getListOfPlayers();
@@ -104,6 +128,11 @@ public class ServerThread extends Thread {
         return true;
     }
 
+    /**
+     * Serialize object to base64 string
+     * @param object object to serialize
+     * @return base64 string
+     */
     public String serialize(Serializable object) {
         try {
             // Create a ByteArrayOutputStream to hold the serialized object
@@ -128,6 +157,12 @@ public class ServerThread extends Thread {
         }
     }
 
+    /**
+     * Compare key and team
+     * @param key key to compare
+     * @param team team to compare
+     * @return true if key and team color match, false otherwise
+     */
     private boolean compareTeamCard(Key.KeyType key, Player.PlayerTeam team){
         if(key == Key.KeyType.RED && team == Player.PlayerTeam.RED){
             return true;
@@ -293,6 +328,7 @@ public class ServerThread extends Thread {
                         sendMessages(idSession, "_____You found the assassin! The game ends!_____");
                         s.getGame().getGameData().setGameEnded(true);
                         s.getGame().getGameData().setWinner(s.getGame().getGameData().getCurrentTurnTeam() == Player.PlayerTeam.RED ? Player.PlayerTeam.BLUE : Player.PlayerTeam.RED);
+                        sendMessages(idSession, "_____The winner is: " + s.getGame().getGameData().getWinner() + " team!_____");
                         endGame(idSession);
                         writer.println("1arg;true");
                     }

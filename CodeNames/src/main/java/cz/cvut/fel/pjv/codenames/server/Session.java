@@ -44,10 +44,18 @@ public class Session {
         gameListeners = new HashMap<String, Socket>();
     }
 
+    /**
+     * Starts a new game with the current lobby
+     * @param dckFile - path to the deck file
+     */
     public void startNewGame(String dckFile){
         game = new Game(lobby.getListOfPlayers(), dckFile);
     }
 
+    /**
+     * Loads a game from a string in base64 format
+     * @param gameData - data string in base64 format
+     */
     public void loadGame(String gameData){
         game = new Game(lobby.getListOfPlayers());
         game.loadGame(gameData);
