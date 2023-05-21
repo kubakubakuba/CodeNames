@@ -405,8 +405,9 @@ public class ServerThread extends Thread {
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
 
-                    String response = "1arg;false;";
+                    String response = "1arg;";
                     if(!server.getActiveSessions().containsKey(idSession)) {
+                        response = "1arg;sessioninvalid;";
                         writer.println(response);
                         LOGGER.log(Level.INFO, "Player " + idSelf + " tried to connect to session " + idSession + " but the session does not exist");
                         return;
@@ -415,6 +416,7 @@ public class ServerThread extends Thread {
                     Session s = server.getActiveSessions().get(idSession);
 
                     if(s.getLobby().getListOfPlayers().containsKey(idSelf)){
+                        response = "1arg;nametaken;";
                         writer.println(response);
                         LOGGER.log(Level.INFO, "Player " + idSelf + " tried to connect to session " + idSession + " but the player already exists");
                         return;
@@ -629,11 +631,15 @@ public class ServerThread extends Thread {
                     String idSelf = parser.getArguments()[0];
                     String idSession = parser.getArguments()[1];
 
-                    if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to disconnect from session " + idSession + " but the session or player does not exist");
+                    if(!(server.getActiveSessions().containsKey(idSession) &&
+                         server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf)))
+                    {
+                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to disconnect from session " +
+                                  idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
+
                     Session s = server.getActiveSessions().get(idSession);
                     s.getLobby().getListOfIds().remove(idSelf);
                     s.getLobby().getListOfPlayers().remove(idSelf);
@@ -653,7 +659,8 @@ public class ServerThread extends Thread {
                     if(s.getHostId().equals(idSelf)){
                         LOGGER.log(Level.INFO, "Player " + idSelf + " was the host of session " + idSession + " and disconnected");
                         endGame(idSession);
-                        //server.getActiveSessions().remove(idSession);
+                        server.getActiveSessions().remove(idSession);
+                        LOGGER.log(Level.INFO, "Session wit id " + idSession + " has been terminated");
                         return;
                     }
 

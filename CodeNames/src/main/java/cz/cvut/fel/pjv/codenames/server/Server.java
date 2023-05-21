@@ -25,7 +25,6 @@ public class Server implements Runnable{
         try (ServerSocket ss = new ServerSocket(PORT)) {
             while (true) {
                 Socket socket = ss.accept();
-                System.out.println("new client");
 
                 new ServerThread(socket, this).start();
             }

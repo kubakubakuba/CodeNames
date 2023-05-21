@@ -75,20 +75,30 @@ public class LobbyController {
         return true;
     }
 
-    public boolean connectToSession(String guestId, String sessionId) {
+    public int connectToSession(String guestId, String sessionId) {
         String serverAnswer = localClient.sendCommand("connect;" + guestId + ';' + sessionId + ';');
         AnswerParser parser = new AnswerParser(serverAnswer);
 
-        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG || (parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("null"))){
-            System.err.println("Received unexpected server answer!");
-            return false;
+        if(parser.getAnswer() != AnswerParser.AnswerType.ONE_ARG){
+            System.err.println("Recieved unexpected server answer!");
+            return 1;
+        }
+
+        if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("nametaken")){
+            System.err.println("Someone with your name is already in session!");
+            return 2;
+        }
+
+        if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG && parser.getArguments()[0].equals("sessioninvalid")){
+            System.err.println("Session does not exist!");
+            return 3;
         }
 
         if(parser.getAnswer() == AnswerParser.AnswerType.ONE_ARG){
             localClient.setSessionId(parser.getArguments()[0]);
         }
 
-        return true;
+        return 0;
     }
 
     public ArrayList<String> getServerSessions(){

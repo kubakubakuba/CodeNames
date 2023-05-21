@@ -84,6 +84,17 @@ public class StartView extends Application {
         joinbutton.setOnAction(e -> {
 
             id = textField.getText();
+            if (textField.getText().isEmpty())
+            {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error in name");
+                alert.setHeaderText(null);
+                alert.setContentText("The name cannot be empty!");
+
+                alert.showAndWait();
+                System.err.println("entered empty name");
+                return;
+            }
             //set Client id
 
             serverIP = serverField.getText();
@@ -125,7 +136,7 @@ public class StartView extends Application {
                 return;
             }
             //call client connect to session
-            if (!controller.connectToSession(id, controller.getLocalClient().getSessionId().toString()))
+            if (!(controller.connectToSession(id, controller.getLocalClient().getSessionId().toString()) == 0))
             {
                 //log connection failed
                 return;

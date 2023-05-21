@@ -58,14 +58,16 @@ public class ServerPicker extends Application {
 
             button.setOnAction(actionEvent -> {
                 //attempt to connect to session
-                if (!controller.connectToSession(ID, label)) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Error in Team");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Unable to join team, you have the same name as someone else in the team.");
-                    alert.showAndWait();
-
-                    System.err.println("Unable to join team");
+                if (controller.connectToSession(ID, label) == 1) {
+                    connectError("Unexpected server answer, please try again.");
+                    return;
+                }
+                if (controller.connectToSession(ID, label) == 2) {
+                    connectError("You have the same name as someone else in the session.");
+                    return;
+                }
+                if (controller.connectToSession(ID, label) == 3) {
+                    connectError("The session does not exist anymore.");
                     return;
                 }
                 controller.getLocalClient().setSessionId(label);
@@ -143,5 +145,14 @@ public class ServerPicker extends Application {
 
     public void setID(String ID)    {
         this.ID = ID;
+    }
+
+    private void connectError(String errorMsg)   {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Unable to join session");
+        alert.setHeaderText(null);
+        alert.setContentText(errorMsg);
+        alert.showAndWait();
+        System.err.println("Unable to join session");
     }
 }
