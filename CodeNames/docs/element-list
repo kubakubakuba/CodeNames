@@ -1,0 +1,5 @@
+module:cz.cvut.fel.pjv.codenames
+cz.cvut.fel.pjv.codenames.controller
+cz.cvut.fel.pjv.codenames.GUI
+cz.cvut.fel.pjv.codenames.model
+cz.cvut.fel.pjv.codenames.server

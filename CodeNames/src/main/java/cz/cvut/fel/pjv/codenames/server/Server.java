@@ -1,12 +1,10 @@
 package cz.cvut.fel.pjv.codenames.server;
 
-import cz.cvut.fel.pjv.codenames.model.Player;
+import cz.cvut.fel.pjv.codenames.model.Session;
 
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Server implements Runnable{
 

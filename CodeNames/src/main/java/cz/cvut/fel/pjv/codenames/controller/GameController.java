@@ -13,8 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GameController {
-
-    //variables
     private Client localClient;
     private ArrayList<ArrayList<Key.KeyType>> revealedCardsBoard;
     private Key gamekey;

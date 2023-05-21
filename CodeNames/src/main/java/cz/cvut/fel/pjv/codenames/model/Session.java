@@ -1,4 +1,4 @@
-package cz.cvut.fel.pjv.codenames.server;
+package cz.cvut.fel.pjv.codenames.model;
 
 import cz.cvut.fel.pjv.codenames.model.Lobby;
 import cz.cvut.fel.pjv.codenames.model.Game;

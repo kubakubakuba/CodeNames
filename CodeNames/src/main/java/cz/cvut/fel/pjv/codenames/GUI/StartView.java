@@ -15,9 +15,11 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.layout.BackgroundPosition;
 
-
+/**
+ * @author Prokop Jansa, Jakub Pelc
+ * @version 1.0
+ */
 public class StartView extends Application {
-
 
     private String id;
     private String serverIP;

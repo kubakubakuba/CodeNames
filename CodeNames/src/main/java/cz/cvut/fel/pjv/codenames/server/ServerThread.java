@@ -1,17 +1,13 @@
 package cz.cvut.fel.pjv.codenames.server;
 
-import cz.cvut.fel.pjv.codenames.model.Card;
-import cz.cvut.fel.pjv.codenames.model.Game;
-import cz.cvut.fel.pjv.codenames.model.Key;
-import cz.cvut.fel.pjv.codenames.model.Player;
+import cz.cvut.fel.pjv.codenames.model.*;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+
 public class ServerThread extends Thread {
 
     private final Socket socket;
