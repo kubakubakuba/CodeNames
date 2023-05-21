@@ -692,17 +692,24 @@ public class ServerThread extends Thread {
                     if(s.getHostId().equals(idSelf)){
                         LOGGER.log(Level.INFO, "Player " + idSelf + " was the host of session " + idSession + " and disconnected");
                         endGame(idSession);
-                        server.getActiveSessions().remove(idSession);
+                        //server.getActiveSessions().remove(idSession);
                         LOGGER.log(Level.INFO, "Session wit id " + idSession + " has been terminated");
+                        return;
+                    }
+
+                    if (s.getLobby().getListOfPlayers().get(idSelf).getRole() == Player.PlayerRole.SPY_MASTER ||
+                            s.getLobby().getListOfPlayers().get(idSelf).getRole() == Player.PlayerRole.FIELD_OPERATIVE_LEADER){
+                        LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session "
+                                + idSession + " and was " + s.getLobby().getListOfPlayers().get(idSelf).getRole() +" therefore the game cannot continue.");
+                        endGame(idSession);
+                        //server.getActiveSessions().remove(idSession);
                         return;
                     }
 
                     if(s.getLobby().getListOfPlayers().size() < 4 && s.getLobby().getListOfPlayers().size() > 1){
                         LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue");
                         endGame(idSession);
-
                         //server.getActiveSessions().remove(idSession);
-                        //TODO: handle unexpected disconnects
                         return;
                     }
 
