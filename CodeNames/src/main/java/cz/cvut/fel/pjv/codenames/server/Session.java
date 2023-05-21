@@ -65,12 +65,7 @@ public class Session {
         //game = new Game(Buffer loadedDeck)
         //or probably decode the deck to a ArrayList<String>
     }
-    public void startLoadedGame(){
-        //game = new Game(Buffer loadedGame)
-    }
-    public void loadGame(){
-        //write serialized game data t a buffer in session for later passing to startLoadedGame
-    }
+
 
     public HashMap<String, Socket> getListeners() {
         return this.listeners;

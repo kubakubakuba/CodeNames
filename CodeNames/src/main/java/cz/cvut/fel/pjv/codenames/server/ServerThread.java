@@ -454,7 +454,8 @@ public class ServerThread extends Thread {
                     if(s.getLobby().getListOfPlayers().containsKey(idSelf)){
                         response = "1arg;nametaken;";
                         writer.println(response);
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to connect to session " + idSession + " but the player already exists");
+                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to connect to session " +
+                                    idSession + " but the player already exists");
                         return;
                     }
 
