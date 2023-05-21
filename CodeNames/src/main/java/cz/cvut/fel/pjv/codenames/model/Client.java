@@ -2,6 +2,7 @@ package cz.cvut.fel.pjv.codenames.model;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -44,6 +45,7 @@ public class Client {
     public String sendCommand(String command){
         try{
             Socket sock = new Socket(serverIP, serverPort);
+            sock.setSoTimeout(1000);
             this.socket = sock;
             OutputStream output = sock.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
@@ -60,7 +62,10 @@ public class Client {
 
             return serverAnswer;
         }
-        catch (Exception e) {
+        catch (SocketTimeoutException ex){
+            return "1arg;null";
+        }
+        catch (Exception e){
             System.out.println(e);
         }
 

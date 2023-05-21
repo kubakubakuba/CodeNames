@@ -674,8 +674,6 @@ public class ServerThread extends Thread {
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
-                    s.getLobby().getListOfIds().remove(idSelf);
-                    s.getLobby().getListOfPlayers().remove(idSelf);
 
                     writer.println("1arg;true");
 
@@ -689,11 +687,24 @@ public class ServerThread extends Thread {
 
                     writer.println("1arg;true");
 
-                    if(s.getHostId().equals(idSelf)){
+                    /*if(s.getHostId().equals(idSelf)){
                         LOGGER.log(Level.INFO, "Player " + idSelf + " was the host of session " + idSession + " and disconnected");
                         endGame(idSession);
                         //server.getActiveSessions().remove(idSession);
                         LOGGER.log(Level.INFO, "Session wit id " + idSession + " has been terminated");
+                        sendUpdates(idSession);
+
+                        s.getLobby().getListOfIds().remove(idSelf);
+                        s.getLobby().getListOfPlayers().remove(idSelf);
+                        return;
+                    }*/
+
+                    LOGGER.log(Level.INFO, "Player " + idSelf + " requested to disconnect from session " + idSession + " and was successful");
+
+                    if (s.getLobby().getListOfPlayers().size() == 1) {
+                        LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue, session will be deleted");
+                        endGame(idSession);
+                        server.getActiveSessions().remove(idSession);
                         return;
                     }
 
@@ -702,24 +713,19 @@ public class ServerThread extends Thread {
                         LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session "
                                 + idSession + " and was " + s.getLobby().getListOfPlayers().get(idSelf).getRole() +" therefore the game cannot continue.");
                         endGame(idSession);
-                        //server.getActiveSessions().remove(idSession);
+                        s.getLobby().getListOfIds().remove(idSelf);
+                        s.getLobby().getListOfPlayers().remove(idSelf);
                         return;
                     }
 
                     if(s.getLobby().getListOfPlayers().size() < 4 && s.getLobby().getListOfPlayers().size() > 1){
                         LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue");
                         endGame(idSession);
-                        //server.getActiveSessions().remove(idSession);
+
+                        s.getLobby().getListOfIds().remove(idSelf);
+                        s.getLobby().getListOfPlayers().remove(idSelf);
                         return;
                     }
-
-                    if (s.getLobby().getListOfPlayers().size() == 1) {
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue, session will be deleted");
-                        endGame(idSession);
-                        server.getActiveSessions().remove(idSession);
-                    }
-
-                    LOGGER.log(Level.INFO, "Player " + idSelf + " requested to disconnect from session " + idSession + " and was successful");
                 }
 
                 if(parser.getCommand() == CommandParser.CommandType.START_GAME){
@@ -754,8 +760,9 @@ public class ServerThread extends Thread {
                         }
                     }
 
-                    //TODO: pass the deck path from host selected file
-                    s.startNewGame(deckPath);
+                    ArrayList<String> words = new ArrayList<String>();
+                    Collections.addAll(words, Arrays.copyOfRange(parser.getArguments(), 3, parser.getArguments().length));
+                    s.startNewGame(words);
 
                     for(Socket ss : s.getListeners().values()){
                         PrintWriter playerWriter = null;

@@ -10,15 +10,17 @@ public class Deck implements Serializable {
     private ArrayList<ArrayList<Card>> cards;
     private ArrayList<String> wordBuffer;
 
-    public Deck(String dckFile){
-        this.dckFile = dckFile;
-        initWordBuffer();
-        Collections.shuffle(wordBuffer);
-        cards = buildDeck(wordBuffer);
-    }
+    //public Deck(String dckFile){
+    //    this.dckFile = dckFile;
+    //    initWordBuffer();
+    //    Collections.shuffle(wordBuffer);
+    //    cards = buildDeck(wordBuffer);
+    //}
 
    public Deck (ArrayList<String> loadedCardNames){
-       cards =  buildDeck(loadedCardNames);
+       Collections.shuffle(loadedCardNames);
+       cards = buildDeck(loadedCardNames);
+
    }
 
     /**

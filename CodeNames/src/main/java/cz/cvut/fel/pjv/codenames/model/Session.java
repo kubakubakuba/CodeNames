@@ -48,8 +48,8 @@ public class Session {
      * Starts a new game with the current lobby
      * @param dckFile - path to the deck file
      */
-    public void startNewGame(String dckFile){
-        game = new Game(lobby.getListOfPlayers(), dckFile);
+    public void startNewGame(ArrayList<String> words){
+        game = new Game(lobby.getListOfPlayers(), words);
     }
 
     /**

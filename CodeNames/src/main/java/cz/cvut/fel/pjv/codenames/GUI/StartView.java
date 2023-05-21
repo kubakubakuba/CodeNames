@@ -15,6 +15,8 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.layout.BackgroundPosition;
 
+import java.io.File;
+
 /**
  * @author Prokop Jansa, Jakub Pelc
  * @version 1.0
@@ -99,6 +101,16 @@ public class StartView extends Application {
             //set Client id
 
             serverIP = serverField.getText();
+            if(!isValidIpAddress(serverIP)){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error in server IP");
+                alert.setHeaderText(null);
+                alert.setContentText("The server IP is not valid!");
+
+                alert.showAndWait();
+                System.err.println("entered invalid server IP");
+                return;
+            }
 
             String ipaddr = serverIP.split(":")[0];
             int ipport = Integer.parseInt(serverIP.split(":")[1]);
@@ -174,5 +186,47 @@ public class StartView extends Application {
         return id;
     }
 
+    private boolean isValidIpAddress(String ipString) {
+        if(!ipString.contains(":")){
+            return false;
+        }
+        String[] parts = ipString.split(":");
+        if (parts.length < 2) {
+            return false;
+        }
+
+        String ipAddress = parts[0];
+        String portString = parts[1];
+
+        String[] octets = ipAddress.split("\\.");
+
+        if (octets.length != 4) {
+            return false;
+        }
+
+        for (String octet : octets) {
+            try {
+                int value = Integer.parseInt(octet);
+
+                if (value < 0 || value > 255) {
+                    return false;
+                }
+            } catch (NumberFormatException e) {
+                return false;
+            }
+        }
+
+        try {
+            int port = Integer.parseInt(portString);
+
+            if (port < 0 || port > 65535) {
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        return true;
+    }
 
 }

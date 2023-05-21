@@ -219,7 +219,7 @@ public class GameController {
 
         }
         if (key == Key.KeyType.ASSASSIN) {
-            imgpath = "/cards/card_black.png";
+            imgpath = getClass().getResource("/cards/card_black.png").toString();
         }
         return imgpath;
     }
@@ -228,17 +228,17 @@ public class GameController {
      * Loads all images of cards to ImageArrays and shuffles them.
      */
     private void loadImageFiles(){
-        this.redCards = new ImageArray("/cards/card_red_1.png");
+        this.redCards = new ImageArray(getClass().getResource("/cards/card_red_1.png").toString());
         for(int i = 2; i < 9; i++){
-            redCards.addImage("/cards/card_red_" + i + ".png");
+            redCards.addImage(getClass().getResource("/cards/card_red_" + i + ".png").toString());
         }
-        this.blueCards = new ImageArray("/cards/card_blue_1.png");
+        this.blueCards = new ImageArray(getClass().getResource("/cards/card_blue_1.png").toString());
         for(int i = 2; i < 10; i++){
-            blueCards.addImage("/cards/card_blue_" + i + ".png");
+            blueCards.addImage(getClass().getResource("/cards/card_blue_" + i + ".png").toString());
         }
-        this.neutralCards = new ImageArray("/cards/card_civ_1.png");
+        this.neutralCards = new ImageArray(getClass().getResource("/cards/card_civ_1.png").toString());
         for(int i = 2; i < 7; i++){
-            neutralCards.addImage("/cards/card_civ_" + i + ".png");
+            neutralCards.addImage(getClass().getResource("/cards/card_civ_" + i + ".png").toString());
         }
 
         redCards.shuffle();

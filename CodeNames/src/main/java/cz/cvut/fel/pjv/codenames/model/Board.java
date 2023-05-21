@@ -10,10 +10,10 @@ public class Board implements Serializable {
     private Deck deck;
     private Player.PlayerTeam startingTeam;
 
-    public Board(String dckFile) {
+    public Board(ArrayList<String> words) {
         startingTeam = initStartingTeam();
         key = new Key(startingTeam);
-        deck = new Deck(dckFile);
+        deck = new Deck(words);
         transferKeyToCards(key,deck);
     }
 

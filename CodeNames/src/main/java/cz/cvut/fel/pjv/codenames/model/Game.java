@@ -16,8 +16,8 @@ public class Game {
     public void saveGame(){};
     public void loadGame(){};
 
-    public Game(HashMap<String,Player> listOfPlayers, String dckFile) {
-        Board board = new Board(dckFile);
+    public Game(HashMap<String,Player> listOfPlayers, ArrayList<String> words) {
+        Board board = new Board(words);
         this.gameData = new GameData(board);
         this.listOfPlayers = listOfPlayers;
     }

@@ -56,6 +56,16 @@ public class ServerPicker extends Application {
         LobbyController controller = new LobbyController(ID, serverIP, serverPort);
         sessions = controller.getServerSessions();
 
+        if(sessions == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("Could not connect to server");
+            alert.setContentText("Please try again later.");
+            alert.showAndWait();
+            previousStage.setScene(previousScene);
+            return previousScene;
+        }
+
         for(String label : sessions) {
             Button button = new Button(label);
 

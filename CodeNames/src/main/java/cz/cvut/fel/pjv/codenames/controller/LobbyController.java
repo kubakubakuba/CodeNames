@@ -5,8 +5,14 @@ import cz.cvut.fel.pjv.codenames.server.AnswerParser;
 import cz.cvut.fel.pjv.codenames.model.Client;
 
 import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.StringJoiner;
 
 public class LobbyController {
 
@@ -19,7 +25,9 @@ public class LobbyController {
     private String serverIP = "localhost";
     private int serverPort = 1313;
     private ChatController chatController;
-    private String deckFile = "/Names.dck;";
+    private String deckFile = "Names.dck";
+    private ArrayList<String> deck = new ArrayList<String>();
+    private boolean customDeck = false;
 
     //getters
     public ChatController getChatController() {
@@ -45,6 +53,7 @@ public class LobbyController {
      * @param deckFile path to deck file
      */
     public void setGameDeck(String deckFile){
+        this.customDeck = true;
         this.deckFile = deckFile;
     }
 
@@ -261,16 +270,40 @@ public class LobbyController {
      * @return true if successful, false if not
      */
     public boolean startTheGame(){
-        String answer = localClient.sendCommand("startgame;" + localClient.getId()+ ";"+
-                localClient.getSessionId() + ';' + deckFile);
+        try {
+            List<String> lines;
+            if(customDeck){
+                lines = Files.readAllLines(Paths.get(deckFile));
+            }
+            else{
+                ClassLoader classLoader = this.getClass().getClassLoader();
+                File configFile = new File(classLoader.getResource("Names.dck").getFile());
+                lines = Files.readAllLines(configFile.toPath());
+            }
 
-        AnswerParser parser = new AnswerParser(answer);
-        if(parser.getArguments()[0].equals("false")){
-            System.err.println("Starting the game was not granted by server!");
-            return false;
+            ArrayList<String> linesList = new ArrayList<>(lines);
+
+            StringJoiner joiner = new StringJoiner(";");
+            for (String line : linesList) {
+                joiner.add(line);
+            }
+
+            String answer = localClient.sendCommand("startgame;" + localClient.getId()+ ";"+
+                    localClient.getSessionId() + ';' + joiner.toString());
+
+            AnswerParser parser = new AnswerParser(answer);
+            if(parser.getArguments()[0].equals("false")){
+                System.err.println("Starting the game was not granted by server!");
+                return false;
+            }
+            return true;
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return true;
+
+        return false;
     }
 
     /**
