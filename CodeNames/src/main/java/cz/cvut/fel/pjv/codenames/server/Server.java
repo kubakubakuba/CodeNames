@@ -10,7 +10,7 @@ import java.util.List;
 
 public class Server implements Runnable{
 
-    private final int PORT = 1515;
+    private final int PORT = 1313;
 
     private HashMap<String, Session> activeSessions = new HashMap<String, Session>();
 
