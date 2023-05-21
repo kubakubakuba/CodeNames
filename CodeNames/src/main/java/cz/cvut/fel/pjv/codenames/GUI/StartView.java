@@ -71,7 +71,7 @@ public class StartView extends Application {
         vbox.setAlignment(Pos.CENTER);
 
         StackPane bckgrndPane = new StackPane();
-        Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
+        Image backgroundImage = new Image("/background_start.jpeg");
         BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,
                                         BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);

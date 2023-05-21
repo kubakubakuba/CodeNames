@@ -345,7 +345,7 @@ public class LobbyView extends Application {
      */
     private Scene setBackground(VBox layout) {
         StackPane bckgrndPane = new StackPane();
-        Image backgroundImage = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/background_start.jpeg");
+        Image backgroundImage = new Image("/background_start.jpeg");
         BackgroundSize backgroundSize = new BackgroundSize(1, 1, true, true, false, false);
         // Create the background image
         BackgroundImage backgroundImg = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT,

@@ -219,7 +219,7 @@ public class GameController {
 
         }
         if (key == Key.KeyType.ASSASSIN) {
-            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_black.png";
+            imgpath = "/cards/card_black.png";
         }
         return imgpath;
     }
@@ -228,17 +228,17 @@ public class GameController {
      * Loads all images of cards to ImageArrays and shuffles them.
      */
     private void loadImageFiles(){
-        this.redCards = new ImageArray("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_red_1.png");
+        this.redCards = new ImageArray("/cards/card_red_1.png");
         for(int i = 2; i < 9; i++){
-            redCards.addImage("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_red_" + i + ".png");
+            redCards.addImage("/cards/card_red_" + i + ".png");
         }
-        this.blueCards = new ImageArray("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_blue_1.png");
+        this.blueCards = new ImageArray("/cards/card_blue_1.png");
         for(int i = 2; i < 10; i++){
-            blueCards.addImage("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_blue_" + i + ".png");
+            blueCards.addImage("/cards/card_blue_" + i + ".png");
         }
-        this.neutralCards = new ImageArray("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_civ_1.png");
+        this.neutralCards = new ImageArray("/cards/card_civ_1.png");
         for(int i = 2; i < 7; i++){
-            neutralCards.addImage("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_civ_" + i + ".png");
+            neutralCards.addImage("/cards/card_civ_" + i + ".png");
         }
 
         redCards.shuffle();

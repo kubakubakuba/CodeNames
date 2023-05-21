@@ -102,10 +102,10 @@ public class SpymasterView extends Application {
                 Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(r).get(c);
                 Label cardLabel = new Label(name);
 
-                Image blueBgImagePath = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/word_blue.png");
-                Image redBgImagePath = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/word_red.png");
-                Image civBgImagePath = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/word_civ.png");
-                Image blackBgImagePath = new Image("file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/word_black.png");
+                Image blueBgImagePath = new Image("/cards/word_blue.png");
+                Image redBgImagePath = new Image("/cards/word_red.png");
+                Image civBgImagePath = new Image("/cards/word_civ.png");
+                Image blackBgImagePath = new Image("/cards/word_black.png");
 
                 BackgroundSize bgSize = new BackgroundSize(1, 1, true, true, false, false);
                 BackgroundImage bgImgBlue = new BackgroundImage(blueBgImagePath, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, bgSize);

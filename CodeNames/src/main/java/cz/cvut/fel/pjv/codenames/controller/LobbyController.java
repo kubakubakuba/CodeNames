@@ -19,7 +19,7 @@ public class LobbyController {
     private String serverIP = "localhost";
     private int serverPort = 1313;
     private ChatController chatController;
-    private String deckFile = "src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck;";
+    private String deckFile = "/Names.dck;";
 
     //getters
     public ChatController getChatController() {
