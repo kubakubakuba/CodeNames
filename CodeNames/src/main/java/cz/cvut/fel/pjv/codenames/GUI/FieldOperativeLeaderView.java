@@ -157,7 +157,11 @@ public class FieldOperativeLeaderView extends Application {
         localControl.getGameData();
         int [] idxs = localControl.getChangedTileIdx(old, localControl.getRevealedCardsBoard()); //the indexes of button that changed
         javafx.application.Platform.runLater(() -> {
-            currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+
+            if (!localControl.hasGameEnded())
+                currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+            else
+                currentTurnLabel.setText("Winners are: " + localControl.getWinner());
 
             promptLabel.setText("Entered prompt: " +localControl.getCurrentPromptText());
             promptCardCountLabel.setText("Num Cards:" + localControl.getCurrentPromptCardCount());

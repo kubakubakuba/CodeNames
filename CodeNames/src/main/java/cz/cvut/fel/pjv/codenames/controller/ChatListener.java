@@ -11,9 +11,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ChatListener implements Runnable {
+
     private boolean running;
     private Client client;
     private ChatController chatControl;
+
     public ChatListener(ChatController chatControl, Client client){
         this.chatControl = chatControl;
         this.client = client;
@@ -58,6 +60,7 @@ public class ChatListener implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
     public void stop(){
         running = false;
     }

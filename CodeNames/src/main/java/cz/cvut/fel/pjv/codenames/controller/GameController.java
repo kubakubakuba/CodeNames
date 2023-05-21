@@ -14,50 +14,41 @@ import java.util.logging.Logger;
 
 public class GameController {
 
+    //variables
     private Client localClient;
-
-    //for all (tracking revealed cards)
     private ArrayList<ArrayList<Key.KeyType>> revealedCardsBoard;
-
     private Key gamekey;
-
     private Deck gameDeck;
-
     private String currentTurnText;
-
     private String currentPromptText;
     private int currentPromptCardCount;
-
     private ImageArray redCards;
     private ImageArray blueCards;
     private ImageArray neutralCards;
+    private boolean gameEnded;
+    private Player.PlayerTeam winner;
     private final static Logger LOGGER = Logger.getLogger(GameController.class.getName());
+    private GameView gameView;
+    private ChatController chatController;
+    private GameListener gameListen;
 
+    //getters
     public ArrayList<ArrayList<Key.KeyType>> getRevealedCardsBoard() {return revealedCardsBoard;}
-
     public String getCurrentTurnText() {return currentTurnText;}
     public String getCurrentPromptText() {return currentPromptText;}
     public int getCurrentPromptCardCount() {return currentPromptCardCount;}
-
-    private GameView gameView;
-    private String serverIP = "localhost";
-    private int serverPort = 1313;
-
-    private ChatController chatController;
-
-    private GameListener gameListen;
-
-    private Player.PlayerRole currentTurnRole;
-    private Player.PlayerTeam currentTurnTeam;
-
     public Client getClient() {
         return localClient;
     }
+    public ChatController getChatController() {return chatController;}
+    public Key getKey() {return gamekey;}
+    public Deck getDeck() {return gameDeck;}
+    public boolean hasGameEnded() {return gameEnded;}
+    public Player.PlayerTeam getWinner() {return winner;}
 
+    //constructor
     public GameController(Client client, ChatController chatController){
         this.localClient = client;
-        serverIP = localClient.getServerIP();
-        serverPort = localClient.getServerPort();
         this.chatController = chatController;
         this.gameView = new GameView(this);
         this.gameListen = new GameListener(gameView, this);
@@ -172,7 +163,6 @@ public class GameController {
             Logger.getLogger("Cannon save file!").log(Level.SEVERE, null, ex);
         }
     }
-        //TODO: implement getCurrentTurn loads teamcolor and role of current turn to currentTurnText
 
     /**
      * Updates local data from GameData
@@ -188,8 +178,9 @@ public class GameController {
         this.revealedCardsBoard = data.getRevealedCardsBoard();
         this.currentPromptText = data.getLastPromptText();
         this.currentPromptCardCount = data.getLastPromptCardCount();
-        this.currentTurnRole = data.getCurrentTurnRole();
-        this.currentTurnTeam = data.getCurrentTurnTeam();
+        this.gameEnded = data.hasGameEnded();
+        this.winner = data.getWinner();
+
     }
 
     /**
@@ -212,12 +203,27 @@ public class GameController {
         return idxs;
     }
 
-    public ChatController getChatController() {
-        return chatController;
-    }
+    /**
+     * Gets the next card based on the card color.
+     * @param key color of the card
+     * @return path to the image of the card
+     */
+    public String getImage(Key.KeyType key){
+        String imgpath = "";
+        if (key == Key.KeyType.RED) {
+            imgpath = redCards.getNext();
+        }
+        if (key == Key.KeyType.BLUE) {
+            imgpath = blueCards.getNext();
+        }
+        if (key == Key.KeyType.CIVILIAN) {
+            imgpath = neutralCards.getNext();
 
-    public GameView getGameView() {
-        return gameView;
+        }
+        if (key == Key.KeyType.ASSASSIN) {
+            imgpath = "file:src/main/resources/cz/cvut/fel/pjv/codenames/cards/card_black.png";
+        }
+        return imgpath;
     }
 
     /**

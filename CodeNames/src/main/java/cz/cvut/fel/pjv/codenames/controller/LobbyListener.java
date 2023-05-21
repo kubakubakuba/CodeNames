@@ -15,10 +15,8 @@ import java.net.Socket;
 public class LobbyListener implements Runnable {
 
     private Socket socket;
-
     private boolean running;
     LobbyView lobbyView;
-
     private Client client;
 
     public LobbyListener(LobbyView lobbyView, Client client){
@@ -63,6 +61,7 @@ public class LobbyListener implements Runnable {
             throw new RuntimeException(e);
         }
     }
+
     public void stop(){
         running = false;
     }

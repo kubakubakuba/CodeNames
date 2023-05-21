@@ -10,10 +10,9 @@ import java.io.*;
 import java.net.Socket;
 
 public class ChatController {
+
     private ChatView chatView;
-
     private Client client;
-
     private ChatListener chatListen;
 
     public ChatController(Client client){

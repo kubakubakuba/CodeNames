@@ -158,12 +158,14 @@ public class FieldOperativeView extends Application {
             int row = idxs[0];
             int col = idxs[1];
 
-            currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+            if (!localControl.hasGameEnded())
+                currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+            else
+                currentTurnLabel.setText("Winners are: " + localControl.getWinner());
 
             promptLabel.setText("Entered prompt: " +localControl.getCurrentPromptText());
             promptCardCountLabel.setText("Num Cards:" + localControl.getCurrentPromptCardCount());
 
-            //boardContainer.getChildren().clear();
             boardContainer = new GridPane();
             boardContainer.setHgap(30);
             boardContainer.setVgap(30);

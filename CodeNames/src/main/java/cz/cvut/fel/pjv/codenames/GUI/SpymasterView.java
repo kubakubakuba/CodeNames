@@ -210,7 +210,12 @@ public class SpymasterView extends Application {
         int [] idxs = localControl.getChangedTileIdx(old, localControl.getRevealedCardsBoard());
 
         javafx.application.Platform.runLater(() -> {
-            currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+
+            if (!localControl.hasGameEnded())
+                currentTurnLabel.setText("Turn of: " + localControl.getCurrentTurnText());
+            else
+                currentTurnLabel.setText("Winners are: " + localControl.getWinner());
+
             if (idxs[0] != -1) {
                 String name = localControl.getDeck().getCards().get(idxs[0]).get(idxs[1]).getName();
                 Key.KeyType revealedStatus = localControl.getRevealedCardsBoard().get(idxs[0]).get(idxs[1]);

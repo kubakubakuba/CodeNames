@@ -17,15 +17,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class ChatView extends Application {
+
     private Stage stage;
     private TextArea chatLog;
     private TextArea inputField;
-
     private boolean enabled = false;
     private ChatController chatControl;
-
     private Client localClient;
-
     private double xOffset = 0;
     private double yOffset = 0;
 
@@ -33,6 +31,7 @@ public class ChatView extends Application {
         this.chatControl = chatControl;
         this.localClient = client;
     }
+
     public void start(Stage stage) {
         this.stage = stage;
         stage.initStyle(StageStyle.UNDECORATED);
@@ -115,5 +114,27 @@ public class ChatView extends Application {
      */
     public void closeChat(){
         stage.close();
+    }
+
+    /**
+     * Send message to server
+     */
+    private void sendMessage() {
+        String message = removeLineBreaks(inputField.getText().strip());
+        if (message.length() > 0) {
+            message = message.replace(";", ",");
+            chatControl.sendMessage(message);
+            inputField.setText("");
+        }
+    }
+
+    /**
+     * Remove line breaks from string
+     * @param str the string to remove line breaks from
+     * @return the string without line breaks
+     */
+    private String removeLineBreaks(String str) {
+        // see: https://stackoverflow.com/questions/2163045/how-to-remove-line-breaks-from-a-file-in-java
+        return str.replaceAll("\\R+", " ");
     }
 }

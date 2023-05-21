@@ -10,37 +10,32 @@ import java.util.Arrays;
 
 public class LobbyController {
 
+    //variables
     private Client localClient;
-
     private String hostId;
-
     private int[] RBNPlayers = {0, 0, 0};
     private int[] playerRoles = {0, 0, 0, 0, 0, 0, 0};
     private int playerCount = 0;
-
     private String serverIP = "localhost";
     private int serverPort = 1313;
-
     private ChatController chatController;
-
     private String deckFile = "src/main/resources/cz/cvut/fel/pjv/codenames/Names.dck;";
 
+    //getters
     public ChatController getChatController() {
         return chatController;
     }
-
     public void setChatController(ChatController chatController) {
         this.chatController = chatController;
     }
-
     public int getPlayerCount() {return playerCount;}
     public int[] getRBNPlayers() {return RBNPlayers;}
-
     public int[] getPlayerRoles() {return playerRoles;}
     public Client getLocalClient() {
         return localClient;
     }
 
+    //constructor
     public LobbyController(String id, String serverIP, int serverPort){
         localClient = new Client(id, serverIP, serverPort);
     }
