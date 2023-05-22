@@ -674,7 +674,7 @@ public class ServerThread extends Thread {
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
-
+		    sendMessages(idSession, "_____Player " + idSelf + " disconnected._____");
                     writer.println("1arg;true");
 
                     OutputStream endOutputStream = s.getListeners().get(idSelf).getOutputStream();
