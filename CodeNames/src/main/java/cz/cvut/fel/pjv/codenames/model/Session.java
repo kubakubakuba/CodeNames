@@ -34,6 +34,15 @@ public class Session {
         return hostId;
     }
     public UUID getSessionId(){return sessionId;}
+    public HashMap<String, Socket> getListeners() {
+        return this.listeners;
+    }
+    public HashMap<String, Socket> getChatListeners() {
+        return this.chatListeners;
+    }
+    public HashMap<String, Socket> getGameListeners() {
+        return this.gameListeners;
+    }
 
     public Session(String host){
         lobby = new Lobby();
@@ -59,18 +68,6 @@ public class Session {
     public void loadGame(String gameData){
         game = new Game(lobby.getListOfPlayers());
         game.loadGame(gameData);
-    }
-
-    public HashMap<String, Socket> getListeners() {
-        return this.listeners;
-    }
-
-    public HashMap<String, Socket> getChatListeners() {
-        return this.chatListeners;
-    }
-
-    public HashMap<String, Socket> getGameListeners() {
-        return this.gameListeners;
     }
 
     /**

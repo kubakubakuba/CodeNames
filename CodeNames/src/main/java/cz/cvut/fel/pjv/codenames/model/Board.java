@@ -35,7 +35,7 @@ public class Board implements Serializable {
      * Initializes the starting team
      * @return starting team
      */
-    private Player.PlayerTeam initStartingTeam(){
+    public Player.PlayerTeam initStartingTeam(){
         int randIdx  = new Random().nextInt(2);
         Player.PlayerTeam [] teams= {Player.PlayerTeam.RED, Player.PlayerTeam.BLUE};
         return teams[randIdx];

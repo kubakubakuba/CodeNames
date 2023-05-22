@@ -13,9 +13,13 @@ public class GameView extends Application {
     private Player.PlayerTeam team;
     private Player.PlayerRole role;
     private GameController localControl= null;
-    private SpymasterView viewS;
-    private FieldOperativeView viewF;
-    private  FieldOperativeLeaderView viewL;
+    private SpymasterView viewS =null;
+    private FieldOperativeView viewF = null ;
+    private  FieldOperativeLeaderView viewL = null;
+
+    public SpymasterView getViewS() {return viewS;}
+    public FieldOperativeView getViewF() {return viewF;}
+    public FieldOperativeLeaderView getViewL() {return viewL;}
 
     public GameView(GameController controller)  {
         this.localControl = controller;
