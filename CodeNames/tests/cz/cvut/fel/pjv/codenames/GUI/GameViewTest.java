@@ -22,7 +22,6 @@ class GameViewTest {
         assertNull(gW.getViewL(), "Expected FieldOperativeLeaderView instance to be null");
     }
 
-
     @Test
     void gameEnd() {
         Client cl = new Client("test", "localhost", 1515);
