@@ -21,7 +21,7 @@ public class ChatView extends Application {
     private Stage stage;
     private TextArea chatLog;
     private TextArea inputField;
-    private boolean enabled = false;
+    private boolean enabled = true;
     private ChatController chatControl;
     private Client localClient;
     private double xOffset = 0;
@@ -53,12 +53,16 @@ public class ChatView extends Application {
         inputField.setMaxHeight(28);
         inputField.setOnKeyPressed((event) -> {
             if (event.getCode() == KeyCode.ENTER) {
-                sendMessage();
+                if(enabled) {
+                    sendMessage();
+                }
             }
         });
         Button sendButton = new Button("Send");
         sendButton.setOnAction((ActionEvent e) -> {
-            sendMessage();
+            if(enabled) {
+                sendMessage();
+            }
         });
         VBox vbox = new VBox(4, msgLabel, chatLog, inputLabel, inputField, sendButton);
         vbox.setPadding(new Insets(8));
@@ -94,9 +98,9 @@ public class ChatView extends Application {
      */
     public void enableChat(){
         enabled = true;
-        javafx.application.Platform.runLater(() -> {
+        /*javafx.application.Platform.runLater(() -> {
             inputField.setDisable(false);
-        });
+        });*/
     }
 
     /**
@@ -104,9 +108,10 @@ public class ChatView extends Application {
      */
     public void disableChat(){
         enabled = false;
-        javafx.application.Platform.runLater(() -> {
+        /*javafx.application.Platform.runLater(() -> {
+
             inputField.setDisable(true);
-        });
+        });*/
     }
 
     /**

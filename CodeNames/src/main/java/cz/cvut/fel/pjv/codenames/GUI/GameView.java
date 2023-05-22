@@ -69,6 +69,7 @@ public class GameView extends Application {
     @Override
     public void start(Stage primaryStage) {
         if(role == Player.PlayerRole.SPY_MASTER){
+            localControl.getChatController().setChatDisable();
             viewS.start(primaryStage);
         }
         if(role == Player.PlayerRole.FIELD_OPERATIVE){
@@ -92,6 +93,7 @@ public class GameView extends Application {
         if(role == Player.PlayerRole.FIELD_OPERATIVE_LEADER){
             viewL.gameEnd();
         }
+        localControl.getChatController().setChatEnable();
     }
 
 }
