@@ -10,22 +10,17 @@ public class Deck implements Serializable {
     private ArrayList<ArrayList<Card>> cards;
     private ArrayList<String> wordBuffer;
 
-    //public Deck(String dckFile){
-    //    this.dckFile = dckFile;
-    //    initWordBuffer();
-    //    Collections.shuffle(wordBuffer);
-    //    cards = buildDeck(wordBuffer);
-    //}
-
+    /**
+     * Constructor
+     * @param loadedCardNames card names to use in the game
+     */
    public Deck (ArrayList<String> loadedCardNames){
        Collections.shuffle(loadedCardNames);
        cards = buildDeck(loadedCardNames);
 
    }
 
-    /**
-     * Initializes the word buffer from a file
-     */
+
    private void initWordBuffer()    {
         ArrayList<String> tempbuf = new ArrayList<String>();
        try (BufferedReader br = new BufferedReader(new FileReader(dckFile))) {
@@ -42,6 +37,10 @@ public class Deck implements Serializable {
        }
    }
 
+    /**
+     * Getter for cards
+     * @return cards
+     */
     public ArrayList<ArrayList<Card>> getCards() {return cards;}
 
     /**

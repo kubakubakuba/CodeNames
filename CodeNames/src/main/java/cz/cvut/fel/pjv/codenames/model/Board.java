@@ -10,6 +10,10 @@ public class Board implements Serializable {
     private Deck deck;
     private Player.PlayerTeam startingTeam;
 
+    /**
+     * Constructor
+     * @param words words to use in the game
+     */
     public Board(ArrayList<String> words) {
         startingTeam = initStartingTeam();
         key = new Key(startingTeam);
@@ -41,14 +45,26 @@ public class Board implements Serializable {
         return teams[randIdx];
     }
 
+    /**
+     * Getter for key
+     * @return key
+     */
     public Key getKey() {
         return key;
     }
 
+    /**
+     * Getter for deck
+     * @return deck
+     */
     public Deck getDeck() {
         return deck;
     }
 
+    /**
+     * Getter for starting team
+     * @return starting team
+     */
     public Player.PlayerTeam getStartingTeam() {
         return startingTeam;
     }

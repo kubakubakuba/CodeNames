@@ -43,7 +43,12 @@ public class LobbyController {
         return localClient;
     }
 
-    //constructor
+    /**
+     * Constructor
+     * @param id id of client
+     * @param serverIP ip of server
+     * @param serverPort port of server
+     */
     public LobbyController(String id, String serverIP, int serverPort){
         localClient = new Client(id, serverIP, serverPort);
     }

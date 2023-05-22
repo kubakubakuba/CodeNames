@@ -9,8 +9,17 @@ public class Lobby {
     private List<String> listOfIds = new ArrayList<String>();
     private HashMap<String, Player> listOfPlayers = new HashMap<String, Player>();
 
+    /**
+     * Constructor
+     * @return list of ids
+     */
     public List<String> getListOfIds() {
         return listOfIds;
     }
+
+    /**
+     * Getter for list of players
+     * @return list of players
+     */
     public HashMap<String, Player> getListOfPlayers() {return listOfPlayers;}
 }

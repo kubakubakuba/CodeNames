@@ -16,12 +16,20 @@ public class ChatListener implements Runnable {
     private Client client;
     private ChatController chatControl;
 
+    /**
+     * Constructor
+     * @param chatControl the chat controller
+     * @param client the client
+     */
     public ChatListener(ChatController chatControl, Client client){
         this.chatControl = chatControl;
         this.client = client;
         this.running = true;
     }
 
+    /**
+     * Stops the thread
+     */
     @Override
     public void run() {
         System.out.println("Listener started");

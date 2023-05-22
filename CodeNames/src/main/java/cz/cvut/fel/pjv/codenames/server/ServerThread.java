@@ -103,7 +103,7 @@ public class ServerThread extends Thread {
         HashMap<String, Player> players = session.getLobby().getListOfPlayers();
 
         if(players.get(playerId).getTeam() == Player.PlayerTeam.NONE){
-            LOGGER.log(Level.INFO, "Player " + playerId + " tried to select role " + role + " but they are not on a team");
+            LOGGER.log(Level.WARNING, "Player " + playerId + " tried to select role " + role + " but they are not on a team");
             return false;
         }
 
@@ -116,7 +116,7 @@ public class ServerThread extends Thread {
                 continue; //skip self
             }
             if(set.getValue().getRole() == role && set.getValue().getTeam() == players.get(playerId).getTeam()){
-                LOGGER.log(Level.INFO, "Player " + playerId + " tried to select role " + role + " but it was already taken by player " + set.getValue().getID());
+                LOGGER.log(Level.WARNING, "Player " + playerId + " tried to select role " + role + " but it was already taken by player " + set.getValue().getID());
                 return false;
             }
         }
@@ -242,7 +242,7 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player " + idSelf + " sent message: " + message + " to session " + idSession);
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to send message to session " + idSession + " but they are not in that session");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to send message to session " + idSession + " but they are not in that session");
                         writer.println("1arg;false");
                         return;
                     }
@@ -270,13 +270,13 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Field operative " + idSelf + " clicked on X: " + xCoord + " Y: " + yCoord + " at session: "+ idSession);
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to make move in session " + idSession + " but they are not in that session");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to make move in session " + idSession + " but they are not in that session");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(xCoord < 0 || xCoord > 4 || yCoord < 0 || yCoord > 4){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to make move in session " + idSession + " but the coordinates were out of bounds");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to make move in session " + idSession + " but the coordinates were out of bounds");
                         writer.println("1arg;false");
                         return;
                     }
@@ -284,19 +284,19 @@ public class ServerThread extends Thread {
                     Session s = server.getActiveSessions().get(idSession);
 
                     if(s.getGame().getGameData().getLastPromptCardCount() <= 0){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to make move in session " + idSession + " but there are no more moves left");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to make move in session " + idSession + " but there are no more moves left");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(!(s.getGame().getGameData().getCurrentTurnTeam() == s.getLobby().getListOfPlayers().get(idSelf).getTeam())){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to make move in session " + idSession + " but it is not their turn");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to make move in session " + idSession + " but it is not their turn");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(!(s.getGame().getGameData().getCurrentTurnRole() == Player.PlayerRole.FIELD_OPERATIVE || s.getGame().getGameData().getCurrentTurnRole() == Player.PlayerRole.FIELD_OPERATIVE_LEADER)){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to make move in session " + idSession + " but they are not a field operative");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to make move in session " + idSession + " but they are not a field operative");
                         writer.println("1arg;false");
                         return;
                     }
@@ -304,13 +304,13 @@ public class ServerThread extends Thread {
                     ArrayList<ArrayList<Key.KeyType>> discovered = s.getGame().getGameData().getRevealedCardsBoard();
 
                     if(discovered.get(yCoord).get(xCoord) != Key.KeyType.EMPTY){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to make move in session " + idSession + " but the card was already revealed");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to make move in session " + idSession + " but the card was already revealed");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if (s.getGame().getGameData().hasGameEnded()){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to make move in session " + idSession + " but the game has ended");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to make move in session " + idSession + " but the game has ended");
                         writer.println("1arg;false");
                         return;
                     }
@@ -378,7 +378,7 @@ public class ServerThread extends Thread {
                     int count = Integer.parseInt(parser.getArguments()[3]);
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
@@ -388,25 +388,25 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO,  s.getGame().getListOfPlayers().get(idSelf).getTeam() +  " prompted: " + prompt + " with count: " + count + " at session: "+ idSession);
 
                     if(count < 0 || count > 9){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but the count is invalid");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but the count is invalid");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(s.getGame().getListOfPlayers().get(idSelf).getRole() != Player.PlayerRole.SPY_MASTER){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but they are not a spy master");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but they are not a spy master");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(s.getGame().getListOfPlayers().get(idSelf).getTeam() != s.getGame().getGameData().getCurrentTurnTeam()){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but they are not on the current turn team");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but they are not on the current turn team");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(s.getGame().getGameData().getCurrentTurnRole() != Player.PlayerRole.SPY_MASTER){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but it is not their turn");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to commit prompt in session " + idSession + " but it is not their turn");
                         writer.println("1arg;false");
                         return;
                     }
@@ -441,7 +441,7 @@ public class ServerThread extends Thread {
                     if(!server.getActiveSessions().containsKey(idSession)) {
                         response = "1arg;sessioninvalid;";
                         writer.println(response);
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to connect to session " + idSession + " but the session does not exist");
+                        LOGGER.log(Level.SEVERE, "Player " + idSelf + " tried to connect to session " + idSession + " but the session does not exist");
                         return;
                     }
 
@@ -450,7 +450,7 @@ public class ServerThread extends Thread {
                     if(s.getLobby().getListOfPlayers().containsKey(idSelf)){
                         response = "1arg;nametaken;";
                         writer.println(response);
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to connect to session " +
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to connect to session " +
                                     idSession + " but the player already exists");
                         return;
                     }
@@ -473,7 +473,7 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player " + idSelf + " requested host id of session " + idSession);
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to get host id of session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to get host id of session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
@@ -492,7 +492,7 @@ public class ServerThread extends Thread {
                     String idSession = parser.getArguments()[1];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to choose role in session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to choose role in session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
@@ -563,7 +563,7 @@ public class ServerThread extends Thread {
                     String idSession = parser.getArguments()[1];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to get player count of session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to get player count of session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
@@ -591,7 +591,7 @@ public class ServerThread extends Thread {
                     String idSession = parser.getArguments()[1];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to get player roles of session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to get player roles of session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
@@ -644,7 +644,7 @@ public class ServerThread extends Thread {
                     String idSession = parser.getArguments()[1];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to get lobby ids of session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to get lobby ids of session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
@@ -667,7 +667,7 @@ public class ServerThread extends Thread {
                     if(!(server.getActiveSessions().containsKey(idSession) &&
                          server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf)))
                     {
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to disconnect from session " +
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to disconnect from session " +
                                   idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
@@ -702,7 +702,7 @@ public class ServerThread extends Thread {
                     LOGGER.log(Level.INFO, "Player " + idSelf + " requested to disconnect from session " + idSession + " and was successful");
 
                     if (s.getLobby().getListOfPlayers().size() == 1) {
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue, session will be deleted");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue, session will be deleted");
                         endGame(idSession);
                         server.getActiveSessions().remove(idSession);
                         return;
@@ -710,7 +710,7 @@ public class ServerThread extends Thread {
 
                     if (s.getLobby().getListOfPlayers().get(idSelf).getRole() == Player.PlayerRole.SPY_MASTER ||
                             s.getLobby().getListOfPlayers().get(idSelf).getRole() == Player.PlayerRole.FIELD_OPERATIVE_LEADER){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session "
+                        LOGGER.log(Level.SEVERE, "Player " + idSelf + " disconnected from session "
                                 + idSession + " and was " + s.getLobby().getListOfPlayers().get(idSelf).getRole() +" therefore the game cannot continue.");
                         endGame(idSession);
                         s.getLobby().getListOfIds().remove(idSelf);
@@ -719,7 +719,7 @@ public class ServerThread extends Thread {
                     }
 
                     if(s.getLobby().getListOfPlayers().size() < 4 && s.getLobby().getListOfPlayers().size() > 1){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue");
+                        LOGGER.log(Level.SEVERE, "Player " + idSelf + " disconnected from session " + idSession + " and there are not enough players to continue");
                         endGame(idSession);
 
                         s.getLobby().getListOfIds().remove(idSelf);
@@ -734,27 +734,27 @@ public class ServerThread extends Thread {
                     String deckPath = parser.getArguments()[2];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to start game in session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to start game in session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
                     if(!s.getHostId().equals(idSelf)){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to start game in session " + idSession + " but is not the host");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to start game in session " + idSession + " but is not the host");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(s.getLobby().getListOfPlayers().size() < 4){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to start game in session " + idSession + " but there are not enough players");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to start game in session " + idSession + " but there are not enough players");
                         writer.println("1arg;false");
                         return;
                     }
 
                     for(Player p : s.getLobby().getListOfPlayers().values()){
                         if(p.getRole() == Player.PlayerRole.NONE){
-                            LOGGER.log(Level.INFO, "Player " + idSelf + " tried to start game in session " + idSession + " but there are players without roles");
+                            LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to start game in session " + idSession + " but there are players without roles");
                             writer.println("1arg;false");
                             return;
                         }
@@ -787,27 +787,27 @@ public class ServerThread extends Thread {
                     String gameData = parser.getArguments()[2];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to load game in session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to load game in session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
                     if(!s.getHostId().equals(idSelf)){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to load game in session " + idSession + " but is not the host");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to load game in session " + idSession + " but is not the host");
                         writer.println("1arg;false");
                         return;
                     }
 
                     if(s.getLobby().getListOfPlayers().size() < 4){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to load game in session " + idSession + " but there are not enough players");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to load game in session " + idSession + " but there are not enough players");
                         writer.println("1arg;false");
                         return;
                     }
 
                     for(Player p : s.getLobby().getListOfPlayers().values()){
                         if(p.getRole() == Player.PlayerRole.NONE){
-                            LOGGER.log(Level.INFO, "Player " + idSelf + " tried to load game in session " + idSession + " but there are players without roles");
+                            LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to load game in session " + idSession + " but there are players without roles");
                             writer.println("1arg;false");
                             return;
                         }
@@ -848,14 +848,14 @@ public class ServerThread extends Thread {
                     String idSession = parser.getArguments()[1];
 
                     if(!(server.getActiveSessions().containsKey(idSession) && server.getActiveSessions().get(idSession).getLobby().getListOfPlayers().containsKey(idSelf))) {
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to get game data in session " + idSession + " but the session or player does not exist");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to get game data in session " + idSession + " but the session or player does not exist");
                         writer.println("1arg;false");
                         return;
                     }
 
                     Session s = server.getActiveSessions().get(idSession);
                     if(s.getGame() == null){
-                        LOGGER.log(Level.INFO, "Player " + idSelf + " tried to get game data in session " + idSession + " but the game has not been started");
+                        LOGGER.log(Level.WARNING, "Player " + idSelf + " tried to get game data in session " + idSession + " but the game has not been started");
                         writer.println("1arg;false");
                         return;
                     }

@@ -34,7 +34,13 @@ public class LobbyView extends Application {
     private Stage stage;
     private LobbyController localControl = null;
 
-
+    /**
+     * Constructor
+     * @param lobbyStage the stage to show the window on
+     * @param ID the ID of the player
+     * @param control the lobby controller
+     * @param isPlayerHost whether the player is the host
+     */
     public LobbyView(Stage lobbyStage, String ID, LobbyController control, boolean isPlayerHost) {
         this.stage = lobbyStage;
         this.ID = ID;
@@ -51,6 +57,10 @@ public class LobbyView extends Application {
 
     }
 
+    /**
+     * Creates the lobby scene
+     * @param lobbyStage the stage to show the window on
+     */
     @Override
     public void start(Stage lobbyStage) {
         lobbyStage.setScene(createLobbyScene());
@@ -230,6 +240,10 @@ public class LobbyView extends Application {
         return setBackground(layout);
     }
 
+    /**
+     * Sets the common elements of the lobby scene
+     * @return VBox of the common elements of the lobby scene
+     */
     private VBox createCommonView()  {
 
         scrollPane = new ScrollPane();

@@ -16,22 +16,45 @@ public class GameData implements java.io.Serializable{
 
     private Player.PlayerTeam winner;
 
+    /**
+     * Getter for winner
+     * @return winner
+     */
     public Player.PlayerTeam getWinner() {
         return winner;
     }
+
+    /**
+     * Setter for winner
+     * @param winner winner
+     */
 
     public void setWinner(Player.PlayerTeam winner) {
         this.winner = winner;
     }
 
+    /**
+     * Getter for current turn team
+     * @return current turn team
+     */
+
     public boolean hasGameEnded() {
         return gameEnded;
     }
+
+    /**
+     * Setter for game ended
+     * @param gameEnded game ended
+     */
 
     public void setGameEnded(boolean gameEnded) {
         this.gameEnded = gameEnded;
     }
 
+    /**
+     * Constructor
+     * @param board board
+     */
     public GameData(Board board){
         this.board = board;
         currentTurnTeam = board.getStartingTeam();
@@ -41,6 +64,10 @@ public class GameData implements java.io.Serializable{
         this.lastPromptCardCount = 0;
     }
 
+    /**
+     * Getter for board
+     * @return board
+     */
     public Board getBoard() {return board;}
 
     /**
@@ -69,33 +96,65 @@ public class GameData implements java.io.Serializable{
         return noReveals;
     }
 
+    /**
+     * Getter for last prompt text
+     * @return last prompt text
+     */
     public String getLastPromptText() {
         return lastPromptText;
     }
+
+    /**
+     * Getter for last prompt card count
+     * @return last prompt card count
+     */
     public int getLastPromptCardCount() {
         return lastPromptCardCount;
     }
+    /**
+     * Getter for current turn team
+     */
 
     public Player.PlayerTeam getCurrentTurnTeam() {
         return currentTurnTeam;
     }
 
+    /**
+     * Getter for current turn role
+     * @return current turn role
+     */
     public Player.PlayerRole getCurrentTurnRole() {
         return currentTurnRole;
     }
 
+    /**
+     * Setter for current turn team
+     * @param currentTurnTeam current turn team
+     */
     public void setCurrentTurnTeam(Player.PlayerTeam currentTurnTeam) {
         this.currentTurnTeam = currentTurnTeam;
     }
 
+    /**
+     * Setter for current turn role
+     * @param currentTurnRole current turn role
+     */
     public void setCurrentTurnRole(Player.PlayerRole currentTurnRole) {
         this.currentTurnRole = currentTurnRole;
     }
 
+    /**
+     * Setter for last prompt card count
+     * @param lastPromptCardCount last prompt card count
+     */
     public void setLastPromptCardCount(int lastPromptCardCount) {
         this.lastPromptCardCount = lastPromptCardCount;
     }
 
+    /**
+     * Setter for last prompt text
+     * @param lastPromptText last prompt text
+     */
     public void setLastPromptText(String lastPromptText) {
         this.lastPromptText = lastPromptText;
     }

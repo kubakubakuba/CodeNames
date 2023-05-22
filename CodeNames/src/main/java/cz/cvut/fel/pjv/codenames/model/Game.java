@@ -1,27 +1,43 @@
 package cz.cvut.fel.pjv.codenames.model;
 
 
+import cz.cvut.fel.pjv.codenames.server.ServerThread;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Game {
 
     private HashMap<String, Player> listOfPlayers;
+
+    /**
+     * Getter for list of players
+     * @return map list of players
+     */
     public HashMap<String,Player> getListOfPlayers() {return listOfPlayers;};
 
     private GameData gameData;
+    private final Logger LOGGER = Logger.getLogger(Game.class.getName());
 
-    public void saveGame(){};
-    public void loadGame(){};
-
+    /**
+     * Constructor
+     * @param listOfPlayers list of players
+     * @param words list of words
+     */
     public Game(HashMap<String,Player> listOfPlayers, ArrayList<String> words) {
         Board board = new Board(words);
         this.gameData = new GameData(board);
         this.listOfPlayers = listOfPlayers;
     }
 
+    /**
+     * Constructor
+     * @param listOfPlayers list of players
+     */
     public Game(HashMap<String,Player> listOfPlayers) {
         this.listOfPlayers = listOfPlayers;
     }
@@ -51,10 +67,14 @@ public class Game {
             this.gameData = gameDataObject;
         }
         else{
-            System.out.println("Game data is null");
+            LOGGER.log(Level.SEVERE, "Game data is null");
         }
     }
 
+    /**
+     * Getter for game data
+     * @return game data
+     */
     public GameData getGameData(){
         return this.gameData;
     }

@@ -4,6 +4,10 @@ public class ImageArray {
     private String[] filePaths;
     private int currentIndex;
 
+    /**
+     * Constructor
+     * @param filePaths paths to the images
+     */
     public ImageArray(String... filePaths) {
         this.filePaths = filePaths;
         this.currentIndex = 0;
@@ -31,10 +35,6 @@ public class ImageArray {
     public void addImage(String filePath) {
         filePaths = Arrays.copyOf(filePaths, filePaths.length + 1);
         filePaths[filePaths.length - 1] = filePath;
-    }
-
-    public void reset() {
-        currentIndex = 0;
     }
 
     /**

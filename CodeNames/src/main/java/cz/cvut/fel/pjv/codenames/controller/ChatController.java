@@ -15,6 +15,10 @@ public class ChatController {
     private Client client;
     private ChatListener chatListen;
 
+    /**
+     * Constructor
+     * @param client the client
+     */
     public ChatController(Client client){
         this.client = client;
         this.chatView = new ChatView(this, client);

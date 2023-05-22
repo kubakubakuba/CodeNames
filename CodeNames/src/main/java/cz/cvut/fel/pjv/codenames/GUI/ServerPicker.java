@@ -26,15 +26,29 @@ public class ServerPicker extends Application {
     private int serverPort;
     private ArrayList<String> sessions;
 
+    /**
+     * Constructor
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Constructor
+     * @param serverIP
+     * @param serverPort
+     */
     public ServerPicker(String serverIP, int serverPort){
         this.serverIP = serverIP;
         this.serverPort = serverPort;
         System.out.println("Server IP: " + serverIP + " Server Port: " + serverPort);
     }
+
+    /**
+     * Start the server picker window
+     * @param primaryStage the stage to show the window on
+     */
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setOnCloseRequest(event -> {
@@ -148,17 +162,35 @@ public class ServerPicker extends Application {
         return new Scene(bckrndPane, 650, 600);
     }
 
+    /**
+     * Sets the previous scene
+     * @param scene the previous scene
+     */
     public void setPreviousScene(Scene scene) {
         this.previousScene = scene;
     }
+
+    /**
+     * Sets the previous stage
+     * @param stage the previous stage
+     */
     public void setStage(Stage stage)   {
         this.previousStage = stage;
     }
+
+    /**
+     * Sets the ID
+     * @param ID the ID
+     */
 
     public void setID(String ID)    {
         this.ID = ID;
     }
 
+    /**
+     * Displays an error message when unable to connect to a session
+     * @param errorMsg the error message
+     */
     private void connectError(String errorMsg)   {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Unable to join session");

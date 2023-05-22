@@ -42,23 +42,51 @@ public class Player {
         NONE
     }
 
+    /**
+     * Getter for team
+     * @return team
+     */
     public PlayerTeam getTeam() {
         return team;
     }
+
+    /**
+     * Getter for role
+     * @return role
+     */
 
     public PlayerRole getRole() {
         return role;
     }
 
+    /**
+     * Getter for socket
+     * @return socket
+     */
+
     public Socket getSocket() { return socket; }
+
+    /**
+     * Getter for ID
+     * @return ID
+     */
 
     public String getID() {
         return ID;
     }
+
+    /**
+     * Setter for team
+     * @param team team
+     */
     public void setTeam(PlayerTeam team) {
         this.team = team;
     }
 
+    /**
+     * Setter for role
+     * @param role role
+     */
     public void setRole(PlayerRole role) {
         this.role = role;
     }

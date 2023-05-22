@@ -32,14 +32,25 @@ public class SpymasterView extends Application {
     private GameController localControl;
     private Button saveBtn;
 
+    /**
+     * Constructor
+     * @param controller the game controller
+     */
     public SpymasterView(GameController controller) {
         this.localControl = controller;
     }
 
+    /**
+     * Start the game window
+     */
     public static void main() {
         launch();
     }
 
+    /**
+     * Start the game window
+     * @param gameStage the stage to show the window on
+     */
     @Override
     public void start(Stage gameStage) {
 
@@ -200,6 +211,9 @@ public class SpymasterView extends Application {
     }
 
 
+    /**
+     * Updates the view of the game
+     */
     public void update()    {
         ArrayList<ArrayList<Key.KeyType>> old = localControl.getRevealedCardsBoard();
         localControl.getGameData();

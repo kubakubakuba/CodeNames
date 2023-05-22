@@ -19,12 +19,20 @@ public class LobbyListener implements Runnable {
     LobbyView lobbyView;
     private Client client;
 
+    /**
+     * Constructor
+     * @param lobbyView the lobby view
+     * @param client the client
+     */
     public LobbyListener(LobbyView lobbyView, Client client){
         this.client = client;
         this.lobbyView = lobbyView;
         this.running = true;
     }
 
+    /**
+     * Run method
+     */
     @Override
     public void run() {
         System.out.println("Listener started");

@@ -27,14 +27,26 @@ public class FieldOperativeLeaderView extends Application {
     private Button[][] buttons = new Button[5][5];
     private Button saveBtn;
 
+    /**
+     * Constructor
+     * @param controller the game controller
+     */
     public FieldOperativeLeaderView(GameController controller) {
         this.localControl = controller;
     }
 
+    /**
+     * Start the game window
+     * @param args the arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Start the game window
+     * @param gameStage the stage to show the window on
+     */
     @Override
     public void start(Stage gameStage) {
         localControl.getGameData();

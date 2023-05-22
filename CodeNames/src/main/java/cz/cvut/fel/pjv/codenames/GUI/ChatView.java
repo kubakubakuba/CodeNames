@@ -27,11 +27,20 @@ public class ChatView extends Application {
     private double xOffset = 0;
     private double yOffset = 0;
 
+    /**
+     * Constructor
+     * @param chatControl the chat controller
+     * @param client the client
+     */
     public ChatView(ChatController chatControl, Client client) {
         this.chatControl = chatControl;
         this.localClient = client;
     }
 
+    /**
+     * Start the chat window
+     * @param stage the stage to show the window on
+     */
     public void start(Stage stage) {
         this.stage = stage;
         stage.initStyle(StageStyle.UNDECORATED);
@@ -98,9 +107,6 @@ public class ChatView extends Application {
      */
     public void enableChat(){
         enabled = true;
-        /*javafx.application.Platform.runLater(() -> {
-            inputField.setDisable(false);
-        });*/
     }
 
     /**
@@ -108,10 +114,6 @@ public class ChatView extends Application {
      */
     public void disableChat(){
         enabled = false;
-        /*javafx.application.Platform.runLater(() -> {
-
-            inputField.setDisable(true);
-        });*/
     }
 
     /**

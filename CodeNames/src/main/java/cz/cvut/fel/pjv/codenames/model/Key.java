@@ -7,6 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class Key implements Serializable {
+    /**
+     * Enum for key types
+     */
     public enum KeyType{
         RED,
         BLUE,
@@ -26,9 +29,18 @@ public class Key implements Serializable {
             {KeyType.CIVILIAN, KeyType.CIVILIAN, KeyType.CIVILIAN, KeyType.CIVILIAN, KeyType.CIVILIAN}
     };
 
+    /**
+     * Constructor
+     * @param startingTeam team that starts
+     */
     public Key(Player.PlayerTeam startingTeam)    {
         solution = generateKey(startingTeam);
     }
+
+    /**
+     * Getter for solution
+     * @return solution
+     */
     public ArrayList<ArrayList<KeyType>> getSolution() {
         return solution;
     }

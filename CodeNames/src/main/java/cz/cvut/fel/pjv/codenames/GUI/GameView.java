@@ -21,6 +21,10 @@ public class GameView extends Application {
     public FieldOperativeView getViewF() {return viewF;}
     public FieldOperativeLeaderView getViewL() {return viewL;}
 
+    /**
+     * Constructor
+     * @param controller the game controller
+     */
     public GameView(GameController controller)  {
         this.localControl = controller;
         this.team = localControl.getClient().getPlayer().getTeam();

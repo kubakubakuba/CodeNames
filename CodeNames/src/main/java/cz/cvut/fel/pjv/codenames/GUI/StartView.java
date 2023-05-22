@@ -25,10 +25,18 @@ public class StartView extends Application {
 
     private String id;
     private String serverIP;
+
+    /**
+     * Constructor
+     */
     public void startApp() {
         launch();
     }
 
+    /**
+     * Start the start window
+     * @param stage the stage to show the window on
+     */
     @Override
     public void start(Stage stage) {
         // Create a label with custom text
@@ -182,6 +190,11 @@ public class StartView extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    /**
+     * Returns the id of the player
+     * @return id of the player
+     */
     public String getId() {
         return id;
     }

@@ -18,12 +18,20 @@ public class GameListener implements Runnable {
 
     private GameView gameView;
 
+    /**
+     * Constructor
+     * @param view the game view
+     * @param gameControl the game controller
+     */
     public GameListener(GameView view, GameController gameControl){
         this.gameControl = gameControl;
         this.gameView = view;
         this.running = true;
     }
 
+    /**
+     * Run method
+     */
     @Override
     public void run() {
         System.out.println("Game listener started");

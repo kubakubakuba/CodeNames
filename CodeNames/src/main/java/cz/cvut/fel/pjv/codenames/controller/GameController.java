@@ -44,7 +44,11 @@ public class GameController {
     public boolean hasGameEnded() {return gameEnded;}
     public Player.PlayerTeam getWinner() {return winner;}
 
-    //constructor
+    /**
+     * Constructor
+     * @param client the client
+     * @param chatController the chat controller
+     */
     public GameController(Client client, ChatController chatController){
         this.localClient = client;
         this.chatController = chatController;
@@ -113,7 +117,7 @@ public class GameController {
             update(gameData);
         }
         else{
-            System.out.println("Game data is null");
+            LOGGER.log(Level.SEVERE, "Game data is null");
         }
     }
 

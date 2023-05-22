@@ -17,6 +17,12 @@ public class Client {
 
     private Socket socket;
 
+    /**
+     * Constructor
+     * @param id id of the client
+     * @param serverIP server ip
+     * @param serverPort server port
+     */
     public Client(String id, String serverIP, int serverPort){
         this.id = id;
         this.player = new Player(id);
@@ -24,15 +30,33 @@ public class Client {
         this.serverPort = serverPort;
     }
 
+    /**
+     * Get the session id of the client
+     * @return session id
+     */
     public UUID getSessionId() {return sessionId;}
+
+    /**
+     * Getter for id
+     * @return id
+     */
     public String getId() {
         return id;
     }
+
+    /**
+     * Setter for id
+     * @param id id
+     */
     public void setId(String id) {
         this.id = id;
     }
 
 
+    /**
+     * Getter for player
+     * @return player
+     */
     public Player getPlayer() {
         return player;
     }
@@ -72,10 +96,18 @@ public class Client {
         return null;
     }
 
+    /**
+     * Getter for server ip
+     * @return server ip
+     */
     public String getServerIP() {
         return serverIP;
     }
 
+    /**
+     * Getter for server port
+     * @return server port
+     */
     public int getServerPort() {
         return serverPort;
     }

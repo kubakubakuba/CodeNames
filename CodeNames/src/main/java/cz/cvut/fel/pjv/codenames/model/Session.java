@@ -25,25 +25,63 @@ public class Session {
     private HashMap<String, Socket> chatListeners;
 
     private HashMap<String, Socket> gameListeners;
+
+    /**
+     * Getter for lobby
+     * @return lobby
+     */
     public Lobby getLobby() {
         return lobby;
     }
+
+    /**
+     * Getter for game
+     * @return game
+     */
     public Game getGame() {return game;}
 
+    /**
+     * Getter for host id
+     * @return host id
+     */
     public String getHostId() {
         return hostId;
     }
+
+    /**
+     * Getter for session id
+     * @return session id
+     */
     public UUID getSessionId(){return sessionId;}
+
+    /**
+     * Getter for listeners
+     * @return listeners
+     */
     public HashMap<String, Socket> getListeners() {
         return this.listeners;
     }
+
+    /**
+     * Getter for chat listeners
+     * @return chat listeners
+     */
     public HashMap<String, Socket> getChatListeners() {
         return this.chatListeners;
     }
+
+    /**
+     * Getter for game listeners
+     * @return game listeners
+     */
     public HashMap<String, Socket> getGameListeners() {
         return this.gameListeners;
     }
 
+    /**
+     * Constructor
+     * @param host - id of the host
+     */
     public Session(String host){
         lobby = new Lobby();
         hostId = host;

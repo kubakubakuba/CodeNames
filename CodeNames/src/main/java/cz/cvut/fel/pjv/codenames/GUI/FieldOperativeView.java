@@ -29,14 +29,27 @@ public class FieldOperativeView extends Application {
 
     private Button saveBtn;
     private StackPane[][] stackPane = new StackPane[5][5];
+
+    /**
+     * Constructor
+     * @param controller the game controller
+     */
     public FieldOperativeView(GameController controller) {
         this.localControl = controller;
     }
 
+    /**
+     * Start the game window
+     * @param args the arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Start the game window
+     * @param gameStage the stage to show the window on
+     */
     @Override
     public void start(Stage gameStage) {
         localControl.getGameData();
@@ -144,6 +157,9 @@ public class FieldOperativeView extends Application {
         gameStage.show();
     }
 
+    /**
+     * Update the game window
+     */
     public void update()    {
         ArrayList<ArrayList<Key.KeyType>> old = localControl.getRevealedCardsBoard();
         localControl.getGameData();
