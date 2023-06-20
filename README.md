@@ -14,4 +14,7 @@ If you want to self-host the server, you need to start the same .jar file with t
 ## More info
 All information can be found on [the wiki page of this repository](https://github.com/kubakubakuba/CodeNames/wiki).
 
+### Where shall I start?
+Start by downloading the latest [release](https://github.com/kubakubakuba/CodeNames/releases) and by reading the [user manual](https://github.com/kubakubakuba/CodeNames/wiki/User-manual). 
+
 ## Jakub Pelc, Prokop Jansa, 2023
