@@ -2,6 +2,7 @@
 
 ### The aim of the project
 The main goal of our semestral project was to implement a working CodeNames game, that could be played on any number of devices, connected to the public internet.
+![image](https://github.com/kubakubakuba/CodeNames/assets/13603688/405810c4-b648-4789-b71b-5b487476d1c5)
 
 ### How it all works 
 One instance of the game is running as a server, which other players join to play the game. One player than acts as a lobby host, which has a control of the game (starting and loading necessary game data), the other players then join the lobby and can play the game.
