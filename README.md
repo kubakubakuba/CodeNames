@@ -1,4 +1,4 @@
-# Semestral project for B0B36PJV - CodeNames game in JavaFX
+# Semestral project for B0B36PJV - CodeNames JavaFX
 
 ### The aim of the project
 The main goal of our semestral project was to implement a working CodeNames game, that could be played on any number of devices, connected to the public internet.
